@@ -1,9 +1,4 @@
-﻿using System;
-using System.Security.Policy;
-using System.Threading;
-using Internal;
-
-namespace iJunior
+﻿namespace iJunior
 {
     class MainClass
     {
