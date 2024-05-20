@@ -16,8 +16,8 @@ namespace iJunior
         {
             int price = 0;
             int lives = 0;
-            float positionX = 0.1;
-            float positionY = 0.1;
+            float positionX = 0.1f;
+            float positionY = 0.1f;
             double angleY = 0.1;
             bool isAlive = true;
             string name = "Player";
