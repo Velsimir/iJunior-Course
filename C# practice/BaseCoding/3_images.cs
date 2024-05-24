@@ -16,12 +16,12 @@ namespace iJunior
         public static void Main(string[] args)
         {
             int images = 52;
-            int imageInRow = 3;
+            int imagesInRow = 3;
             int filledRows;
             int leftImages;
 
-            filledRows = images / imageInRow;
-            leftImages = filledRows % imageInRow;
+            filledRows = images / imagesInRow;
+            leftImages = filledRows % imagesInRow;
 
             Console.WriteLine($"Заполненных рядов = {filledRows} \nОстанется картинок вне рядов = {lefttImages}");
         }
