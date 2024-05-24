@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Security.Policy;
-using System.Threading;
 
 namespace iJunior
 {
@@ -21,10 +18,10 @@ namespace iJunior
             int images = 52;
             int imageInRow = 3;
             int filledRows;
-            int lefttImages;
+            int leftImages;
 
             filledRows = images / imageInRow;
-            lefttImages = filledRows % imageInRow;
+            leftImages = filledRows % imageInRow;
 
             Console.WriteLine($"Заполненных рядов = {filledRows} \nОстанется картинок вне рядов = {lefttImages}");
         }
