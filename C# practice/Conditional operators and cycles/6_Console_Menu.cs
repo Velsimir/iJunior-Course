@@ -4,12 +4,17 @@ namespace iJunior
 {
     class MainClass
     {
-        public static void Main(string[] args)
+        static void Main(string[] args)
         {
+            const int CaseZero = 0;
+            const int CaseOne = 1;
+            const int CaseTwo = 2;
+            const int CaseTree = 3;
+            const int CaseFour = 4;
             string userName;
             string userZodiacSign;
             int userAge;
-            int userInput = 1;
+            int userInput = 0;
             int currentYear = 2022;
             bool IsWorking = true;
 
@@ -43,8 +48,7 @@ namespace iJunior
 
                 switch (userInput)
                 {
-                    case 1:
-
+                    case CaseOne:
                         Console.WriteLine($"Не так важно, кто ты по гороскопу. Важно, что завтра день будет отличный!" +
                             $"\n Ну развае что у тех чей знак задиака - {userZodiacSign}. У них может пойти что-то не так..." +
                             $"\n Нажмите Enter, чтобы продолжить");
@@ -54,8 +58,7 @@ namespace iJunior
                         Console.Clear();
                         break;
 
-                    case 2:
-
+                    case CaseTwo:
                         Console.WriteLine($"Будь уверен тебе {userAge}, и что это не изменит " +
                             $"\nНажмите Enter, чтобы продолжить");
 
@@ -64,8 +67,7 @@ namespace iJunior
                         Console.Clear();
                         break;
 
-                    case 3:
-
+                    case CaseTree:
                         Console.WriteLine($"Серьезно? Не думал, что у тебя есть сложности с этим... \n {currentYear - userAge}" +
                             $"\nНажмите Enter, чтобы продолжить");
 
@@ -74,8 +76,7 @@ namespace iJunior
                         Console.Clear();
                         break;
 
-                    case 4:
-
+                    case CaseFour:
                         Console.WriteLine("We're no strangers to love" +
                             "\nYou know the rules and so do I" +
                             "\nA full commitment's what I'm thinking of" +
@@ -97,12 +98,11 @@ namespace iJunior
 
                         Console.Clear();
                         break;
-                    case 0:
+                    case CaseZero:
                         IsWorking = false;
                         break;
                 }
             }
-
         }
     }
 }

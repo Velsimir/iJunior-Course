@@ -8,7 +8,6 @@ namespace iJunior
 {
     class MainClass
     {
-        //Реализуйте функцию Shuffle, которая перемешивает элементы массива в случайном порядке.
         static void Main(string[] args)
         {
             int[] array = { 1, 2, 3, 4, 5 };

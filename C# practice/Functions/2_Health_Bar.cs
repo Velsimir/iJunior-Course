@@ -9,11 +9,6 @@ namespace iJunior
 {
     class MainClass
     {
-        /*Разработайте функцию, которая рисует некий бар (Healthbar, Manabar) в определённой позиции. 
-         * Она также принимает некий закрашенный процент.
-         * При 40% бар выглядит так:
-         * [####______]
-         */
         static void Main(string[] args)
         {
             int health = 963;
