@@ -6,11 +6,12 @@ namespace iJunior
     {
         static void Main(string[] args)
         {
-            const int CaseZero = 0;
-            const int CaseOne = 1;
-            const int CaseTwo = 2;
-            const int CaseTree = 3;
-            const int CaseFour = 4;
+            const int CommandChoseZero = 0;
+            const int CommandChoseOne = 1;
+            const int CommandChoseTwo = 2;
+            const int CommandChoseTree = 3;
+            const int CommandChoseFour = 4;
+
             string userName;
             string userZodiacSign;
             int userAge;
@@ -35,12 +36,11 @@ namespace iJunior
 
             while (IsWorking)
             {
-                Console.WriteLine("Что ты хочешь узнать?" +
-                "\n Свой гороскоп на завтра - 1" +
-                "\n Свой психологический возраст - 2" +
-                "\n В каком году вы родились? - 3" +
-                "\n Узнать смысл жизни - 4" +
-                "\n Выход из приложения - 0");
+                Console.WriteLine($"Что ты хочешь узнать? \n Свой гороскоп на завтра - {CommandChoseOne}" +
+                    $"\n Свой психологический возраст - {CommandChoseTwo}" +
+                    $"\n В каком году вы родились? - {CommandChoseTree}" +
+                    $"\n Узнать смысл жизни - {CommandChoseFour}" +
+                    $"\n Выход из приложения - {CommandChoseZero}");
 
                 userInput = Convert.ToInt32(Console.ReadLine());
 
@@ -48,7 +48,7 @@ namespace iJunior
 
                 switch (userInput)
                 {
-                    case CaseOne:
+                    case CommandChoseOne:
                         Console.WriteLine($"Не так важно, кто ты по гороскопу. Важно, что завтра день будет отличный!" +
                             $"\n Ну развае что у тех чей знак задиака - {userZodiacSign}. У них может пойти что-то не так..." +
                             $"\n Нажмите Enter, чтобы продолжить");
@@ -58,7 +58,7 @@ namespace iJunior
                         Console.Clear();
                         break;
 
-                    case CaseTwo:
+                    case CommandChoseTwo:
                         Console.WriteLine($"Будь уверен тебе {userAge}, и что это не изменит " +
                             $"\nНажмите Enter, чтобы продолжить");
 
@@ -67,7 +67,7 @@ namespace iJunior
                         Console.Clear();
                         break;
 
-                    case CaseTree:
+                    case CommandChoseTree:
                         Console.WriteLine($"Серьезно? Не думал, что у тебя есть сложности с этим... \n {currentYear - userAge}" +
                             $"\nНажмите Enter, чтобы продолжить");
 
@@ -76,7 +76,7 @@ namespace iJunior
                         Console.Clear();
                         break;
 
-                    case CaseFour:
+                    case CommandChoseFour:
                         Console.WriteLine("We're no strangers to love" +
                             "\nYou know the rules and so do I" +
                             "\nA full commitment's what I'm thinking of" +
@@ -98,7 +98,7 @@ namespace iJunior
 
                         Console.Clear();
                         break;
-                    case CaseZero:
+                    case CommandChoseZero:
                         IsWorking = false;
                         break;
                 }
