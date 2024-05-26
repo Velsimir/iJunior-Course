@@ -6,18 +6,18 @@ namespace iJunior
     {
         static void Main(string[] args)
         {
-            const int CommandChoseZero = 0;
-            const int CommandChoseOne = 1;
-            const int CommandChoseTwo = 2;
-            const int CommandChoseTree = 3;
-            const int CommandChoseFour = 4;
+            const int CommandExit = 0;
+            const int CommandShowHoroscope = 1;
+            const int CommandShowPsychologicalAge = 2;
+            const int CommandAskDateOfBirth = 3;
+            const int CommandAskMeaningOfLife = 4;
 
             string userName;
             string userZodiacSign;
             int userAge;
             int userInput = 0;
-            int currentYear = 2022;
-            bool IsWorking = true;
+            int currentYear = DateTime.Now.Year;
+            bool isWorking = true;
 
             Console.Write("Привет пользователь! \nКак тебя зовут? - ");
             userName = Console.ReadLine();
@@ -34,13 +34,13 @@ namespace iJunior
 
             Console.Clear();
 
-            while (IsWorking)
+            while (isWorking)
             {
-                Console.WriteLine($"Что ты хочешь узнать? \n Свой гороскоп на завтра - {CommandChoseOne}" +
-                    $"\n Свой психологический возраст - {CommandChoseTwo}" +
-                    $"\n В каком году вы родились? - {CommandChoseTree}" +
-                    $"\n Узнать смысл жизни - {CommandChoseFour}" +
-                    $"\n Выход из приложения - {CommandChoseZero}");
+                Console.WriteLine($"Что ты хочешь узнать? \n Свой гороскоп на завтра - {CommandShowHoroscope}" +
+                    $"\n Свой психологический возраст - {CommandShowPsychologicalAge}" +
+                    $"\n В каком году вы родились? - {CommandAskDateOfBirth}" +
+                    $"\n Узнать смысл жизни - {CommandAskMeaningOfLife}" +
+                    $"\n Выход из приложения - {CommandExit}");
 
                 userInput = Convert.ToInt32(Console.ReadLine());
 
@@ -48,7 +48,7 @@ namespace iJunior
 
                 switch (userInput)
                 {
-                    case CommandChoseOne:
+                    case CommandShowHoroscope:
                         Console.WriteLine($"Не так важно, кто ты по гороскопу. Важно, что завтра день будет отличный!" +
                             $"\n Ну развае что у тех чей знак задиака - {userZodiacSign}. У них может пойти что-то не так..." +
                             $"\n Нажмите Enter, чтобы продолжить");
@@ -58,7 +58,7 @@ namespace iJunior
                         Console.Clear();
                         break;
 
-                    case CommandChoseTwo:
+                    case CommandShowPsychologicalAge:
                         Console.WriteLine($"Будь уверен тебе {userAge}, и что это не изменит " +
                             $"\nНажмите Enter, чтобы продолжить");
 
@@ -67,7 +67,7 @@ namespace iJunior
                         Console.Clear();
                         break;
 
-                    case CommandChoseTree:
+                    case CommandAskDateOfBirth:
                         Console.WriteLine($"Серьезно? Не думал, что у тебя есть сложности с этим... \n {currentYear - userAge}" +
                             $"\nНажмите Enter, чтобы продолжить");
 
@@ -76,7 +76,7 @@ namespace iJunior
                         Console.Clear();
                         break;
 
-                    case CommandChoseFour:
+                    case CommandAskMeaningOfLife:
                         Console.WriteLine("We're no strangers to love" +
                             "\nYou know the rules and so do I" +
                             "\nA full commitment's what I'm thinking of" +
@@ -98,8 +98,8 @@ namespace iJunior
 
                         Console.Clear();
                         break;
-                    case CommandChoseZero:
-                        IsWorking = false;
+                    case CommandExit:
+                        isWorking = false;
                         break;
                 }
             }
