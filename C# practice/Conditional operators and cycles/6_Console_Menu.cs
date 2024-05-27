@@ -51,7 +51,7 @@ namespace iJunior
                     case CommandShowHoroscope:
                         Console.WriteLine($"Не так важно, кто ты по гороскопу. Важно, что завтра день будет отличный!" +
                             $"\n Ну развае что у тех чей знак задиака - {userZodiacSign}. У них может пойти что-то не так..." +
-                            $"\n Нажмите Enter, чтобы продолжить");
+                            "\n Нажмите Enter, чтобы продолжить");
 
                         Console.ReadLine();
 
@@ -60,7 +60,7 @@ namespace iJunior
 
                     case CommandShowPsychologicalAge:
                         Console.WriteLine($"Будь уверен тебе {userAge}, и что это не изменит " +
-                            $"\nНажмите Enter, чтобы продолжить");
+                            "\nНажмите Enter, чтобы продолжить");
 
                         Console.ReadLine();
 
@@ -69,7 +69,7 @@ namespace iJunior
 
                     case CommandAskDateOfBirth:
                         Console.WriteLine($"Серьезно? Не думал, что у тебя есть сложности с этим... \n {currentYear - userAge}" +
-                            $"\nНажмите Enter, чтобы продолжить");
+                            "\nНажмите Enter, чтобы продолжить");
 
                         Console.ReadLine();
 
@@ -98,6 +98,7 @@ namespace iJunior
 
                         Console.Clear();
                         break;
+
                     case CommandExit:
                         isWorking = false;
                         break;
