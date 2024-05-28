@@ -1,4 +1,6 @@
-﻿namespace iJunior
+﻿using System;
+
+namespace iJunior
 {
     class MainClass
     {

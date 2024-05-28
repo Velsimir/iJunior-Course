@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Security.Policy;
-using Internal;
 
 namespace iJunior
 {
@@ -31,9 +29,7 @@ namespace iJunior
                 Console.WriteLine();
 
                 if (i == 0)
-                {
                     Console.WriteLine(userSymbol + userName + userSymbol);
-                }
             }
         }
     }

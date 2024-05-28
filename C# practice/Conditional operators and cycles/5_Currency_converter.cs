@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Security.Policy;
-using Internal;
 
 namespace iJunior
 {
@@ -8,13 +6,16 @@ namespace iJunior
     {
         public static void Main(string[] args)
         {
-            const int CommandChoseRuble = 1;
-            const int CommandChoseDollar = 2;
-            const int CommandChoseEuro = 3;
+            const int CommnadChoseRubleToDollar = 1;
+            const int CommandChoseRubleToEuro = 2;
+            const int CommandChoseDollarToRuble = 3;
+            const int CommandChoseDollarToEuro = 4;
+            const int CommandChoseEuroToRuble = 5;
+            const int CommandChoseEuroToDollar = 6;
             const int CommandChoseExit = 0;
 
-            float rubBalance = 1000;
-            float usdBalance = 1000;
+            float rubleBalance = 1000;
+            float dollarBalance = 1000;
             float euroBalance = 1000;
             float rubleToDollarExchangeRate = 88.8f;
             float rubleToEuroExchangeRate = 96.2f;
@@ -24,175 +25,154 @@ namespace iJunior
             float euroToDollarExchangeRate = 1f;
             int amountOfMoney;
             int userInput;
-            bool userChoose = true;
+            bool isWorking = true;
 
-            while (userChoose)
+            while (isWorking)
             {
                 Console.WriteLine(" Ваш баланс на текущий момент: " +
-                    $"\n\n Рубли = {rubBalance} " +
-                    $"\n Доллары = {usdBalance}" +
+                    $"\n\n Рубли = {rubleBalance} " +
+                    $"\n Доллары = {dollarBalance}" +
                     $"\n Евро = {euroBalance}");
 
                 Console.WriteLine();
 
-                Console.WriteLine("Выбирете валюту с которой хотите выполнить операцию: " +
-                    $"\n Рубли - {CommandChoseRuble} " +
-                    $"\n Доллоры - {CommandChoseDollar} " +
-                    $"\n Евро - {CommandChoseEuro}" +
+                Console.WriteLine("Выбирете операцию которую хотите выполнить: " +
+                    $"\n Рубли в доллар - {CommnadChoseRubleToDollar}" +
+                    $"\n Рубли в евро - {CommandChoseRubleToEuro}" +
+                    $"\n Доллор в рубли - {CommandChoseDollarToRuble}" +
+                    $"\n Доллор в евро - {CommandChoseDollarToEuro}" +
+                    $"\n Евро в рубли - {CommandChoseEuroToRuble}" +
+                    $"\n Евро в доллар - {CommandChoseEuroToDollar}" +
                     $"\n Выйти из конвертера - {CommandChoseExit}");
 
                 userInput = Convert.ToInt32(Console.ReadLine());
 
-                Console.Clear();
-
                 switch (userInput)
                 {
-                    case 1:
-                        Console.WriteLine($"Выбирете валюту для конвертации: " +
-                        $"\n Доллоры - {CommandChoseDollar}" +
-                        $"\n Евро - {CommandChoseEuro}");
+                    case CommnadChoseRubleToDollar:
 
-                        userInput = Convert.ToInt32(Console.ReadLine());
+                        Console.WriteLine("Производится обмен рублей в доллоры");
+                        Console.WriteLine();
+                        Console.Write("Какую сумму вы хотите обменять?\n");
+                        amountOfMoney = Convert.ToInt32(Console.ReadLine());
 
-                        switch (userInput)
+                        if (amountOfMoney > rubleBalance || amountOfMoney <= 0)
                         {
-                            case 2:
-                                Console.WriteLine("Производится обмен рублей в доллоры");
-                                Console.WriteLine();
-                                Console.Write("Какую сумму вы хотите обменять?");
-                                amountOfMoney = Convert.ToInt32(Console.ReadLine());
-
-                                if (amountOfMoney > rubBalance)
-                                {
-                                    Console.WriteLine("У вас на счету недостаточно средств");
-                                }
-                                else
-                                {
-                                    rubBalance -= amountOfMoney;
-                                    usdBalance += amountOfMoney * dollarToRubleExchangeRate;
-                                }
-                                break;
-
-                            case 3:
-                                Console.WriteLine("Производится обмен рублей в евро");
-                                Console.WriteLine();
-                                Console.Write("Какую сумму вы хотите обменять?");
-                                amountOfMoney = Convert.ToInt32(Console.ReadLine());
-
-                                if (amountOfMoney > rubBalance)
-                                {
-                                    Console.WriteLine("У вас на счету недостаточно средств");
-                                }
-                                else
-                                {
-                                    rubBalance -= amountOfMoney;
-                                    euroBalance += amountOfMoney * euroToRubleExchangeRate;
-                                }
-                                break;
+                            Console.WriteLine("Сумма введена не корректно");
                         }
+                        else
+                        {
+                            rubleBalance -= amountOfMoney;
+                            dollarBalance += amountOfMoney * dollarToRubleExchangeRate;
+                        }
+
                         break;
 
-                    case 2:
+                    case CommandChoseRubleToEuro:
 
-                        Console.WriteLine($"Выбирете валюту для конвертации " +
-                        $"\n Рубли - {CommandChoseRuble}" +
-                        $"\n Евро - {CommandChoseEuro}");
+                        Console.WriteLine("Производится обмен рублей в евро");
+                        Console.WriteLine();
+                        Console.Write("Какую сумму вы хотите обменять?\n");
+                        amountOfMoney = Convert.ToInt32(Console.ReadLine());
 
-                        userInput = Convert.ToInt32(Console.ReadLine());
-
-                        switch (userInput)
+                        if (amountOfMoney > rubleBalance || amountOfMoney <= 0)
                         {
-                            case 1:
-
-                                Console.WriteLine("Производится обмен доллоров в рубли");
-                                Console.WriteLine();
-                                Console.Write("Какую сумму вы хотите обменять?");
-                                amountOfMoney = Convert.ToInt32(Console.ReadLine());
-
-                                if (amountOfMoney > usdBalance)
-                                {
-                                    Console.WriteLine("У вас на счету недостаточно средств");
-                                }
-                                else
-                                {
-                                    usdBalance -= amountOfMoney;
-                                    rubBalance += amountOfMoney * rubleToDollarExchangeRate;
-                                }
-                                break;
-
-                            case 3:
-
-                                Console.WriteLine("Производится обмен доллоров в евро");
-                                Console.WriteLine();
-                                Console.Write("Какую сумму вы хотите обменять?");
-                                amountOfMoney = Convert.ToInt32(Console.ReadLine());
-
-                                if (amountOfMoney > usdBalance)
-                                {
-                                    Console.WriteLine("У вас на счету недостаточно средств");
-                                }
-                                else
-                                {
-                                    usdBalance -= amountOfMoney;
-                                    euroBalance += amountOfMoney * euroToDollarExchangeRate;
-                                }
-                                break;
+                            Console.WriteLine("Сумма введена не корректно");
                         }
+                        else
+                        {
+                            rubleBalance -= amountOfMoney;
+                            euroBalance += amountOfMoney * euroToRubleExchangeRate;
+                        }
+
                         break;
 
-                    case 3:
+                    case CommandChoseDollarToRuble:
 
-                        Console.WriteLine($"Выбирете валюту для конвертации " +
-                        $"\n Рубли - {CommandChoseRuble}" +
-                        $"\n Доллоры - {CommandChoseDollar}");
+                        Console.WriteLine("Производится обмен доллоров в рубли");
+                        Console.WriteLine();
+                        Console.Write("Какую сумму вы хотите обменять?\n");
+                        amountOfMoney = Convert.ToInt32(Console.ReadLine());
 
-                        userInput = Convert.ToInt32(Console.ReadLine());
-
-                        switch (userInput)
+                        if (amountOfMoney > rubleBalance || amountOfMoney <= 0)
                         {
-                            case 1:
-
-                                Console.WriteLine("Производится обмен евро в рубли");
-                                Console.WriteLine();
-                                Console.Write("Какую сумму вы хотите обменять?");
-                                amountOfMoney = Convert.ToInt32(Console.ReadLine());
-
-                                if (amountOfMoney > euroBalance)
-                                {
-                                    Console.WriteLine("У вас на счету недостаточно средств");
-                                }
-                                else
-                                {
-                                    euroBalance -= amountOfMoney;
-                                    rubBalance += amountOfMoney * rubleToEuroExchangeRate;
-                                }
-                                break;
-
-                            case 3:
-
-                                Console.WriteLine("Производится обмен евро в доллоры");
-                                Console.WriteLine();
-                                Console.Write("Какую сумму вы хотите обменять?");
-                                amountOfMoney = Convert.ToInt32(Console.ReadLine());
-
-                                if (amountOfMoney > euroBalance)
-                                {
-                                    Console.WriteLine("У вас на счету недостаточно средств");
-                                }
-                                else
-                                {
-                                    euroBalance -= amountOfMoney;
-                                    usdBalance += amountOfMoney * dollarToEuroExchangeRate;
-                                }
-                                break;
+                            Console.WriteLine("Сумма введена не корректно");
                         }
+                        else
+                        {
+                            dollarBalance -= amountOfMoney;
+                            rubleBalance += amountOfMoney * rubleToDollarExchangeRate;
+                        }
+
                         break;
 
-                    case 0:
-                        userChoose = false;
+                    case CommandChoseDollarToEuro:
+
+                        Console.WriteLine("Производится обмен доллоров в евро");
+                        Console.WriteLine();
+                        Console.Write("Какую сумму вы хотите обменять?\n");
+                        amountOfMoney = Convert.ToInt32(Console.ReadLine());
+
+                        if (amountOfMoney > rubleBalance || amountOfMoney <= 0)
+                        {
+                            Console.WriteLine("Сумма введена не корректно");
+                        }
+                        else
+                        {
+                            dollarBalance -= amountOfMoney;
+                            euroBalance += amountOfMoney * euroToDollarExchangeRate;
+                        }
+
+                        break;
+
+                    case CommandChoseEuroToRuble:
+
+                        Console.WriteLine("Производится обмен евро в рубли");
+                        Console.WriteLine();
+                        Console.Write("Какую сумму вы хотите обменять?\n");
+                        amountOfMoney = Convert.ToInt32(Console.ReadLine());
+
+                        if (amountOfMoney > rubleBalance || amountOfMoney <= 0)
+                        {
+                            Console.WriteLine("Сумма введена не корректно");
+                        }
+                        else
+                        {
+                            euroBalance -= amountOfMoney;
+                            rubleBalance += amountOfMoney * rubleToEuroExchangeRate;
+                        }
+
+                        break;
+
+                    case CommandChoseEuroToDollar:
+
+                        Console.WriteLine("Производится обмен евро в доллоры");
+                        Console.WriteLine();
+                        Console.Write("Какую сумму вы хотите обменять?\n");
+                        amountOfMoney = Convert.ToInt32(Console.ReadLine());
+
+                        if (amountOfMoney > rubleBalance || amountOfMoney <= 0)
+                        {
+                            Console.WriteLine("Сумма введена не корректно");
+                        }
+                        else
+                        {
+                            euroBalance -= amountOfMoney;
+                            dollarBalance += amountOfMoney * dollarToEuroExchangeRate;
+                        }
+
+                        break;
+
+                    case CommandChoseExit:
+
+                        isWorking = false;
+
                         break;
                 }
 
+                Console.WriteLine("Нажмите Enter для продолжения...");
+                Console.ReadLine();
+                Console.Clear();
             }
         }
     }
