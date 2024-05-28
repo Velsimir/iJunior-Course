@@ -8,37 +8,38 @@ namespace iJunior
     {
         public static void Main(string[] args)
         {
+            const int CommandChoseRuble = 1;
+            const int CommandChoseDollar = 2;
+            const int CommandChoseEuro = 3;
+            const int CommandChoseExit = 0;
+
             float rubBalance = 1000;
             float usdBalance = 1000;
             float euroBalance = 1000;
-            float rubleToDollarExchangeRate = 59.9f;
-            float rubleToEuroExchangeRate = 60.9f;
+            float rubleToDollarExchangeRate = 88.8f;
+            float rubleToEuroExchangeRate = 96.2f;
             float dollarToEuroExchangeRate = 0.9f;
-            float dollarToRubleExchangeRate = 0.016f;
-            float euroToRubleExchangeRate = 0.016f;
-            float euroToDollarExchangeRate = 0.9f;
-            int choseRuble = 1;
-            int choseDollar = 2;
-            int choseEuro = 3;
-            int choseExit = 0;
+            float dollarToRubleExchangeRate = 0.011f;
+            float euroToRubleExchangeRate = 0.010f;
+            float euroToDollarExchangeRate = 1f;
             int amountOfMoney;
             int userInput;
             bool userChoose = true;
 
             while (userChoose)
             {
-                Console.WriteLine($" Ваш баланс на текущий момент: " +
+                Console.WriteLine(" Ваш баланс на текущий момент: " +
                     $"\n\n Рубли = {rubBalance} " +
                     $"\n Доллары = {usdBalance}" +
                     $"\n Евро = {euroBalance}");
 
                 Console.WriteLine();
 
-                Console.WriteLine($"Выбирете валюту с которой хотите выполнить операцию: " +
-                    $"\n Рубли - {choseRuble} " +
-                    $"\n Доллоры - {choseDollar} " +
-                    $"\n Евро - {choseEuro}" +
-                    $"\n Выйти из конвертера - {choseExit}");
+                Console.WriteLine("Выбирете валюту с которой хотите выполнить операцию: " +
+                    $"\n Рубли - {CommandChoseRuble} " +
+                    $"\n Доллоры - {CommandChoseDollar} " +
+                    $"\n Евро - {CommandChoseEuro}" +
+                    $"\n Выйти из конвертера - {CommandChoseExit}");
 
                 userInput = Convert.ToInt32(Console.ReadLine());
 
@@ -48,8 +49,8 @@ namespace iJunior
                 {
                     case 1:
                         Console.WriteLine($"Выбирете валюту для конвертации: " +
-                        $"\n Доллоры - {choseDollar}" +
-                        $"\n Евро - {choseEuro}");
+                        $"\n Доллоры - {CommandChoseDollar}" +
+                        $"\n Евро - {CommandChoseEuro}");
 
                         userInput = Convert.ToInt32(Console.ReadLine());
 
@@ -94,8 +95,8 @@ namespace iJunior
                     case 2:
 
                         Console.WriteLine($"Выбирете валюту для конвертации " +
-                        $"\n Рубли - {choseRuble}" +
-                        $"\n Евро - {choseEuro}");
+                        $"\n Рубли - {CommandChoseRuble}" +
+                        $"\n Евро - {CommandChoseEuro}");
 
                         userInput = Convert.ToInt32(Console.ReadLine());
 
@@ -142,8 +143,8 @@ namespace iJunior
                     case 3:
 
                         Console.WriteLine($"Выбирете валюту для конвертации " +
-                        $"\n Рубли - {choseRuble}" +
-                        $"\n Доллоры - {choseDollar}");
+                        $"\n Рубли - {CommandChoseRuble}" +
+                        $"\n Доллоры - {CommandChoseDollar}");
 
                         userInput = Convert.ToInt32(Console.ReadLine());
 
