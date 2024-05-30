@@ -8,29 +8,25 @@ namespace iJunior
         {
             char userSymbol;
             string userName;
-            int charactersUpToRectangle = 2;
-            int cycleInteration = 2;
+            string basicsOfRectangleSymbols = null;
+            int nameLength = 0;
 
             Console.Write("Привет! Как тебя зовут? - ");
             userName = Console.ReadLine();
-
+        
             Console.Write("Введи любой символ: ");
             userSymbol = Convert.ToChar(Console.ReadLine());
 
+            userName = $"{userSymbol}{userName}{userSymbol}";
+
             Console.Clear();
 
-            for (int i = 0; i < cycleInteration; i++)
+            for (int i = 0; i < userName.Length; i++)
             {
-                for (int j = 0; j < userName.Length + charactersUpToRectangle; j++)
-                {
-                    Console.Write(userSymbol);
-                }
-
-                Console.WriteLine();
-
-                if (i == 0)
-                    Console.WriteLine(userSymbol + userName + userSymbol);
+                basicsOfRectangleSymbols += userSymbol;
             }
+        
+            Console.WriteLine($"{basicsOfRectangleSymbols}\n{userName}\n{basicsOfRectangleSymbols}");
         }
     }
 }
