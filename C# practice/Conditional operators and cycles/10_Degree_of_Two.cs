@@ -32,4 +32,3 @@ namespace iJunior
         }
     }
 }
-@Velsimir
