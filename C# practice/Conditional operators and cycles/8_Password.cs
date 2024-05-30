@@ -8,10 +8,10 @@ namespace iJunior
         {
             string password = "qwerty1234";
             string userInput;
-            string secretSword = "Secret Sword";
-            int countMax = 3;
+            string secretMessage = "Secret Message";
+            int maximumNumberOfAttempts = 3;
 
-            for (int i = 1; i <= countMax; i++)
+            for (int i = 1; i <= maximumNumberOfAttempts; i++)
             {
                 Console.Write("Введите пароль: ");
 
@@ -19,12 +19,12 @@ namespace iJunior
 
                 if (userInput == password)
                 {
-                    Console.WriteLine($"Пароль введен верно!\nСекретное слово - {secretSword}");
-                    i = countMax;
+                    Console.WriteLine($"Пароль введен верно!\nСекретное слово - {secretMessage}");
+                    i = maximumNumberOfAttempts;
                 }
                 else
                 {
-                    int currentCount = countMax - i;
+                    int currentCount = maximumNumberOfAttempts - i;
                     Console.WriteLine($"Пароль введен не верно!\nОстальо попыток - {currentCount}");
                 }
             }
