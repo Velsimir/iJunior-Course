@@ -18,11 +18,11 @@ namespace iJunior
         	for (int i = minValue; i <= maxValue; i += devider)
         	{
             	if (i < maxValue)
-                	quantityOfDivisibleNumbers += 1;
+                	quantityOfDivisibleNumbers++;
         	}
 
         	Console.WriteLine($"Количество чисел N ({devider}) в диапазоне" +
-            	              $" от 50 до 150 = {quantityOfDivisibleNumbers}");
+            	              $" от {minValue} до {maxValue} = {quantityOfDivisibleNumbers}");
         }
     }
 }
