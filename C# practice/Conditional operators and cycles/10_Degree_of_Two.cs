@@ -9,20 +9,20 @@ namespace iJunior
             Random random = new Random();
             int minValue = 0;
             int maxValue = 100;
-            int originalNumber = random.Next(minValue, maxValue);
+            int randomNumber = random.Next(minValue, maxValue+1);
             int numberRaisedToPower = 1;
             int degree = 2;
             int numberInPower = 0;
 
-            while (originalNumber > numberRaisedToPower)
+            while (16 >= numberRaisedToPower)
             {
                 numberRaisedToPower *= degree;
                 numberInPower += 1;
             }
 
-            Console.WriteLine($"Изначальное число - {originalNumber}" +
-                $"\nСтеперь - {numberInPower}" +
-                $"\nЧисло в найденной степени - {numberRaisedToPower} ");
+            Console.WriteLine($"Изначальное число - {randomNumber}" +
+                              $"\nСтепень - {numberInPower}" +
+                              $"\nЧисло в найденной степени - {numberRaisedToPower} ");
         }
     }
 }
