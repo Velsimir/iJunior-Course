@@ -15,7 +15,7 @@ namespace iJunior
 	        int maxValue = 150;
 	        int minValue = 50;
 
-	        for (int i = 0; i < maxValue; i+= devider)
+	        for (int i = 0; i <= maxValue; i+= devider)
 	        {
 		        if (i > minValue)
 			        quantityOfDivisibleNumbers++;
