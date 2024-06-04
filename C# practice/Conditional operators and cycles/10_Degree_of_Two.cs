@@ -14,7 +14,7 @@ namespace iJunior
             int degree = 2;
             int numberInPower = 0;
 
-            while (16 >= numberRaisedToPower)
+            while (randomNumber >= numberRaisedToPower)
             {
                 numberRaisedToPower *= degree;
                 numberInPower += 1;
