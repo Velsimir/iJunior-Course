@@ -10,19 +10,19 @@ namespace iJunior
             int minValue = 0;
             int maxValue = 100;
             int randomNumber = random.Next(minValue, maxValue+1);
-            int numberRaisedToPower = 1;
-            int degree = 2;
-            int numberInPower = 0;
+            int finishNumber = 1;
+            int number = 2;
+            int degree = 0;
 
-            while (randomNumber >= numberRaisedToPower)
+            while (randomNumber >= finishNumber)
             {
-                numberRaisedToPower *= degree;
-                numberInPower += 1;
+                finishNumber *= number;
+                degree += 1;
             }
 
             Console.WriteLine($"Изначальное число - {randomNumber}" +
-                              $"\nСтепень - {numberInPower}" +
-                              $"\nЧисло в найденной степени - {numberRaisedToPower} ");
+                              $"\nСтепень - {degree}" +
+                              $"\nЧисло в найденной степени - {finishNumber} ");
         }
     }
 }
