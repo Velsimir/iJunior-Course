@@ -6,14 +6,23 @@ namespace iJunior
     {
         public static void Main(string[] args)
         {
+            const int  CommandYes = 1;
+            const int  CommandNo = 2;
+            const int  ChooseFinger = 1;
+            const int  ChooseBlackEggplant = 2;
+            const int  ChooseLatexGloves = 3;
+            const int  ChooseFirstSpell = 1;
+            const int  ChooseSecondSpell = 2;
+            const int  ChooseThirdSpell = 3;
+            
             Random random = new Random();
-            int minHP = 300;
-            int maxHP = 400;
-            int bossHP = random.Next(minHP, maxHP);
+            int minHPBoss = 300;
+            int maxHPBoss = 400;
+            int bossHP = random.Next(minHPBoss, maxHPBoss);
             int playerHP = 120;
-            int minDamage = 5;
-            int maxDamage = 5;
-            int bossDamage = random.Next(minDamage, maxDamage);
+            int minDamageBoss = 5;
+            int maxDamageBoss = 5;
+            int bossDamage = random.Next(minDamageBoss, maxDamageBoss);
             int poisonDamage = 15;
             int archBuffDamage = 2;
             int magicSpellDamage = 3;
@@ -26,22 +35,24 @@ namespace iJunior
             int magicSkill = magicDamage * magicSpellDamage;
             int cooldownCount = 0;
             int cooldownTurns = 2;
-            int playerChose;
+            int playerChose = 0;
+            int oneSecond = 1;
+            int zeroSecond = 0;
             bool isPlayerLive = true;
             bool isBossLive = true;
             bool isBossHpVisible = false;
-            bool isArchEquiped = false;
-            bool isSwordEquiped = false;
-            bool isStaffEquiped = false;
+            bool isEggplantEquiped = false;
+            bool isFingerEquiped = false;
+            bool isGlovesEquiped = false;
             bool isSkillCooldown = false;
             bool isPoisonActivated = false;
             bool isBuffActivated = false;
 
-            Console.Write($"Босс качалки вышибает дверь и направляется к Вам!" +
+            Console.Write("Босс качалки вышибает дверь и направляется к Вам!" +
                     $"\nХотите узнать его здоровье?" +
-                    $"\nДа - 1" +
-                    $"\nНет - 2" +
-                    $"\nВаш выбор: ");
+                    $"\nДа - {CommandYes}" +
+                    $"\nНет - {CommandNo}" +
+                    "\nВаш выбор: ");
 
             playerChose = Convert.ToInt32(Console.ReadLine());
 
@@ -49,37 +60,37 @@ namespace iJunior
 
             switch (playerChose)
             {
-                case 1:
-                    Console.WriteLine($"Вы присматриваетесь к латексной броне и видите здоровье босса качалки!" +
+                case CommandYes:
+                    Console.WriteLine("Вы присматриваетесь к латексной броне и видите здоровье босса качалки!" +
                         $"\n Здоровье босса качалки = {bossHP}");
                     isBossHpVisible = true;
                     break;
 
-                case 2:
+                case CommandNo:
                     Console.WriteLine("\nВы срываете с себя броню и бросаетесь в бой!");
                     break;
             }
 
             Console.Write("\n\nВыбери оружие для сражения:" +
-                "\nФингер - 1" +
-                "\nЧерный баклажан - 2" +
-                "\nВолшебные латексные рукавицы - 3" +
+                $"\nФингер - {ChooseFinger}" +
+                $"\nЧерный баклажан - {ChooseBlackEggplant}" +
+                $"\nВолшебные латексные рукавицы - {ChooseLatexGloves}" +
                 "\nВыш выбор: ");
 
             playerChose = Convert.ToInt32(Console.ReadLine());
 
             switch (playerChose)
             {
-                case 1:
-                    isSwordEquiped = true;
+                case ChooseFinger:
+                    isFingerEquiped = true;
                     break;
 
-                case 2:
-                    isArchEquiped = true;
+                case ChooseBlackEggplant:
+                    isEggplantEquiped = true;
                     break;
 
-                case 3:
-                    isStaffEquiped = true;
+                case ChooseLatexGloves:
+                    isGlovesEquiped = true;
                     break;
             }
 
@@ -106,27 +117,27 @@ namespace iJunior
 
                 if ((isBuffActivated || isSkillCooldown) && cooldownCount < cooldownTurns)
                 {
-                    cooldownCount += 1;
+                    cooldownCount += oneSecond;
                 }
                 else
                 {
                     isBuffActivated = false;
                     isSkillCooldown = false;
-                    cooldownCount = 0;
+                    cooldownCount = zeroSecond;
                 }
 
-                if (isSwordEquiped)
+                if (isFingerEquiped)
                 {
                     Console.WriteLine($"\nВыберите атаку" +
-                            $"\nСтик йор фингер ин босс эсс ({swordDamage} урона) - 1");
+                            $"\nСтик йор фингер ин босс эсс ({swordDamage} урона) - {ChooseFirstSpell}");
                     if (isSkillCooldown == false)
                     {
-                        Console.WriteLine($"Серия удачных проникновений фингером ({swordSkill} перезарядка {cooldownTurns} хода) - 2)");
+                        Console.WriteLine($"Серия удачных проникновений фингером ({swordSkill} перезарядка {cooldownTurns} хода) - {ChooseSecondSpell})");
                     }
 
                     if (isPoisonActivated == false)
                     {
-                        Console.WriteLine($"Смазать фингер огненной смазкой ({poisonDamage} урона за каждый новый ход) - 3");
+                        Console.WriteLine($"Смазать фингер огненной смазкой ({poisonDamage} урона за каждый новый ход) - {ChooseThirdSpell}");
                     }
 
                     Console.Write("Ваш выбор: ");
@@ -137,34 +148,34 @@ namespace iJunior
 
                     switch (playerChose)
                     {
-                        case 1:
+                        case ChooseFirstSpell:
                             bossHP -= swordDamage;
                             break;
 
-                        case 2:
+                        case ChooseSecondSpell:
                             bossHP -= swordSkill;
                             isSkillCooldown = true;
                             break;
 
-                        case 3:
+                        case ChooseThirdSpell:
                             isPoisonActivated = true;
                             break;
                     }
                 }
 
-                if (isArchEquiped)
+                if (isEggplantEquiped)
                 {
                     Console.WriteLine($"\nВыберите атаку" +
-                        $"\nЯростный бросок черного баклажана в лицо ({archDamage} урона) - 1");
+                        $"\nЯростный бросок черного баклажана в лицо ({archDamage} урона) - {ChooseFirstSpell}");
 
                     if (isBuffActivated == false)
                     {
-                        Console.WriteLine($"Навернуть Рататуй (увеличивает урон в 2 раза, действует {cooldownTurns} хода) - 2");
+                        Console.WriteLine($"Навернуть Рататуй (увеличивает урон в 2 раза, действует {cooldownTurns} хода) - {ChooseSecondSpell}");
                     }
 
                     if (isPoisonActivated == false)
                     {
-                        Console.WriteLine($"Смазать баклажан огненной смазкой ({poisonDamage} урона каждый ход) - 3");
+                        Console.WriteLine($"Смазать баклажан огненной смазкой ({poisonDamage} урона каждый ход) - {ChooseThirdSpell}");
                     }
 
                     Console.Write("Ваш выбор: ");
@@ -175,7 +186,7 @@ namespace iJunior
 
                     switch (playerChose)
                     {
-                        case 1:
+                        case ChooseFirstSpell:
                             if (isSkillCooldown)
                             {
                                 bossHP -= archSkill;
@@ -186,30 +197,30 @@ namespace iJunior
                             }
                             break;
 
-                        case 2:
+                        case ChooseSecondSpell:
                             isBuffActivated = true;
                             isSkillCooldown = true;
                             break;
 
-                        case 3:
+                        case ChooseThirdSpell:
                             isPoisonActivated = true;
                             break;
                     }
                 }
 
-                if (isStaffEquiped)
+                if (isGlovesEquiped)
                 {
                     Console.WriteLine($"\nВыберите атаку" +
-                        $"\nТелепатический массаж эсс ({magicDamage} урона) - 1");
+                        $"\nТелепатический массаж эсс ({magicDamage} урона) - {ChooseFirstSpell}");
 
                     if (isSkillCooldown == false)
                     {
-                        Console.WriteLine($"Вызвать мужицкий дождь({swordSkill} перезарядка {cooldownTurns} хода) - 2)");
+                        Console.WriteLine($"Вызвать мужицкий дождь({swordSkill} перезарядка {cooldownTurns} хода) - {ChooseSecondSpell})");
                     }
 
                     if (isPoisonActivated == false)
                     {
-                        Console.WriteLine($"Призвать отряд кожевенников ({poisonDamage} урона каждый ход) - 3");
+                        Console.WriteLine($"Призвать отряд кожевенников ({poisonDamage} урона каждый ход) - {ChooseThirdSpell}");
                     }
 
                     Console.Write("\nВаш выбор: ");
@@ -220,16 +231,16 @@ namespace iJunior
 
                     switch (playerChose)
                     {
-                        case 1:
+                        case ChooseFirstSpell:
                             bossHP -= magicDamage;
                             break;
 
-                        case 2:
+                        case ChooseSecondSpell:
                             bossHP -= magicSkill;
                             isSkillCooldown = true;
                             break;
 
-                        case 3:
+                        case ChooseThirdSpell:
                             isPoisonActivated = true;
                             break;
                     }
