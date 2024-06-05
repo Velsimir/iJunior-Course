@@ -35,7 +35,7 @@ namespace iJunior
             }
             
             Console.WriteLine($"Сумма второй строки = {sumOfSecondRow}" +
-                              $"\nПроизведение первого столбца {multiplicationOfFirstColumn}");
+                              $"\nПроизведение первого столбца = {multiplicationOfFirstColumn}");
         }
     }
 }
