@@ -7,28 +7,29 @@ namespace iJunior
         static void Main(string[] args)
         {
             int sumOfSecondRow = 0;
-            int multiplicationOfFirstColumn = 0;
+            int multiplicationOfFirstColumn = 1;
             
-            int[,] array =
+            int[,] numbers =
             {
                 {1,2,3,4,5},
                 {6,7,8,9,10}
             };
 
-            for (int i = 0; i < array.GetLength(0); i++)
+            for (int i = 0; i < numbers.GetLength(0); i++)
             {
-                for (int j = 0; j < array.GetLength(1); j++)
+                multiplicationOfFirstColumn *= numbers[i, 0];
+            }
+
+            for (int i = 0; i < numbers.GetLength(1); i++)
+            {
+                sumOfSecondRow += numbers[1, i];
+            }
+
+            for (int i = 0; i < numbers.GetLength(0); i++)
+            {
+                for (int j = 0; j < numbers.GetLength(1); j++)
                 {
-                    if (i == 1)
-                        sumOfSecondRow += array[i, j];
-
-                    if (j == 0 && i == 0)
-                        multiplicationOfFirstColumn += array[i, j];
-
-                    if (j == 0 && i == 1)
-                        multiplicationOfFirstColumn *= array[i, j];
-                    
-                    Console.Write($"{array[i,j]}, ");
+                    Console.Write($"{numbers[i,j]}, ");
                 }
                 
                 Console.WriteLine();
