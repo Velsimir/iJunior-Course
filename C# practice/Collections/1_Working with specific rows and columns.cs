@@ -6,10 +6,10 @@ namespace iJunior
     {
         static void Main(string[] args)
         {
-            int sumOfSecondRow = 0;
-            int multiplicationOfFirstColumn = 1;
-            int rowNumber = 1;
-            int columnNumber = 1;
+            int rowSum = 0;
+            int сolumnMultiplication = 1;
+            int rowIndex = 1;
+            int columnIndex = 1;
             
             int[,] numbers =
             {
@@ -19,12 +19,12 @@ namespace iJunior
 
             for (int i = 0; i < numbers.GetLength(0); i++)
             {
-                multiplicationOfFirstColumn *= numbers[i, columnNumber];
+                сolumnMultiplication *= numbers[i, columnIndex];
             }
 
             for (int i = 0; i < numbers.GetLength(1); i++)
             {
-                sumOfSecondRow += numbers[rowNumber, i];
+                rowSum += numbers[rowIndex, i];
             }
 
             for (int i = 0; i < numbers.GetLength(0); i++)
@@ -37,8 +37,8 @@ namespace iJunior
                 Console.WriteLine();
             }
             
-            Console.WriteLine($"Сумма второй строки = {sumOfSecondRow}" +
-                              $"\nПроизведение первого столбца = {multiplicationOfFirstColumn}");
+            Console.WriteLine($"Сумма второй строки = {rowSum}" +
+                              $"\nПроизведение первого столбца = {сolumnMultiplication}");
         }
     }
 }
