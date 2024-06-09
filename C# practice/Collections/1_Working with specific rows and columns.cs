@@ -8,6 +8,8 @@ namespace iJunior
         {
             int sumOfSecondRow = 0;
             int multiplicationOfFirstColumn = 1;
+            int rowNumber = 1;
+            int columnNumber = 1;
             
             int[,] numbers =
             {
@@ -17,12 +19,12 @@ namespace iJunior
 
             for (int i = 0; i < numbers.GetLength(0); i++)
             {
-                multiplicationOfFirstColumn *= numbers[i, 0];
+                multiplicationOfFirstColumn *= numbers[i, columnNumber];
             }
 
             for (int i = 0; i < numbers.GetLength(1); i++)
             {
-                sumOfSecondRow += numbers[1, i];
+                sumOfSecondRow += numbers[rowNumber, i];
             }
 
             for (int i = 0; i < numbers.GetLength(0); i++)
