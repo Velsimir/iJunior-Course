@@ -9,7 +9,7 @@ namespace iJunior
             int rowSum = 0;
             int сolumnMultiplication = 1;
             int rowIndex = 1;
-            int columnIndex = 1;
+            int columnIndex = 0;
             
             int[,] numbers =
             {
@@ -37,8 +37,8 @@ namespace iJunior
                 Console.WriteLine();
             }
             
-            Console.WriteLine($"Сумма второй строки = {rowSum}" +
-                              $"\nПроизведение первого столбца = {сolumnMultiplication}");
+            Console.WriteLine($"Сумма {rowIndex + 1} строки = {rowSum}" +
+                              $"\nПроизведение {columnIndex + 1} столбца = {сolumnMultiplication}");
         }
     }
 }
