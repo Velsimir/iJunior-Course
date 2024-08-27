@@ -35,9 +35,7 @@ namespace iJunior
                     Console.Write(array[i, j] + "\t");
 
                     if (maxValue < array[i, j])
-                    {
                         maxValue = array[i, j];
-                    }
                 }
                 Console.WriteLine();
             }
@@ -51,9 +49,7 @@ namespace iJunior
                 for (int j = 0; j < array.GetLength(0); j++)
                 {
                     if (maxValue == array[i, j])
-                    {
                         array[i, j] = changeNumber;
-                    }
 
                     Console.Write(array[i, j] + "\t");
                 }
