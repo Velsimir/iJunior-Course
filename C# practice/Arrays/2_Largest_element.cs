@@ -10,7 +10,7 @@ namespace iJunior
     {
         public static void Main(string[] args)
         {
-            int[,] array =
+            int[,] matrixOfNumbers =
             {
                 {1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
                 {15, 123, 43, 76, 34, 334, 768, 325, 222, 523},
@@ -24,18 +24,18 @@ namespace iJunior
                 {1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
             };
             int maxValue = int.MinValue;
-            int changeNumber = 0;
+            int numberToReplace = 0;
 
             Console.WriteLine("Изначальный массив");
 
-            for (int i = 0; i < array.GetLength(0); i++)
+            for (int i = 0; i < matrixOfNumbers.GetLength(0); i++)
             {
-                for (int j = 0; j < array.GetLength(0); j++)
+                for (int j = 0; j < matrixOfNumbers.GetLength(0); j++)
                 {
-                    Console.Write(array[i, j] + "\t");
+                    Console.Write(matrixOfNumbers[i, j] + "\t");
 
-                    if (maxValue < array[i, j])
-                        maxValue = array[i, j];
+                    if (maxValue < matrixOfNumbers[i, j])
+                        maxValue = matrixOfNumbers[i, j];
                 }
                 Console.WriteLine();
             }
@@ -44,14 +44,14 @@ namespace iJunior
 
             Console.WriteLine("Полученный массив");
 
-            for (int i = 0; i < array.GetLength(0); i++)
+            for (int i = 0; i < matrixOfNumbers.GetLength(0); i++)
             {
-                for (int j = 0; j < array.GetLength(0); j++)
+                for (int j = 0; j < matrixOfNumbers.GetLength(0); j++)
                 {
-                    if (maxValue == array[i, j])
-                        array[i, j] = changeNumber;
+                    if (maxValue == matrixOfNumbers[i, j])
+                        matrixOfNumbers[i, j] = numberToReplace;
 
-                    Console.Write(array[i, j] + "\t");
+                    Console.Write(matrixOfNumbers[i, j] + "\t");
                 }
 
                 Console.WriteLine();
