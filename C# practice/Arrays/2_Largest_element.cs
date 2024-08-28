@@ -26,6 +26,7 @@ namespace iJunior
 
             for (int i = 0; i < matrixOfNumbers.GetLength(0); i++)
             {
+                
                 for (int j = 0; j < matrixOfNumbers.GetLength(0); j++)
                 {
                     Console.Write(matrixOfNumbers[i, j] + "\t");
@@ -33,6 +34,7 @@ namespace iJunior
                     if (maxValue < matrixOfNumbers[i, j])
                         maxValue = matrixOfNumbers[i, j];
                 }
+                
                 Console.WriteLine();
             }
 
