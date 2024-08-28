@@ -6,27 +6,27 @@ namespace iJunior
     {
         public static void Main(string[] args)
         {
-            int[] array =
-                {23, 45, 24, 65, 34, 76, 34, 65, 54, 87,
-            324, 432, 324, 432, 654, 453, 234, 431, 688, 312,
-            634, 536, 457, 133, 876, 456, 234, 654, 967, 1000};
+            int[] numbers =
+            {23, 45, 24, 65, 34, 76, 34, 65, 54, 87,
+                324, 432, 324, 432, 654, 453, 234, 431, 688, 312,
+                634, 536, 457, 133, 876, 456, 234, 654, 967, 1000};
             int localMax;
             int previousNumber;
             int currentNumber;
             int nextNumber;
-            int arrayLength = array.GetLength(0);
+            int arrayLength = numbers.GetLength(0);
 
-            if (array[0] > array[1])
+            if (numbers[0] > numbers[1])
             {
-                localMax = array[0];
+                localMax = numbers[0];
                 Console.WriteLine(localMax);
             }
 
             for (int i = 1; i < arrayLength - 1; i++)
             {
-                currentNumber = array[i];
-                nextNumber = array[i + 1];
-                previousNumber = array[i - 1];
+                currentNumber = numbers[i];
+                nextNumber = numbers[i + 1];
+                previousNumber = numbers[i - 1];
 
                 if (currentNumber >= previousNumber && currentNumber >= nextNumber)
                 {
@@ -35,9 +35,9 @@ namespace iJunior
                 }
             }
 
-            if (array[arrayLength - 1] > array[arrayLength - 2])
+            if (numbers[arrayLength - 1] > numbers[arrayLength - 2])
             {
-                localMax = array[arrayLength - 1];
+                localMax = numbers[arrayLength - 1];
                 Console.WriteLine(localMax);
             }
         }
