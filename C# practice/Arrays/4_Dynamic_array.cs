@@ -10,27 +10,26 @@ namespace iJunior
     {
         public static void Main(string[] args)
         {
+            const string CommandSum = "sum";
+            const string CommandExit = "exit";
+            
             int[] array = { 0 };
-            string sum = "sum";
-            string exit = "exit";
+            int userNumber;
             string userAnswer;
             bool isWorking = true;
-            int userNumber;
 
             while (isWorking)
             {
-                Console.Write($"Введите {sum}, чтобы посчитать введенные числа." +
-                $"\nВведите {exit}, чтобы выйти из программы." +
+                Console.Write($"Введите {CommandSum}, чтобы посчитать введенные числа." +
+                $"\nВведите {CommandExit}, чтобы выйти из программы." +
                 $"\nВведите число, чтобы добавить его в список." +
                 $"Ввод пользователя:");
 
                 userAnswer = Console.ReadLine();
 
-                if (userAnswer == exit)
-                {
+                if (userAnswer == CommandExit)
                     isWorking = false;
-                }
-                else if (userAnswer == sum)
+                else if (userAnswer == CommandSum)
                 {
                     int sumOfAllNumbers = 0;
 
