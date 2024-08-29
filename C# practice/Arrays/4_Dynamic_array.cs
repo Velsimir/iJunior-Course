@@ -6,8 +6,8 @@ namespace iJunior
     {
         public static void Main(string[] args)
         {
-            const string CommandSum = "sum";
-            const string CommandExit = "exit";
+            string commandSum = "sum";
+            string commandExit = "exit";
             
             int[] numbers = { };
             int userNumber;
@@ -25,8 +25,8 @@ namespace iJunior
                 
                 Console.WriteLine();
                 
-                Console.Write($"Введите {CommandSum}, чтобы посчитать введенные числа." +
-                              $"\nВведите {CommandExit}, чтобы выйти из программы." +
+                Console.Write($"Введите {commandSum}, чтобы посчитать введенные числа." +
+                              $"\nВведите {commandExit}, чтобы выйти из программы." +
                               $"\nВведите число, чтобы добавить его в список." +
                               $"Ввод пользователя:");
 
@@ -48,15 +48,15 @@ namespace iJunior
                     tempArray[lenghtTempArray - 1] = userNumber;
                     numbers = tempArray;
                 }
-                else if (userAnswer == CommandExit)
+                else if (userAnswer == commandExit)
                 {
                     isWorking = false;
                 }
-                else if (userAnswer == CommandSum)
+                else if (userAnswer == commandSum)
                 {
                     int sumOfAllNumbers = 0;
 
-                    for (int i = 0; i < numbers.Length - 1; i++)
+                    for (int i = 0; i < numbers.Length; i++)
                     {
                         sumOfAllNumbers += numbers[i];
                     }
@@ -73,7 +73,6 @@ namespace iJunior
                 }
                 
                 Console.Clear();
-            }
         }
     }
 }
