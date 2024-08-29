@@ -13,48 +13,75 @@ namespace iJunior
             const string CommandSum = "sum";
             const string CommandExit = "exit";
             
-            int[] array = { 0 };
+            int[] numbers = { };
             int userNumber;
+            int lenghtTempArray;
             string userAnswer;
             bool isWorking = true;
 
             while (isWorking)
             {
+                Console.Write("Список всех чисел: ");
+                
+                for (int i = 0; i < numbers.Length; i++)
+                {
+                    Console.Write($"{numbers[i]} ");
+                }
+                
+                Console.WriteLine();
+                
                 Console.Write($"Введите {CommandSum}, чтобы посчитать введенные числа." +
-                $"\nВведите {CommandExit}, чтобы выйти из программы." +
-                $"\nВведите число, чтобы добавить его в список." +
-                $"Ввод пользователя:");
+                              $"\nВведите {CommandExit}, чтобы выйти из программы." +
+                              $"\nВведите число, чтобы добавить его в список." +
+                              $"Ввод пользователя:");
 
                 userAnswer = Console.ReadLine();
-
-                if (userAnswer == CommandExit)
-                    isWorking = false;
-                else if (userAnswer == CommandSum)
+                Console.Clear();
+                
+                if (Int32.TryParse(userAnswer, out userNumber) == true)
                 {
-                    int sumOfAllNumbers = 0;
-
-                    for (int i = 0; i < array.Length; i++)
-                    {
-                        sumOfAllNumbers += array[i];
-                    }
-
-                    Console.WriteLine(sumOfAllNumbers);
-                    Console.ReadKey();
-                }
-                else
-                {
-                    int[] tempArray = new int[array.Length + 1];
-                    int lenghtTempArray = tempArray.Length - 1;
+                    int[] tempArray = new int[numbers.Length + 1];
+                    lenghtTempArray = tempArray.Length;
 
                     userNumber = Convert.ToInt32(userAnswer);
 
-                    for (int i = 0; i < array.Length; i++)
+                    for (int i = 0; i < numbers.Length; i++)
                     {
-                        tempArray[i] = array[i];
+                        tempArray[i] = numbers[i];
                     }
 
-                    tempArray[lenghtTempArray] = userNumber;
-                    array = tempArray;
+                    tempArray[lenghtTempArray - 1] = userNumber;
+                    numbers = tempArray;
+
+                    continue;
+                }
+
+                if (userAnswer == CommandExit || userAnswer == CommandSum)
+                {
+                    if (userAnswer == CommandExit)
+                    {
+                        isWorking = false;
+                    }
+
+                    if (userAnswer == CommandSum)
+                    {
+                        int sumOfAllNumbers = 0;
+
+                        for (int i = 0; i < numbers.Length - 1; i++)
+                        {
+                            sumOfAllNumbers += numbers[i];
+                        }
+
+                        Console.WriteLine($"Сумма всех числел = {sumOfAllNumbers}" +
+                                          $"\nНажмите любую клавишу, чтобы вернуться в меню...");
+                        Console.ReadKey();
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Введена неверная команда" +
+                                      "\nНажмите любую клавишу, чтобы вернуться в меню...");
+                    Console.ReadKey();
                 }
 
                 Console.Clear();
