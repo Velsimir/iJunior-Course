@@ -14,7 +14,8 @@ namespace iJunior
             int previousNumber;
             int currentNumber;
             int nextNumber;
-            int arrayLength = numbers.GetLength(0);
+            int arrayLength = numbers.Length;
+            int penultimateNumber = numbers[arrayLength - 2];
 
             if (numbers[0] > numbers[1])
             {
@@ -35,7 +36,7 @@ namespace iJunior
                 }
             }
 
-            if (numbers[arrayLength - 1] > numbers[arrayLength - 2])
+            if (numbers[arrayLength - 1] > penultimateNumber)
             {
                 localMax = numbers[arrayLength - 1];
                 Console.WriteLine(localMax);
