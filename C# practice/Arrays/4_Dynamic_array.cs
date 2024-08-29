@@ -11,7 +11,6 @@ namespace iJunior
             
             int[] numbers = { };
             int userNumber;
-            int lenghtTempArray;
             string userAnswer;
             bool isWorking = true;
 
@@ -37,7 +36,7 @@ namespace iJunior
                 if (Int32.TryParse(userAnswer, out userNumber) == true)
                 {
                     int[] tempArray = new int[numbers.Length + 1];
-                    lenghtTempArray = tempArray.Length;
+                    int lenghtTempArray = tempArray.Length;
 
                     userNumber = Convert.ToInt32(userAnswer);
 
@@ -48,30 +47,23 @@ namespace iJunior
 
                     tempArray[lenghtTempArray - 1] = userNumber;
                     numbers = tempArray;
-
-                    continue;
                 }
-
-                if (userAnswer == CommandExit || userAnswer == CommandSum)
+                else if (userAnswer == CommandExit)
                 {
-                    if (userAnswer == CommandExit)
+                    isWorking = false;
+                }
+                else if (userAnswer == CommandSum)
+                {
+                    int sumOfAllNumbers = 0;
+
+                    for (int i = 0; i < numbers.Length - 1; i++)
                     {
-                        isWorking = false;
+                        sumOfAllNumbers += numbers[i];
                     }
 
-                    if (userAnswer == CommandSum)
-                    {
-                        int sumOfAllNumbers = 0;
-
-                        for (int i = 0; i < numbers.Length - 1; i++)
-                        {
-                            sumOfAllNumbers += numbers[i];
-                        }
-
-                        Console.WriteLine($"Сумма всех числел = {sumOfAllNumbers}" +
-                                          $"\nНажмите любую клавишу, чтобы вернуться в меню...");
-                        Console.ReadKey();
-                    }
+                    Console.WriteLine($"Сумма всех числел = {sumOfAllNumbers}" +
+                                      $"\nНажмите любую клавишу, чтобы вернуться в меню...");
+                    Console.ReadKey();
                 }
                 else
                 {
@@ -79,7 +71,7 @@ namespace iJunior
                                       "\nНажмите любую клавишу, чтобы вернуться в меню...");
                     Console.ReadKey();
                 }
-
+                
                 Console.Clear();
             }
         }
