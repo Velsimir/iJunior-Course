@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Security.Policy;
-using System.Threading;
-using Internal;
 
 namespace iJunior
 {
@@ -11,33 +7,33 @@ namespace iJunior
         public static void Main(string[] args)
         {
             Random random = new Random();
-            int[] array = new int[10];
+            int[] numbers = new int[10];
             int tempNumber;
 
-            for (int i = 0; i < array.Length; i++)
+            for (int i = 0; i < numbers.Length; i++)
             {
-                array[i] = random.Next(1, 100);
-                Console.Write(array[i] + "\t");
+                numbers[i] = random.Next(1, 100);
+                Console.Write(numbers[i] + "\t");
             }
 
-            for (int i = 0; i < array.Length; i++)
+            for (int i = 0; i < numbers.Length; i++)
             {
-                for (int j = i + 1; j < array.Length; j++)
+                for (int j = i + 1; j < numbers.Length; j++)
                 {
-                    if (array[i] > array[j])
+                    if (numbers[i] > numbers[j])
                     {
-                        tempNumber = array[i];
-                        array[i] = array[j];
-                        array[j] = tempNumber;
+                        tempNumber = numbers[i];
+                        numbers[i] = numbers[j];
+                        numbers[j] = tempNumber;
                     }
                 }
             }
 
             Console.WriteLine("\n\n");
 
-            for (int i = 0; i < array.Length; i++)
+            for (int i = 0; i < numbers.Length; i++)
             {
-                Console.Write(array[i] + "\t");
+                Console.Write(numbers[i] + "\t");
             }
         }
     }
