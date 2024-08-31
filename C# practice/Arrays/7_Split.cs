@@ -8,7 +8,8 @@ namespace iJunior
         {
             string message = "Дана строка с текстом, используя метод строки String.Split() получить массив слов, " +
                 "которые разделены пробелом в тексте и вывести массив, каждое слово с новой строки.";
-            string[] subMessage = message.Split(' ');
+            char divider = ' ';
+            string[] subMessage = message.Split(divider);
 
             foreach (var word in subMessage)
             {
