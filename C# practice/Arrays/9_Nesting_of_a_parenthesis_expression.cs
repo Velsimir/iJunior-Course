@@ -13,12 +13,13 @@ namespace iJunior
             int streak = 1;
             int minStreak = 1;
             int maxStreak = 1;
+            int lenghtInput;
 
             Console.Write("Введите случайное количество симовлов ( ) - ");
             userInput = Console.ReadLine();
 
-            int lenghtInput = userInput.Length - 1;
-
+            lenghtInput = userInput.Length - 1;
+            
             if (userInput[0] == ')' || userInput[lenghtInput] == '(')
             {
                 expressionIsCorrect = false;
@@ -54,11 +55,11 @@ namespace iJunior
             if (expressionIsCorrect)
             {
                 Console.WriteLine($"Скобочное выражение является корректным" +
-                    $"\nГлубина скобочного выражения = {maxStreak}");
+                                  $"\nГлубина скобочного выражения = {maxStreak}");
             }
             else
             {
-                Console.WriteLine("Скобочное выражение является не корректным");
+                Console.WriteLine("Открывающих скобок больше, чем закрывающих");
             }
         }
     }
