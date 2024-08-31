@@ -9,10 +9,12 @@ namespace iJunior
             Random random = new Random();
             int[] numbers = new int[10];
             int tempNumber;
+            int minRandomNumber = 1;
+            int maxRandomNumber = 101;
 
             for (int i = 0; i < numbers.Length; i++)
             {
-                numbers[i] = random.Next(1, 100);
+                numbers[i] = random.Next(minRandomNumber, maxRandomNumber);
                 Console.Write(numbers[i] + "\t");
             }
 
