@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Security.Policy;
-using System.Threading;
-using Internal;
 
 namespace iJunior
 {
@@ -11,9 +7,9 @@ namespace iJunior
         public static void Main(string[] args)
         {
             int[] array = { 1, 2, 3, 4 };
-            int arrayLenght = array.Length - 1;
-            int userInput = 0;
-            int tempArray = 0;
+            int arrayLengh = array.Length - 1;
+            int userInput;
+            int tempArray;
 
             for (int i = 0; i < array.Length; i++)
             {
@@ -28,12 +24,12 @@ namespace iJunior
             {
                 tempArray = array[0];
 
-                for (int j = 0; j < arrayLenght; j++)
+                for (int j = 0; j < arrayLengh; j++)
                 {
                     array[j] = array[j + 1];
                 }
 
-                array[arrayLenght] = tempArray;
+                array[arrayLengh] = tempArray;
             }
 
             for (int i = 0; i < array.Length; i++)
