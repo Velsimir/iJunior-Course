@@ -9,18 +9,17 @@ namespace iJunior
             int numberOfBrackets = 0;
             string userInput;
             bool expressionIsCorrect = true;
-            char previousSymbol = ' ';
             int streak = 1;
-            int minStreak = 1;
-            int maxStreak = 1;
             int lenghtInput;
+            char openBracket = '(';
+            char closeBracket = ')';
 
-            Console.Write("Введите случайное количество симовлов ( ) - ");
+            Console.Write($"Введите случайное количество симовлов {openBracket} {closeBracket} - ");
             userInput = Console.ReadLine();
 
             lenghtInput = userInput.Length - 1;
             
-            if (userInput[0] == ')' || userInput[lenghtInput] == '(')
+            if (userInput[0] == closeBracket || userInput[lenghtInput] == openBracket)
             {
                 expressionIsCorrect = false;
             }
@@ -28,7 +27,7 @@ namespace iJunior
             {
                 foreach (var symbol in userInput)
                 {
-                    if (symbol == '(')
+                    if (symbol == openBracket)
                         numberOfBrackets++;
                     else
                         numberOfBrackets--;
@@ -40,26 +39,21 @@ namespace iJunior
                         break;
                     }
 
-                    if (symbol == previousSymbol)
-                        streak++;
-                    else
-                        streak = minStreak;
-
-                    if (streak > maxStreak)
-                        maxStreak = streak;
-
-                    previousSymbol = symbol;
+                    if (numberOfBrackets > streak)
+                        streak = numberOfBrackets;
                 }
             }
 
+            if (numberOfBrackets > 0)
+            {
+                Console.WriteLine("Открывающих скобок больше, чем закрывающих");
+                expressionIsCorrect = false;
+            }
+            
             if (expressionIsCorrect)
             {
                 Console.WriteLine($"Скобочное выражение является корректным" +
-                                  $"\nГлубина скобочного выражения = {maxStreak}");
-            }
-            else
-            {
-                Console.WriteLine("Открывающих скобок больше, чем закрывающих");
+                                  $"\nГлубина скобочного выражения = {streak}");
             }
         }
     }
