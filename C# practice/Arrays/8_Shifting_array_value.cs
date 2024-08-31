@@ -6,35 +6,40 @@ namespace iJunior
     {
         public static void Main(string[] args)
         {
-            int[] array = { 1, 2, 3, 4 };
-            int arrayLengh = array.Length - 1;
+            int[] numbers = { 1, 2, 3, 4 };
+            int arrayLengh = numbers.Length;
             int userInput;
-            int tempArray;
+            int tempNumber;
 
-            for (int i = 0; i < array.Length; i++)
+            for (int i = 0; i < arrayLengh; i++)
             {
-                Console.Write($"{array[i]}\t");
+                Console.Write($"{numbers[i]}\t");
             }
 
             Console.Write($"Введите число, на которое хотите сдвинуть массив: ");
 
             userInput = Convert.ToInt32(Console.ReadLine());
 
+            if (userInput > arrayLengh)
+                userInput = userInput % arrayLengh;
+            
+            Console.WriteLine(userInput);
+            
             for (int i = 0; i < userInput; i++)
             {
-                tempArray = array[0];
-
-                for (int j = 0; j < arrayLengh; j++)
+                tempNumber = numbers[0];
+                
+                for (int j = 0; j < arrayLengh - 1; j++)
                 {
-                    array[j] = array[j + 1];
+                    numbers[j] = numbers[j + 1];
                 }
-
-                array[arrayLengh] = tempArray;
+                
+                numbers[arrayLengh - 1] = tempNumber;
             }
 
-            for (int i = 0; i < array.Length; i++)
+            for (int i = 0; i < arrayLengh; i++)
             {
-                Console.Write($"{array[i]}\t");
+                Console.Write($"{numbers[i]}\t");
             }
         }
     }
