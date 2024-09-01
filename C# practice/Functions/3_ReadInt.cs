@@ -7,7 +7,7 @@ namespace iJunior
     {
         static void Main(string[] args)
         {
-            GetNumber();
+            Console.WriteLine(GetNumber());
         }
 
         static int GetNumber()
