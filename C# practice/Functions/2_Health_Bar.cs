@@ -6,23 +6,27 @@ namespace iJunior
     {
         static void Main(string[] args)
         {
-            int health = 963;
-            int maxHealth = 1000;
-            int positionY = 1;
-            int positionX = 1;
-            DrowBar(health, maxHealth, positionY, positionX);
+            int currentHealthPercent = 96;
+            int maxPercent = 100;
+            int healthPositionY = 0;
+            int healthPositionX = 0;
+            int currenManaPercent = 5;
+            int manaPositionY = 1;
+            int manaPositionX = 0;
+            
+            DrowBar(currentHealthPercent, maxPercent, healthPositionY, healthPositionX);
+            DrowBar(currenManaPercent, maxPercent, manaPositionX, manaPositionY, ConsoleColor.Cyan);
         }
 
         static void DrowBar(int value, int maxValue, int positionY, int positionX, ConsoleColor color = ConsoleColor.Red)
         {
-            CalculatePercentage(ref value, ref maxValue);
+            int remains;
+            
+            NormalizeValues(ref value, ref maxValue);
             ConsoleColor defoultColor = Console.BackgroundColor;
             string bar = "";
 
-            for (int i = 0; i < value; i++)
-            {
-                bar += ' ';
-            }
+            FillBar(ref bar, value);
 
             Console.SetCursorPosition(positionY, positionX);
             Console.Write("[");
@@ -32,17 +36,25 @@ namespace iJunior
 
             bar = "";
 
-            for (int i = value; i < maxValue; i++)
-            {
-                bar += ' ';
-            }
+            remains = maxValue - value;
+            
+            FillBar(ref bar, maxValue - value);
+            
             Console.Write($"{bar}]");
         }
 
-        static void CalculatePercentage(ref int value, ref int maxValue)
+        private static void NormalizeValues(ref int value, ref int maxValue)
         {
-            value = (value / (maxValue / 100));
-            maxValue = 100;
+            if (value > maxValue)
+                value = maxValue;
+        }
+
+        private static void FillBar(ref string bar, int countOfCycles)
+        {
+            for (int i = 0; i < countOfCycles; i++)
+            {
+                bar += ' ';
+            }
         }
     }
 }
