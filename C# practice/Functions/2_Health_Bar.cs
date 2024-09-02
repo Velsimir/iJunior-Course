@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Runtime.Remoting.Messaging;
-using System.Security.Policy;
-using System.Threading;
-using Internal;
 
 namespace iJunior
 {
