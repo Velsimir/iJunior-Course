@@ -18,15 +18,14 @@ namespace iJunior
             DrowBar(currenManaPercent, maxPercent, manaPositionX, manaPositionY, ConsoleColor.Cyan);
         }
 
-        static void DrowBar(int value, int maxValue, int positionY, int positionX, ConsoleColor color = ConsoleColor.Red)
+        static void DrawBar(int value, int maxValue, int positionY, int positionX, ConsoleColor color = ConsoleColor.Red)
         {
-            int remains;
+            string bar = "";
             
             NormalizeValues(ref value, ref maxValue);
             ConsoleColor defoultColor = Console.BackgroundColor;
-            string bar = "";
 
-            FillBar(ref bar, value);
+            bar = FillBar(bar, value);
 
             Console.SetCursorPosition(positionY, positionX);
             Console.Write("[");
@@ -34,11 +33,7 @@ namespace iJunior
             Console.Write(bar);
             Console.BackgroundColor = defoultColor;
 
-            bar = "";
-
-            remains = maxValue - value;
-            
-            FillBar(ref bar, maxValue - value);
+            bar = FillBar(bar, maxValue - value);
             
             Console.Write($"{bar}]");
         }
@@ -49,12 +44,16 @@ namespace iJunior
                 value = maxValue;
         }
 
-        private static void FillBar(ref string bar, int countOfCycles)
+        private static string FillBar(string bar, int countOfCycles)
         {
+            bar = "";
+            
             for (int i = 0; i < countOfCycles; i++)
             {
                 bar += ' ';
             }
+
+            return bar;
         }
     }
 }
