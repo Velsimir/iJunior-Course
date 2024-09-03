@@ -14,8 +14,8 @@ namespace iJunior
             int manaPositionY = 1;
             int manaPositionX = 0;
             
-            DrowBar(currentHealthPercent, maxPercent, healthPositionY, healthPositionX);
-            DrowBar(currenManaPercent, maxPercent, manaPositionX, manaPositionY, ConsoleColor.Cyan);
+            DrawBar(currentHealthPercent, maxPercent, healthPositionY, healthPositionX);
+            DrawBar(currenManaPercent, maxPercent, manaPositionX, manaPositionY, ConsoleColor.Cyan);
         }
 
         static void DrawBar(int value, int maxValue, int positionY, int positionX, ConsoleColor color = ConsoleColor.Red)
