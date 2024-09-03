@@ -6,54 +6,73 @@ namespace iJunior
     {
         static void Main(string[] args)
         {
-            int currentHealthPercent = 96;
-            int maxPercent = 100;
+            float barLenght = 20;
+            
+            float currentHealth = 344;
+            float maxHealth = 500;
             int healthPositionY = 0;
             int healthPositionX = 0;
-            int currenManaPercent = 5;
-            int manaPositionY = 1;
-            int manaPositionX = 0;
             
-            DrawBar(currentHealthPercent, maxPercent, healthPositionY, healthPositionX);
-            DrawBar(currenManaPercent, maxPercent, manaPositionX, manaPositionY, ConsoleColor.Cyan);
+            float currentMana = 10;
+            float maxMana = 60;
+            int manaPositionY = 0;
+            int manaPositionX = 1;
+            
+            float currentHealthPercent;
+            float currentManaPercent;
+
+            currentHealthPercent = CalculateBarPercent(barLenght, currentHealth, maxHealth);
+            currentManaPercent = CalculateBarPercent(barLenght, currentMana, maxMana);
+            
+            DrawBar(currentHealthPercent, barLenght, healthPositionY, healthPositionX, ConsoleColor.Red);
+            DrawBar(currentManaPercent, barLenght, manaPositionY, manaPositionX, ConsoleColor.Blue);
         }
-
-        static void DrawBar(int value, int maxValue, int positionY, int positionX, ConsoleColor color = ConsoleColor.Red)
+        
+        static void DrawBar(float currentPercentHealth, float barLenght, int positionY, int positionX, ConsoleColor color = ConsoleColor.Black)
         {
-            string bar = "";
-            
-            NormalizeValues(ref value, ref maxValue);
-            ConsoleColor defoultColor = Console.BackgroundColor;
-
-            bar = FillBar(bar, value);
-
             Console.SetCursorPosition(positionY, positionX);
-            Console.Write("[");
-            Console.BackgroundColor = color;
-            Console.Write(bar);
-            Console.BackgroundColor = defoultColor;
-
-            bar = FillBar(bar, maxValue - value);
             
-            Console.Write($"{bar}]");
+            Console.Write("[");
+            FillBar(currentPercentHealth, color);
+            FillBar(barLenght - currentPercentHealth, ConsoleColor.Black);
+            Console.Write("]");
         }
 
-        private static void NormalizeValues(ref int value, ref int maxValue)
+        static void FillBar(float currentHealthPercent, ConsoleColor color = ConsoleColor.Black)
         {
-            if (value > maxValue)
-                value = maxValue;
-        }
+            Console.BackgroundColor = color;
 
-        private static string FillBar(string bar, int countOfCycles)
-        {
-            bar = "";
+            int countOfCycles = Convert.ToInt32(currentHealthPercent);
             
             for (int i = 0; i < countOfCycles; i++)
             {
-                bar += ' ';
+                Console.Write(" ");
             }
+        }
+        
+        static float CalculateBarPercent(float barLenght, float currentHealth, float maxHealth)
+        {
+            float currentPercentHealth = CalculatePercentage(currentHealth, maxHealth);
+            float onePercentFromBar = CalculateOnePercentage(barLenght);
 
-            return bar;
+            return currentPercentHealth * onePercentFromBar;
+        }
+
+        static float CalculateOnePercentage(float barLenght)
+        {
+            float oneHundredPercent = 100;
+            
+            return barLenght / oneHundredPercent;
+        }
+        
+        static float CalculatePercentage(float currentValue, float maxValue)
+        {
+            int oneHundredPercent = 100;
+            float requiredPercentage;
+
+            requiredPercentage = (currentValue / maxValue) * oneHundredPercent;
+
+            return requiredPercentage;
         }
     }
 }
