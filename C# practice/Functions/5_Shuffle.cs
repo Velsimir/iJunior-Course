@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Runtime.Remoting.Messaging;
-using System.Security.Policy;
-using System.Threading;
 
 namespace iJunior
 {
@@ -10,9 +6,9 @@ namespace iJunior
     {
         static void Main(string[] args)
         {
-            int[] array = { 1, 2, 3, 4, 5 };
+            int[] numbers = { 1, 2, 3, 4, 5 };
 
-            Shuffle(array);
+            Shuffle(numbers);
         }
 
         static void Shuffle(int[] array)
@@ -21,10 +17,10 @@ namespace iJunior
 
             for (int i = array.Length - 1; i >= 1; i--)
             {
-                int j = random.Next(i + 1);
+                int randomIndex = random.Next(i + 1);
 
-                int temp = array[j];
-                array[j] = array[i];
+                int temp = array[randomIndex];
+                array[randomIndex] = array[i];
                 array[i] = temp;
             }
         }
