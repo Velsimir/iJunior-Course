@@ -7,9 +7,14 @@ namespace iJunior
     {
         public static void Main(string[] args)
         {
+            const string CommandAddPerosn = "1";
+            const string CommandPrintAllPerosn = "2";
+            const string CommandDeletePerosn = "3";
+            const string CommandFindPerosn = "4";
+            const string CommandExit = "5";
             string[] arrayPersonalData = new string[0];
             string[] arraySpecialistPosition = new string[0];
-            string userChose;
+            string userInput;
             bool isWorking = true;
 
             while (isWorking)
@@ -17,133 +22,136 @@ namespace iJunior
                 Console.Clear();
 
                 Console.Write($"1) добавить досье\n" +
-                    $"2) вывести все досье \n" +
-                    $"3) удалить досье последнее внесенное досье\n" +
-                    $"4) поиск по фамилии и имени \n" +
-                    $"5) выход\n\n" +
-                    $"Ввод пользователя: ");
+                              $"2) вывести все досье \n" +
+                              $"3) удалить досье последнее внесенное досье\n" +
+                              $"4) поиск по фамилии и имени \n" +
+                              $"5) выход\n\n" +
+                              $"Ввод пользователя: ");
 
-                userChose = Console.ReadLine();
+                userInput = Console.ReadLine();
 
                 Console.Clear();
 
-                switch (userChose)
+                switch (userInput)
                 {
-                    case "1":
-                        AddDosier(ref arrayPersonalData, ref arraySpecialistPosition);
+                    case CommandAddPerosn:
+                        AddPerson(ref arrayPersonalData, ref arraySpecialistPosition);
                         break;
 
-                    case "2":
-                        PrintAllDossier(arrayPersonalData, arraySpecialistPosition);
+                    case CommandPrintAllPerosn:
+                        PrintAllPerson(arrayPersonalData, arraySpecialistPosition);
                         break;
 
-                    case "3":
-                        DeleteDosier(ref arrayPersonalData, ref arraySpecialistPosition);
+                    case CommandDeletePerosn:
+                        DeletePerson(ref arrayPersonalData, ref arraySpecialistPosition);
                         break;
 
-                    case "4":
-                        FindPerson(userChose, arrayPersonalData, arraySpecialistPosition);
+                    case CommandFindPerosn:
+                        FindPerson(userInput, arrayPersonalData, arraySpecialistPosition);
                         break;
 
-                    case "5":
+                    case CommandExit:
                         isWorking = false;
                         break;
                 }
-            }
         }
 
-        static void EnlargeArray(ref string[] magnifedArray)
-        {
-            string[] magnifedTempArry = new string[magnifedArray.Length + 1];
-
-            for (int i = 0; i < magnifedArray.Length; i++)
+                static void EnlargeArray(ref string[] magnifedArray)
             {
-                magnifedTempArry[i] = magnifedArray[i];
-            }
-            magnifedArray = magnifedTempArry;
-        }
+                string[] magnifedTempArry = new string[magnifedArray.Length + 1];
 
-        static void DeleteDosier(ref string[] arraySpecialistPosition, ref string[] arrayPersonalData)
-        {
-            DeletePerson(ref arraySpecialistPosition);
-            DeletePerson(ref arrayPersonalData);
-        }
-
-        static void AddUserInput(ref string[] magnifedArray, string userInput)
-        {
-            magnifedArray[magnifedArray.Length - 1] = userInput;
-        }
-
-        static void AddDosier(ref string[] arrayPersonalData, ref string[] arraySpecialistPosition)
-        {
-            EnlargeArray(ref arrayPersonalData);
-            EnlargeArray(ref arraySpecialistPosition);
-
-            Console.WriteLine("Введите Фамилию и Имя человека: ");
-            string userInputFirstSecondName = Console.ReadLine();
-
-            AddUserInput(ref arrayPersonalData, userInputFirstSecondName);
-
-            Console.WriteLine("Введите должность: ");
-            string userInputSpecialiation = Console.ReadLine();
-
-            AddUserInput(ref arraySpecialistPosition, userInputSpecialiation);
-        }
-
-        static void DeletePerson(ref string[] redusedArray)
-        {
-            if (redusedArray.Length > 1)
-            {
-                string[] arrayTempReduceArray = new string[redusedArray.Length - 1];
-
-                for (int i = 0; i < arrayTempReduceArray.Length; i++)
+                for (int i = 0; i < magnifedArray.Length; i++)
                 {
-                    arrayTempReduceArray[i] = redusedArray[i];
+                    magnifedTempArry[i] = magnifedArray[i];
                 }
 
-                redusedArray = arrayTempReduceArray;
+                magnifedArray = magnifedTempArry;
             }
-            else
+
+            static void DeletePerson(ref string[] arraySpecialistPosition, ref string[] arrayPersonalData)
             {
-                Console.WriteLine("В базе данных нет досье");
+                DeletePerson(ref arraySpecialistPosition);
+                DeletePerson(ref arrayPersonalData);
             }
-        }
 
-        static void FindPerson(string userChose, string[] arrayPersonalData, string[] arraySpecialistPosition)
-        {
-            Console.Write("Введите Фамилию Имя человека: ");
-            userChose = Console.ReadLine();
-            bool isPersonFind = false;
-
-            for (int i = 0; i < arrayPersonalData.Length; i++)
+            static void AddUserInput(ref string[] magnifedArray, string userInput)
             {
-                string[] surname = arrayPersonalData[i].Split(' ');
+                magnifedArray[magnifedArray.Length - 1] = userInput;
+            }
 
-                for (int j = 0; j < surname.Length; j++)
+            static void AddPerson(ref string[] arrayPersonalData, ref string[] arraySpecialistPosition)
+            {
+                EnlargeArray(ref arrayPersonalData);
+                EnlargeArray(ref arraySpecialistPosition);
+
+                Console.WriteLine("Введите Фамилию и Имя человека: ");
+                string userInputFirstSecondName = Console.ReadLine();
+
+                AddUserInput(ref arrayPersonalData, userInputFirstSecondName);
+
+                Console.WriteLine("Введите должность: ");
+                string userInputSpecialiation = Console.ReadLine();
+
+                AddUserInput(ref arraySpecialistPosition, userInputSpecialiation);
+            }
+
+            static void DeletePerson(ref string[] redusedArray)
+            {
+                if (redusedArray.Length > 1)
                 {
-                    if (userChose == surname[j])
+                    string[] arrayTempReduceArray = new string[redusedArray.Length - 1];
+
+                    for (int i = 0; i < arrayTempReduceArray.Length; i++)
                     {
-                        Console.WriteLine($"Досье {arrayPersonalData[i]}(а/ой) на должости ({arraySpecialistPosition[i]}) находится под номером - {i + 1}");
-                        isPersonFind = true;
+                        arrayTempReduceArray[i] = redusedArray[i];
+                    }
+
+                    redusedArray = arrayTempReduceArray;
+                }
+                else
+                {
+                    Console.WriteLine("В базе данных нет досье");
+                }
+            }
+
+            static void FindPerson(string userChoose, string[] arrayPersonalData, string[] arraySpecialistPosition)
+            {
+                Console.Write("Введите Фамилию Имя человека: ");
+                userChoose = Console.ReadLine();
+                bool isPersonFind = false;
+
+                for (int i = 0; i < arrayPersonalData.Length; i++)
+                {
+                    string[] surname = arrayPersonalData[i].Split(' ');
+
+                    for (int j = 0; j < surname.Length; j++)
+                    {
+                        if (userChoose == surname[j])
+                        {
+                            Console.WriteLine(
+                                $"Досье {arrayPersonalData[i]}(а/ой) на должости ({arraySpecialistPosition[i]}) находится под номером - {i + 1}");
+                            isPersonFind = true;
+                        }
                     }
                 }
+
+                if (isPersonFind == false)
+                {
+                    Console.WriteLine("Пользователь не найден");
+                }
+
+                Console.ReadKey();
             }
 
-            if (isPersonFind == false)
+            static void PrintAllPerson(string[] arrayPersonalData, string[] arraySpecialistPosition)
             {
-                Console.WriteLine("Пользователь не найден");
-            }
-            Console.ReadKey();
-        }
+                for (int i = 0; i < arrayPersonalData.Length; i++)
+                {
+                    Console.Write($" - {i + 1}). {arrayPersonalData[i]}({arraySpecialistPosition[i]})");
+                }
 
-        static void PrintAllDossier(string[] arrayPersonalData, string[] arraySpecialistPosition)
-        {
-            for (int i = 0; i < arrayPersonalData.Length; i++)
-            {
-                Console.Write($" - {i + 1}). {arrayPersonalData[i]}({arraySpecialistPosition[i]})");
+                Console.ReadKey();
+                Console.Clear();
             }
-            Console.ReadKey();
-            Console.Clear();
-        }
     }
 }
