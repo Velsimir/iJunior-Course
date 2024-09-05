@@ -70,7 +70,6 @@ namespace iJunior
             }
         }
         
-        
         static void WriteErrorMessage()
         {
             Console.WriteLine("Введена неверная команда, нажмите клавишу для продолжения...");
@@ -103,23 +102,35 @@ namespace iJunior
 
             tempArray[tempArray.Length - 1] = data;
             
-            array = tempArray;
-            
-            return array;
+            return tempArray;
         }
 
         static void DeletePerson(ref string[] arrayFullName, ref string[] arrayVacancy)
         {
             int personIndex;
+            int maxInedex = arrayFullName.Length;
             
             PrintAllPerson(arrayFullName, arrayVacancy);
             
             Console.WriteLine($"\nВведите номер пользователя, чтобы удалить его из базы: ");
 
-            if (Int32.TryParse(Console.ReadLine(), out personIndex));
+            if (Int32.TryParse(Console.ReadLine(), out personIndex))
             {
-                arrayFullName = RemoveDataByIndex(arrayFullName, personIndex - 1);
-                arrayVacancy = RemoveDataByIndex(arrayVacancy, personIndex - 1);
+                personIndex = personIndex - 1;
+
+                if (personIndex >= 0 && personIndex < maxInedex)
+                {
+                    arrayFullName = RemoveDataByIndex(arrayFullName, personIndex);
+                    arrayVacancy = RemoveDataByIndex(arrayVacancy, personIndex);   
+                }
+                else
+                {
+                    WriteErrorMessage();
+                }
+            }
+            else
+            {
+                WriteErrorMessage();
             }
         }
 
@@ -172,7 +183,7 @@ namespace iJunior
             
             for (int i = 0; i < arrayFullName.Length; i++)
             {
-                string[] tempSurnameArray = arrayFullName[i].Split(' ');
+                string[] tempSurnameArray = arrayFullName[i].Split();
 
                 for (int j = 0; j < tempSurnameArray.Length; j++)
                 {
