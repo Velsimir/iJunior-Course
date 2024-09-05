@@ -6,119 +6,130 @@ namespace iJunior
     {
         static void Main(string[] args)
         {
-            int playerCoordinateX;
-            int playerCoordinateY;
-            int movementDirectionX = 0;
-            int movementDirectionY = 0;
+                        int pacmanPositionX;
+            int pacmanPositionY;
+            char player = '@';
             bool isPlaying = true;
-            string[,] map =
+            ConsoleKeyInfo pressedKey = new ConsoleKeyInfo('w', ConsoleKey.W, false, false, false);
+            
+            char[,] map =
             {
-              {"#","#","#","#","#","#","#","#","#","#","#","#","#","#","#","#","#","#","#","#"},
-              {"#","@","#"," "," "," "," "," "," "," "," "," ","#"," "," "," "," "," "," ","#"},
-              {"#"," ","#"," "," "," "," "," "," "," "," "," ","#"," "," "," "," "," "," ","#"},
-              {"#"," ","#"," ","#","#"," "," "," "," "," "," ","#"," "," "," "," "," "," ","#"},
-              {"#"," ","#"," ","#","#"," "," "," "," "," "," ","#"," "," "," "," "," "," ","#"},
-              {"#"," ","#","#","#","#"," "," "," "," "," "," ","#"," "," "," "," "," "," ","#"},
-              {"#"," ","#"," "," "," "," "," "," "," "," "," ","#"," "," "," "," "," "," ","#"},
-              {"#"," ","#"," "," "," "," "," "," "," "," "," ","#"," "," "," "," "," "," ","#"},
-              {"#"," ","#","#","#","#"," ","#","#","#","#"," ","#"," "," "," "," "," "," ","#"},
-              {"#"," ","#"," "," "," "," ","#"," "," "," "," ","#"," "," "," "," "," "," ","#"},
-              {"#"," ","#"," "," "," "," ","#"," "," "," "," ","#"," "," "," "," "," "," ","#"},
-              {"#"," "," "," "," "," "," ","#"," "," "," "," ","#"," "," "," "," "," "," ","#"},
-              {"#"," "," "," "," "," "," ","#"," "," "," "," ","#"," "," "," "," "," "," ","#"},
-              {"#"," "," ","#","#","#","#","#"," "," "," "," ","#"," ","#","#","#","#","#","#"},
-              {"#"," "," ","#"," "," "," "," "," "," "," "," ","#"," "," "," "," "," "," ","#"},
-              {"#"," "," ","#"," "," "," "," "," "," "," "," ","#","#","#","#","#","#"," ","#"},
-              {"#"," "," ","#"," "," "," "," "," "," "," "," "," "," "," "," "," "," "," ","#"},
-              {"#"," "," ","#"," "," "," "," "," "," "," "," "," "," "," "," "," "," "," ","#"},
-              {"#"," "," ","#"," "," "," "," "," "," "," "," "," "," "," "," "," "," "," ","#"},
-              {"#","#","#","#","#","#","#","#","#","#","#","#","#","#","#","#","#","#","#","#"}
+                {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
+                {'#','@','#',' ',' ',' ',' ',' ',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ','#'},
+                {'#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ','#'},
+                {'#',' ','#',' ','#','#',' ',' ',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ','#'},
+                {'#',' ','#',' ','#','#',' ',' ',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ','#'},
+                {'#',' ','#','#','#','#',' ',' ',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ','#'},
+                {'#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ','#'},
+                {'#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ','#'},
+                {'#',' ','#','#','#','#',' ','#','#','#','#',' ','#',' ',' ',' ',' ',' ',' ','#'},
+                {'#',' ','#',' ',' ',' ',' ','#',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ','#'},
+                {'#',' ','#',' ',' ',' ',' ','#',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ','#'},
+                {'#',' ',' ',' ',' ',' ',' ','#',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ','#'},
+                {'#',' ',' ',' ',' ',' ',' ','#',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ','#'},
+                {'#',' ',' ','#','#','#','#','#',' ',' ',' ',' ','#',' ','#','#','#','#','#','#'},
+                {'#',' ',' ','#',' ',' ',' ',' ',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ','#'},
+                {'#',' ',' ','#',' ',' ',' ',' ',' ',' ',' ',' ','#','#','#','#','#','#',' ','#'},
+                {'#',' ',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#'},
+                {'#',' ',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#'},
+                {'#',' ',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#'},
+                {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'}
             };
 
             DrowMap(map);
 
-            FindPlayer(map, out playerCoordinateY, out playerCoordinateX);
-
+            FindPlayer(map, out pacmanPositionX, out pacmanPositionY);
+            
             while (isPlaying)
             {
                 if (Console.KeyAvailable)
                 {
+                    DrowMap(map);
+                    
                     Console.CursorVisible = false;
 
-                    TakeDirectionPlayerMove(ref movementDirectionX, ref movementDirectionY);
+                    pressedKey = Console.ReadKey();
+                    
+                    HandleInput(map, pressedKey, ref pacmanPositionX, ref pacmanPositionY);
 
-                    MovePlayer(map, ref playerCoordinateX, ref playerCoordinateY, ref movementDirectionX, ref movementDirectionY);
+                    MovePlayer(pacmanPositionX, pacmanPositionY, player);
                 }
             }
         }
         
-        static void DrowMap(string[,] arrayMap)
+        static void DrowMap(char[,] map)
         {
-            for (int i = 0; i < arrayMap.GetLength(0); i++)
+            for (int i = 0; i < map.GetLength(0); i++)
             {
-                for (int j = 0; j < arrayMap.GetLength(1); j++)
+                for (int j = 0; j < map.GetLength(1); j++)
                 {
-                    Console.Write(arrayMap[i, j]);
+                    Console.Write(map[i, j]);
                 }
 
                 Console.WriteLine();
             }
         }
-        
-        static void FindPlayer(string[,] arrayMap, out int coordinateX, out int coordinateY)
+
+        static void HandleInput(char[,] map, ConsoleKeyInfo pressedKey, ref int pacManCoodinationX, ref int pacManCoodinationY)
         {
-            coordinateX = 0;
-            coordinateY = 0;
-            for (int i = 0; i < arrayMap.GetLength(0); i++)
+            int[] direction = GetDirection(pressedKey);
+            int nextPacManPositionX = pacManCoodinationX + direction[0];
+            int nextPacManPositionY = pacManCoodinationY + direction[1];
+            
+            if (map[nextPacManPositionX, nextPacManPositionY] == ' ')
             {
-                for (int j = 0; j < arrayMap.GetLength(1); j++)
+                pacManCoodinationX = nextPacManPositionX;
+                pacManCoodinationY = nextPacManPositionY;
+            }
+        }
+
+        static int[] GetDirection(ConsoleKeyInfo pressedKey)
+        {
+            int[] direction = {0, 0};
+            
+            switch (pressedKey.Key)
+            {
+                case ConsoleKey.UpArrow:
+                    direction[0] = -1;
+                    break;
+                case ConsoleKey.DownArrow:
+                    direction[0] = 1;
+                    break;
+                case ConsoleKey.LeftArrow:
+                    direction[1] = -1;
+                    break;
+                case ConsoleKey.RightArrow:
+                    direction[1] = 1;
+                    break;
+            }
+
+            return direction;
+        }
+        
+        static void MovePlayer(int pacManCoodinationX, int pacManCoodinationY, char player)
+        {
+            Console.SetCursorPosition(pacManCoodinationY, pacManCoodinationX);
+            Console.Write(player);
+        }
+        
+        static void FindPlayer(char[,] map, out int pacmanPositionX, out int pacmanPositionY)
+        {
+            pacmanPositionX = 0;
+            pacmanPositionY = 0;
+            
+            for (int i = 0; i < map.GetLength(0); i++)
+            {
+                for (int j = 0; j < map.GetLength(1); j++)
                 {
-                    if (arrayMap[i, j] == "@")
+                    if (map[i, j] == '@')
                     {
-                        coordinateX = j;
-                        coordinateY = i;
+                        pacmanPositionX = j;
+                        pacmanPositionY = i;
                     }
                 }
             }
-
-            Console.SetCursorPosition(coordinateX, coordinateY);
-        }
-
-        static void TakeDirectionPlayerMove(ref int coordinateDirectionX, ref int coordinateDirectionY)
-        {
-            coordinateDirectionX = 0;
-            coordinateDirectionY = 0;
-
-            ConsoleKeyInfo key = Console.ReadKey(true);
-
-            switch (key.Key)
-            {
-                case ConsoleKey.UpArrow:
-                    coordinateDirectionX = -1;
-                    break;
-                case ConsoleKey.DownArrow:
-                    coordinateDirectionX = 1;
-                    break;
-                case ConsoleKey.LeftArrow:
-                    coordinateDirectionY = -1;
-                    break;
-                case ConsoleKey.RightArrow:
-                    coordinateDirectionY = 1;
-                    break;
-            }
-        }
-
-        static void MovePlayer(string[,] map, ref int coordinateY, ref int coordinateX, ref int coordinateDirectionX, ref int coordinateDirectionY)
-        {
-            if (map[coordinateX + coordinateDirectionX, coordinateY + coordinateDirectionY] != "#")
-            {
-                Console.SetCursorPosition(coordinateY, coordinateX);
-                Console.Write(" ");
-                coordinateX += coordinateDirectionX;
-                coordinateY += coordinateDirectionY;
-                Console.SetCursorPosition(coordinateY, coordinateX);
-                Console.Write("@");
-            }
+            
+            Console.SetCursorPosition(pacmanPositionX, pacmanPositionY);
         }
     }
 }
