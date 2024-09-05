@@ -6,54 +6,53 @@ namespace iJunior
     {
         static void Main(string[] args)
         {
-                        int pacmanPositionX;
-            int pacmanPositionY;
+            int pacmanPositionX = 1;
+            int pacmanPositionY = 1;
+            int coins = 0;
             char player = '@';
             bool isPlaying = true;
             ConsoleKeyInfo pressedKey = new ConsoleKeyInfo('w', ConsoleKey.W, false, false, false);
+            Console.CursorVisible = false;
             
             char[,] map =
             {
                 {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
-                {'#','@','#',' ',' ',' ',' ',' ',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ','#'},
-                {'#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ','#'},
-                {'#',' ','#',' ','#','#',' ',' ',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ','#'},
-                {'#',' ','#',' ','#','#',' ',' ',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ','#'},
-                {'#',' ','#','#','#','#',' ',' ',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ','#'},
-                {'#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ','#'},
-                {'#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ','#'},
-                {'#',' ','#','#','#','#',' ','#','#','#','#',' ','#',' ',' ',' ',' ',' ',' ','#'},
-                {'#',' ','#',' ',' ',' ',' ','#',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ','#'},
-                {'#',' ','#',' ',' ',' ',' ','#',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ','#'},
-                {'#',' ',' ',' ',' ',' ',' ','#',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ','#'},
-                {'#',' ',' ',' ',' ',' ',' ','#',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ','#'},
-                {'#',' ',' ','#','#','#','#','#',' ',' ',' ',' ','#',' ','#','#','#','#','#','#'},
-                {'#',' ',' ','#',' ',' ',' ',' ',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ','#'},
-                {'#',' ',' ','#',' ',' ',' ',' ',' ',' ',' ',' ','#','#','#','#','#','#',' ','#'},
-                {'#',' ',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#'},
+                {'#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ','#','.','.','.','.','.','.','#'},
+                {'#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ','#','.','.','.','.','.','.','#'},
+                {'#','.','#',' ','#','#',' ',' ',' ',' ',' ',' ','#','.','.','.','.','.','.','#'},
+                {'#','.','#',' ','#','#',' ',' ',' ',' ',' ',' ','#','.','.','.','.','.','.','#'},
+                {'#','.','#','#','#','#',' ',' ',' ',' ',' ',' ','#','.','.','.','.','.','.','#'},
+                {'#','.','#',' ',' ',' ',' ',' ',' ',' ',' ',' ','#','.','.','.','.','.','.','#'},
+                {'#','.','#',' ',' ',' ',' ',' ',' ',' ',' ',' ','#','.','.','.','.','.','.','#'},
+                {'#','.','#','#','#','#',' ','#','#','#','#',' ','#','.','.','.','.','.','.','#'},
+                {'#','.','#',' ',' ',' ',' ','#','.',' ',' ',' ','#','.','.','.','.','.','.','#'},
+                {'#','.','#',' ',' ',' ',' ','#','.',' ',' ',' ','#','.','.','.','.','.','.','#'},
+                {'#',' ',' ',' ',' ',' ',' ','#','.',' ',' ',' ','#','.','.','.','.','.','.','#'},
+                {'#',' ',' ',' ',' ',' ',' ','#','.',' ',' ',' ','#','.','.','.','.','.','.','#'},
+                {'#',' ',' ','#','#','#','#','#','.',' ',' ',' ','#',' ','#','#','#','#','#','#'},
+                {'#',' ',' ','#','.','.','.','.','.',' ',' ',' ','#',' ',' ',' ',' ',' ',' ','#'},
+                {'#',' ',' ','#','.','.','.','.','.',' ',' ',' ','#','#','#','#','#','#',' ','#'},
+                {'#',' ',' ','#','.','.','.','.','.',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#'},
                 {'#',' ',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#'},
                 {'#',' ',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#'},
                 {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'}
             };
-
-            DrowMap(map);
-
-            FindPlayer(map, out pacmanPositionX, out pacmanPositionY);
             
             while (isPlaying)
             {
-                if (Console.KeyAvailable)
-                {
-                    DrowMap(map);
+                Console.Clear();
                     
-                    Console.CursorVisible = false;
+                DrowMap(map);
 
-                    pressedKey = Console.ReadKey();
+                ShowCoins(coins);
+                
+                MovePlayer(pacmanPositionX, pacmanPositionY, player);
+                
+                pressedKey = Console.ReadKey();
                     
-                    HandleInput(map, pressedKey, ref pacmanPositionX, ref pacmanPositionY);
-
-                    MovePlayer(pacmanPositionX, pacmanPositionY, player);
-                }
+                HandleInput(map, pressedKey, ref pacmanPositionX, ref pacmanPositionY);
+                
+                coins += CollectCoin(map, pressedKey, ref pacmanPositionX, ref pacmanPositionY);
             }
         }
         
@@ -76,10 +75,23 @@ namespace iJunior
             int nextPacManPositionX = pacManCoodinationX + direction[0];
             int nextPacManPositionY = pacManCoodinationY + direction[1];
             
-            if (map[nextPacManPositionX, nextPacManPositionY] == ' ')
+            if (map[nextPacManPositionX, nextPacManPositionY] == ' ' || map[nextPacManPositionX, nextPacManPositionY] == '.')
             {
                 pacManCoodinationX = nextPacManPositionX;
                 pacManCoodinationY = nextPacManPositionY;
+            }
+        }
+
+        static int CollectCoin(char[,] map, ConsoleKeyInfo pressedKey, ref int pacManCoodinationX, ref int pacManCoodinationY)
+        {
+            if (map[pacManCoodinationX, pacManCoodinationY] == '.')
+            {
+                map[pacManCoodinationX, pacManCoodinationY] = ' ';
+                return 1;
+            }
+            else
+            {
+                return 0;
             }
         }
 
@@ -106,30 +118,20 @@ namespace iJunior
             return direction;
         }
         
-        static void MovePlayer(int pacManCoodinationX, int pacManCoodinationY, char player)
+        static void MovePlayer(int pacManCoordinationX, int pacManCoordinationY, char player)
         {
-            Console.SetCursorPosition(pacManCoodinationY, pacManCoodinationX);
+            Console.SetCursorPosition(pacManCoordinationY, pacManCoordinationX);
             Console.Write(player);
+
+            Console.SetCursorPosition(0,0);
         }
-        
-        static void FindPlayer(char[,] map, out int pacmanPositionX, out int pacmanPositionY)
+
+        static void ShowCoins(int coins)
         {
-            pacmanPositionX = 0;
-            pacmanPositionY = 0;
+            Console.SetCursorPosition(22, 0);
+            Console.Write($"Монеток собрано - {coins}");
             
-            for (int i = 0; i < map.GetLength(0); i++)
-            {
-                for (int j = 0; j < map.GetLength(1); j++)
-                {
-                    if (map[i, j] == '@')
-                    {
-                        pacmanPositionX = j;
-                        pacmanPositionY = i;
-                    }
-                }
-            }
-            
-            Console.SetCursorPosition(pacmanPositionX, pacmanPositionY);
+            Console.SetCursorPosition(0,0);
         }
     }
 }
