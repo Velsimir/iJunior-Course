@@ -12,8 +12,8 @@ namespace iJunior
             const int CommandFindPerosn = 4;
             const int CommandExit = 5;
             
-            string[] arrayPersonalFullName = new string[0];
-            string[] arrayPersonalVacancy = new string[0];
+            string[] stuffPersonalFullName = new string[0];
+            string[] staffPersonalVacancy = new string[0];
             
             int userCommand;
             bool isWorking = true;
@@ -22,15 +22,15 @@ namespace iJunior
             {
                 Console.Clear();
 
-                Console.Write($"1) добавить досье\n" +
-                              $"2) вывести все досье \n" +
-                              $"3) удалить досье последнее внесенное досье\n" +
-                              $"4) поиск по фамилии и имени \n" +
-                              $"5) выход\n\n" +
+                Console.Write($"{CommandAddPerosn}) добавить досье\n" +
+                              $"{CommandPrintAllPerosn}) вывести все досье \n" +
+                              $"{CommandDeletePerosn}) удалить досье последнее внесенное досье\n" +
+                              $"{CommandFindPerosn}) поиск по фамилии и имени \n" +
+                              $"{CommandExit}) выход\n\n" +
                               $"Ввод пользователя: ");
 
 
-                if (TryConvertInput(GetUserInput(), out userCommand) == false)
+                if (Int32.TryParse(Console.ReadLine(), out userCommand) == false)
                 {
                     WriteErrorMessage();
                     
@@ -42,19 +42,19 @@ namespace iJunior
                 switch (userCommand)
                 {
                     case CommandAddPerosn:
-                        AddPerson(ref arrayPersonalFullName, ref arrayPersonalVacancy);
+                        AddPerson(ref stuffPersonalFullName, ref staffPersonalVacancy);
                         break;
 
                     case CommandPrintAllPerosn:
-                        PrintAllPerson(arrayPersonalFullName, arrayPersonalVacancy);
+                        PrintAllPerson(stuffPersonalFullName, staffPersonalVacancy);
                         break;
 
                     case CommandDeletePerosn:
-                        DeletePerson(ref arrayPersonalFullName, ref arrayPersonalVacancy);
+                        DeletePerson(ref stuffPersonalFullName, ref staffPersonalVacancy);
                         break;
 
                     case CommandFindPerosn:
-                        FindPerson(arrayPersonalFullName, arrayPersonalVacancy);
+                        FindPerson(stuffPersonalFullName, staffPersonalVacancy);
                         break;
 
                     case CommandExit:
@@ -70,15 +70,7 @@ namespace iJunior
             }
         }
         
-        static string GetUserInput()
-        {
-            string userInput;
-
-            userInput = Console.ReadLine();
-
-            return userInput;
-        }
-
+        
         static void WriteErrorMessage()
         {
             Console.WriteLine("Введена неверная команда, нажмите клавишу для продолжения...");
@@ -91,27 +83,16 @@ namespace iJunior
             Console.ReadKey();
         }
 
-        static bool TryConvertInput(string userInput, out int correctInput)
-        {
-            if (Int32.TryParse(userInput, out correctInput))
-                return true;
-            else
-                return false;
-        }
-
         static void AddPerson(ref string[] arrayFullName, ref string[] arrayVacancy)
         {
-            arrayFullName = IncreaceArray(arrayFullName);
-            arrayVacancy = IncreaceArray(arrayVacancy);
-            
             Console.WriteLine("Введите имя сотрудника");
-            AddDataToArray(arrayFullName, GetUserInput());
+            arrayFullName = IncreaceArray(arrayFullName, Console.ReadLine());
             
             Console.WriteLine("Введите вакансию сотрудника");
-            AddDataToArray(arrayVacancy, GetUserInput());
+            arrayVacancy = IncreaceArray(arrayVacancy, Console.ReadLine());
         }
         
-        static string[] IncreaceArray(string[] array)
+        static string[] IncreaceArray(string[] array, string data)
         {
             string[] tempArray = new string[array.Length + 1];
             
@@ -120,14 +101,11 @@ namespace iJunior
                 tempArray[i] = array[i];
             }
 
+            tempArray[tempArray.Length - 1] = data;
+            
             array = tempArray;
             
             return array;
-        }
-        
-        static void AddDataToArray(string[] array, string data)
-        {
-            array[array.Length - 1] = data;
         }
 
         static void DeletePerson(ref string[] arrayFullName, ref string[] arrayVacancy)
@@ -138,10 +116,10 @@ namespace iJunior
             
             Console.WriteLine($"\nВведите номер пользователя, чтобы удалить его из базы: ");
 
-            if (TryConvertInput(GetUserInput(), out personIndex));
+            if (Int32.TryParse(Console.ReadLine(), out personIndex));
             {
-                arrayFullName = RemoveDataByIndex(arrayFullName, personIndex);
-                arrayVacancy = RemoveDataByIndex(arrayVacancy, personIndex);
+                arrayFullName = RemoveDataByIndex(arrayFullName, personIndex - 1);
+                arrayVacancy = RemoveDataByIndex(arrayVacancy, personIndex - 1);
             }
         }
 
@@ -150,18 +128,18 @@ namespace iJunior
             string[] tempArray = new string[array.Length - 1];
             int tempIndex = 0;
 
-            for (int i = 0; i < array.Length; i++)
+            for (int i = 0; i < index; i++)
             {
-                if (i < index - 1)
-                {
-                    tempArray[tempIndex] = array[i];
-                    tempIndex++;
-                }
-                else if (i > index - 1)
-                {
-                    tempArray[tempIndex] = array[i];
-                    tempIndex++;
-                }
+                tempArray[tempIndex] = array[i];
+                tempIndex++;
+            }
+
+            index++;
+            
+            for (int i = index; i < array.Length; i++)
+            {
+                tempArray[tempIndex] = array[i];
+                tempIndex++;
             }
 
             array = tempArray;
@@ -186,9 +164,11 @@ namespace iJunior
 
         static void FindPerson(string[] arrayFullName, string[] arrayVacancy)
         {
+            bool isFound = false;
+            
             Console.Write("Введите Фамилию человека: ");
 
-            string userInputSurname = GetUserInput();
+            string userInputSurname = Console.ReadLine();
             
             for (int i = 0; i < arrayFullName.Length; i++)
             {
@@ -197,8 +177,17 @@ namespace iJunior
                 for (int j = 0; j < tempSurnameArray.Length; j++)
                 {
                     if (userInputSurname == tempSurnameArray[j])
+                    {
                         PrintData(i+1, arrayFullName[i], arrayVacancy[i]);
+                        isFound = true;
+                    }
+
                 }
+            }
+
+            if (isFound == false)
+            {
+                Console.WriteLine("Сотрудников с данной фамилией не найдено");
             }
         }
 
