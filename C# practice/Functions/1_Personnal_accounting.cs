@@ -185,14 +185,10 @@ namespace iJunior
             {
                 string[] tempSurnameArray = arrayFullName[i].Split();
 
-                for (int j = 0; j < tempSurnameArray.Length; j++)
+                if (userInputSurname == tempSurnameArray[0])
                 {
-                    if (userInputSurname == tempSurnameArray[j])
-                    {
-                        PrintData(i+1, arrayFullName[i], arrayVacancy[i]);
-                        isFound = true;
-                    }
-
+                    PrintData(i+1, arrayFullName[i], arrayVacancy[i]);
+                    isFound = true;
                 }
             }
 
