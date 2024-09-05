@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace iJunior
 {
@@ -51,20 +50,21 @@ namespace iJunior
                     MovePlayer(map, ref playerCoordinateX, ref playerCoordinateY, ref movementDirectionX, ref movementDirectionY);
                 }
             }
-
-            static void DrowMap(string[,] arrayMap)
+        }
+        
+        static void DrowMap(string[,] arrayMap)
+        {
+            for (int i = 0; i < arrayMap.GetLength(0); i++)
             {
-                for (int i = 0; i < arrayMap.GetLength(0); i++)
+                for (int j = 0; j < arrayMap.GetLength(1); j++)
                 {
-                    for (int j = 0; j < arrayMap.GetLength(1); j++)
-                    {
-                        Console.Write(arrayMap[i, j]);
-                    }
-
-                    Console.WriteLine();
+                    Console.Write(arrayMap[i, j]);
                 }
+
+                Console.WriteLine();
             }
         }
+        
         static void FindPlayer(string[,] arrayMap, out int coordinateX, out int coordinateY)
         {
             coordinateX = 0;
