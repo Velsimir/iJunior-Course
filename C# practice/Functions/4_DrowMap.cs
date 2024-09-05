@@ -10,6 +10,7 @@ namespace iJunior
             int pacmanPositionY = 1;
             int coins = 0;
             char player = '@';
+            char coin = '.';
             bool isPlaying = true;
             ConsoleKeyInfo pressedKey = new ConsoleKeyInfo('w', ConsoleKey.W, false, false, false);
             Console.CursorVisible = false;
@@ -46,13 +47,13 @@ namespace iJunior
 
                 ShowCoins(coins);
                 
-                MovePlayer(pacmanPositionX, pacmanPositionY, player);
+                ShowPlayer(pacmanPositionX, pacmanPositionY, player);
                 
                 pressedKey = Console.ReadKey();
                     
-                HandleInput(map, pressedKey, ref pacmanPositionX, ref pacmanPositionY);
+                HandleInput(map, pressedKey, coin, ref pacmanPositionX, ref pacmanPositionY);
                 
-                coins += CollectCoin(map, pressedKey, ref pacmanPositionX, ref pacmanPositionY);
+                coins += CollectCoin(map, coin, ref pacmanPositionX, ref pacmanPositionY);
             }
         }
         
@@ -69,30 +70,30 @@ namespace iJunior
             }
         }
 
-        static void HandleInput(char[,] map, ConsoleKeyInfo pressedKey, ref int pacManCoodinationX, ref int pacManCoodinationY)
+        static void HandleInput(char[,] map, ConsoleKeyInfo pressedKey, char coin, ref int pacManCoodinationX, ref int pacManCoodinationY)
         {
             int[] direction = GetDirection(pressedKey);
             int nextPacManPositionX = pacManCoodinationX + direction[0];
             int nextPacManPositionY = pacManCoodinationY + direction[1];
             
-            if (map[nextPacManPositionX, nextPacManPositionY] == ' ' || map[nextPacManPositionX, nextPacManPositionY] == '.')
+            if (map[nextPacManPositionX, nextPacManPositionY] == ' ' || map[nextPacManPositionX, nextPacManPositionY] == coin)
             {
                 pacManCoodinationX = nextPacManPositionX;
                 pacManCoodinationY = nextPacManPositionY;
             }
         }
 
-        static int CollectCoin(char[,] map, ConsoleKeyInfo pressedKey, ref int pacManCoodinationX, ref int pacManCoodinationY)
+        static int CollectCoin(char[,] map, char coin, ref int pacManCoodinationX, ref int pacManCoodinationY)
         {
-            if (map[pacManCoodinationX, pacManCoodinationY] == '.')
+            int count = 0;
+            
+            if (map[pacManCoodinationX, pacManCoodinationY] == coin)
             {
                 map[pacManCoodinationX, pacManCoodinationY] = ' ';
-                return 1;
+                count++;
             }
-            else
-            {
-                return 0;
-            }
+
+            return count;
         }
 
         static int[] GetDirection(ConsoleKeyInfo pressedKey)
@@ -104,12 +105,15 @@ namespace iJunior
                 case ConsoleKey.UpArrow:
                     direction[0] = -1;
                     break;
+                
                 case ConsoleKey.DownArrow:
                     direction[0] = 1;
                     break;
+                
                 case ConsoleKey.LeftArrow:
                     direction[1] = -1;
                     break;
+                
                 case ConsoleKey.RightArrow:
                     direction[1] = 1;
                     break;
@@ -118,7 +122,7 @@ namespace iJunior
             return direction;
         }
         
-        static void MovePlayer(int pacManCoordinationX, int pacManCoordinationY, char player)
+        static void ShowPlayer(int pacManCoordinationX, int pacManCoordinationY, char player)
         {
             Console.SetCursorPosition(pacManCoordinationY, pacManCoordinationX);
             Console.Write(player);
