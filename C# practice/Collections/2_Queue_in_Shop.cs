@@ -7,14 +7,14 @@ namespace iJunior
     {
         static void Main(string[] args)
         {
-            Queue<int> queueVisitors = new Queue<int>();
-            queueVisitors.Enqueue(123);
-            queueVisitors.Enqueue(432);
-            queueVisitors.Enqueue(3456);
-            queueVisitors.Enqueue(534);
-            queueVisitors.Enqueue(654);
+            Queue<int> visitors = new Queue<int>();
+            visitors.Enqueue(123);
+            visitors.Enqueue(432);
+            visitors.Enqueue(3456);
+            visitors.Enqueue(534);
+            visitors.Enqueue(654);
 
-            ServeClients(queueVisitors);
+            ServeClients(visitors);
         }
 
         static void ServeClients(Queue<int> queueVisitors)
