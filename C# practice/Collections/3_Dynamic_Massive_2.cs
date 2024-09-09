@@ -10,6 +10,7 @@ namespace iJunior
         {
             const string SumString = "sum";
             const string ExitString = "exit";
+            
             List<int> numbers = new List<int>();
             string userInput;
             bool isWorking = true;
@@ -17,9 +18,9 @@ namespace iJunior
             while (isWorking)
             {
                 Console.Write($"Введите {SumString}, чтобы посчитать введенные числа." +
-                $"\nВведите {ExitString}, чтобы выйти из программы." +
-                $"\nВведите число, чтобы добавить его в список." +
-                $"Ввод пользователя:");
+                              $"\nВведите {ExitString}, чтобы выйти из программы." +
+                              $"\nВведите число, чтобы добавить его в список." +
+                              $"Ввод пользователя:");
                 userInput = Console.ReadLine();
 
                 switch (userInput)
@@ -27,9 +28,11 @@ namespace iJunior
                     case SumString:
                         PrintSumNumbers(numbers);
                         break;
+                    
                     case ExitString:
                         isWorking = false;
                         break;
+                    
                     default:
                         AddNumberToList(numbers, userInput);
                         break;
@@ -42,9 +45,7 @@ namespace iJunior
         static void AddNumberToList(List<int> numbers, string userInput)
         {
             if (Int32.TryParse(userInput, out int userNumber))
-            {
-                numbers.Add(Convert.ToInt32(userNumber));
-            }
+                numbers.Add(userNumber);
         }
 
         static void PrintSumNumbers(List<int> numbers)
