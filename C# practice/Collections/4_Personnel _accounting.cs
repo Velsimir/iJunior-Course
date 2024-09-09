@@ -12,6 +12,7 @@ namespace iJunior
             const string PrintEmploye = "Print";
             const string DeleteEmploye = "Delete";
             const string CloseProgramm = "Close";
+            
             Dictionary<string, string> listOfEmployers = new Dictionary<string, string>();
             bool isWorking = true;
             string userInput;
