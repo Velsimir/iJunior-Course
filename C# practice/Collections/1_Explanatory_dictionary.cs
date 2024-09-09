@@ -25,13 +25,10 @@ namespace iJunior
         {
             bool isWordFind = false;
 
-            foreach (var wrod in dictionary)
+            if (dictionary.ContainsKey(userInput))
             {
-                if (userInput == wrod.Key)
-                {
-                    Console.WriteLine(dictionary[userInput]);
-                    isWordFind = true;
-                }
+                Console.WriteLine(dictionary[userInput]);
+                isWordFind = true;
             }
 
             if (isWordFind == false)
