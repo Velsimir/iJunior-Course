@@ -8,104 +8,156 @@ namespace iJunior
     {
         public static void Main(string[] args)
         {
-            const string AddEmploye = "Add";
-            const string PrintEmploye = "Print";
-            const string DeleteEmploye = "Delete";
-            const string CloseProgramm = "Close";
-            
-            Dictionary<string, string> listOfEmployers = new Dictionary<string, string>();
+                        const string AddCommand = "Add";
+            const string PrintCommand = "Print";
+            const string DeleteCommand = "Delete";
+            const string CloseCommand = "Close";
+
+            Dictionary<string, List<string>> listOfEmployers = new Dictionary<string, List<string>>();
             bool isWorking = true;
             string userInput;
+
+            listOfEmployers.Add("Разработчик", new List<string>());
+            listOfEmployers.Add("Художник", new List<string>());
+            listOfEmployers.Add("Тестировщик", new List<string>());
+
+            listOfEmployers["Разработчик"].Add("Коняшов Иван");
+            listOfEmployers["Разработчик"].Add("Паттисон Роберт");
+            listOfEmployers["Разработчик"].Add("Ленин Владимир");
+
+            listOfEmployers["Художник"].Add("Клод Моне");
+            listOfEmployers["Художник"].Add("Сальвадор Дали");
+            listOfEmployers["Художник"].Add("Айвазовский Иван");
+
+            listOfEmployers["Тестировщик"].Add("Герцен Яков");
+            listOfEmployers["Тестировщик"].Add("Гальперов Василий");
 
             while (isWorking)
             {
                 Console.Write($"Введите команду для продолжения" +
-                    $"\n{AddEmploye} - добавить досье" +
-                    $"\n{PrintEmploye} - вывести все досье (в одну строку через “-” фио и должность)" +
-                    $"\n{DeleteEmploye} - удалить досье" +
-                    $"\n{CloseProgramm} - выход из программы" +
-                    $"\nВвод пользователя: ");
+                              $"\n{AddCommand} - добавить досье" +
+                              $"\n{PrintCommand} - вывести все досье (в одну строку через “-” фио и должность)" +
+                              $"\n{DeleteCommand} - удалить досье" +
+                              $"\n{CloseCommand} - выход из программы" +
+                              $"\nВвод пользователя: ");
 
                 userInput = Console.ReadLine();
 
                 switch (userInput)
                 {
-                    case AddEmploye:
+                    case AddCommand:
                         AddNewEmploye(listOfEmployers);
                         break;
 
-                    case PrintEmploye:
+                    case PrintCommand:
                         WriteAllEmploye(listOfEmployers);
-
-                        Console.ReadKey();
                         break;
 
-                    case DeleteEmploye:
-                        MainClass.DeleteEmploye(listOfEmployers);
-
-                        Console.ReadKey();
+                    case DeleteCommand:
+                        DeleteEmploye(listOfEmployers);
                         break;
 
-                    case CloseProgramm:
+                    case CloseCommand:
                         isWorking = false;
                         break;
 
                     default:
                         Console.WriteLine("Не корректный ввод");
-                        Console.ReadKey();
                         break;
                 }
+
+                Console.WriteLine("Нажмите любую клавишу, чтобы продолжить...");
+                Console.ReadKey();
                 Console.Clear();
             }
         }
 
-        static void AddNewEmploye(Dictionary<string, string> listOfEmployers)
+        static void AddNewEmploye(Dictionary<string, List<string>> listOfEmployers)
         {
             string nameEmploye;
             string vacancy;
 
+            GetEmployeInfo(out nameEmploye, out vacancy);
+
+            if (listOfEmployers.ContainsKey(vacancy) == true && TryFindEmploye(listOfEmployers, nameEmploye, vacancy) == true)
+            {
+                Console.WriteLine("Пользователь есть в базе");
+            }
+            else if (listOfEmployers.ContainsKey(vacancy) == true && TryFindEmploye(listOfEmployers, nameEmploye, vacancy) == false)
+            {
+                listOfEmployers[vacancy].Add(nameEmploye);
+                Console.WriteLine("Пользователь добавлен в базу");
+            }
+            else
+            {
+                listOfEmployers.Add(vacancy, new List<string>());
+                listOfEmployers[vacancy].Add(nameEmploye);
+                Console.WriteLine("Пользователь добавлен в базу");
+            }
+        }
+
+        static void WriteAllEmploye(Dictionary<string, List<string>> listOfEmployers)
+        {
+            Console.Clear();
+            
+            foreach (var vacancy in listOfEmployers)
+            {
+                Console.WriteLine($"Список специалистов на позиции {vacancy.Key}");
+
+                foreach (var employe in vacancy.Value)
+                {
+                    Console.WriteLine(employe);
+                }
+                
+                Console.WriteLine();
+            }
+        }
+
+        static void DeleteEmploye(Dictionary<string, List<string>> listOfEmployers)
+        {
+            string nameEmploye;
+            string vacancy;
+
+            GetEmployeInfo(out nameEmploye, out vacancy);
+
+            if (TryFindEmploye(listOfEmployers, nameEmploye, vacancy))
+            {
+                listOfEmployers[vacancy].Remove(nameEmploye);
+                
+                DeleteEmptyVacancy(listOfEmployers, vacancy);
+                
+                Console.WriteLine("Пользователь удален");
+            }
+            else
+            {
+                Console.WriteLine("Пользователь не найден");
+            }
+        }
+
+        static bool TryFindEmploye(Dictionary<string, List<string>> employersData, string desiredEmployee, string vacancy)
+        {
+            foreach (var employe in employersData[vacancy])
+            {
+                if (employe == desiredEmployee)
+                    return true;
+            }
+
+            return false;
+        }
+        
+        static void GetEmployeInfo(out string nameEmploye, out string vacancy)
+        {
             Console.Write("Введите Фамилию Имя сотрудника: ");
             nameEmploye = Console.ReadLine();
 
             Console.Write("Введите должность сотрудника: ");
             vacancy = Console.ReadLine();
-
-            if (listOfEmployers.ContainsKey(nameEmploye))
-            {
-                Console.WriteLine("Данный пользователь есть в базе");
-                Console.ReadKey();
-            }
-            else
-            {
-                listOfEmployers.Add(nameEmploye, vacancy);
-            }
         }
 
-        static void WriteAllEmploye(Dictionary<string, string> listOfEmployers)
+        static void DeleteEmptyVacancy(Dictionary<string, List<string>> employersData, string vacancy)
         {
-            foreach (var person in listOfEmployers)
-            {
-                Console.Write($"-{person.Key}({person.Value})");
-            }
-        }
-
-        static void DeleteEmploye(Dictionary<string, string> listOfEmployers)
-        {
-            string nameEmploye;
-
-            WriteAllEmploye(listOfEmployers);
-
-            Console.WriteLine("\nВведите фамилию имя сотрудника, чье досье хотите удалить: ");
-            nameEmploye = Console.ReadLine();
-
-            if (listOfEmployers.ContainsKey(nameEmploye))
-            {
-                listOfEmployers.Remove(nameEmploye);
-            }
-            else
-            {
-                Console.WriteLine("Пользователя с указанными вами данными - не существует.");
-            }
+            if (employersData[vacancy].Count <= 0)
+                employersData.Remove(vacancy);
         }
     }
 }
