@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Internal;
 
 namespace iJunior
 {
@@ -79,11 +78,11 @@ namespace iJunior
 
             GetEmployeInfo(out nameEmploye, out vacancy);
 
-            if (listOfEmployers.ContainsKey(vacancy) == true && TryFindEmploye(listOfEmployers, nameEmploye, vacancy) == true)
+            if (listOfEmployers.ContainsKey(vacancy) && TryFindEmploye(listOfEmployers, nameEmploye, vacancy))
             {
                 Console.WriteLine("Пользователь есть в базе");
             }
-            else if (listOfEmployers.ContainsKey(vacancy) == true && TryFindEmploye(listOfEmployers, nameEmploye, vacancy) == false)
+            else if (listOfEmployers.ContainsKey(vacancy) && TryFindEmploye(listOfEmployers, nameEmploye, vacancy) == false)
             {
                 listOfEmployers[vacancy].Add(nameEmploye);
                 Console.WriteLine("Пользователь добавлен в базу");
