@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Internal;
 
 namespace iJunior
 {
@@ -29,9 +28,7 @@ namespace iJunior
             for (int i = 0; i < array.Length; i++)
             {
                 if (numbers.Contains(array[i]) == false)
-                {
                     numbers.Add(array[i]);
-                }
             }
         }
     }
