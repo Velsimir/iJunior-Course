@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using Internal;
 
 namespace iJunior
 {
     class MainClass
     {
-        /*Создать класс игрока, у которого есть поля с его положением в x,y.
-         * Создать класс отрисовщик, с методом, который отрисует игрока.
-         * Попрактиковаться в работе со свойствами.
-         */
         public static void Main(string[] args)
         {
             Player player1 = new Player(20, 9, '#');
