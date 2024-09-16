@@ -84,7 +84,7 @@ namespace iJunior
                 Id = id;
                 IsBlocked = false;
             }
-
+            
             public string Nickname { get; private set; }
             public int Level { get; private set; }
             public bool IsBlocked { get; private set; }
@@ -179,10 +179,27 @@ namespace iJunior
 
             private Player GetPlayer()
             {
-                bool isWorking = true;
-                int id;
-                string userInput;
+                int id = GetPlayerId();
+                Player player = null;
 
+                foreach (var tempPlayer in _players)
+                {
+                    if (tempPlayer.Id == id)
+                    {
+                        player = tempPlayer;
+                        break;
+                    }
+                }
+                
+                return player;
+            }
+
+            private int GetPlayerId()
+            {
+                bool isWorking = true;
+                string userInput;
+                int id = 1;
+                
                 while (isWorking)
                 {
                     ShowPlayers();
@@ -195,7 +212,6 @@ namespace iJunior
                         if (id > 0 && id <= _playerId)
                         {
                             isWorking = false;
-                            return _players[id - 1];
                         }
                         else
                         {
@@ -210,7 +226,7 @@ namespace iJunior
                     Console.Clear();
                 }
 
-                return null;
+                return id;
             }
             
             private void WriteUnCorrectInput()
