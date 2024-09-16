@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace iJunior
 {
     class MainClass
     {
-        /*Создать класс игрока, с полями, содержащими информацию об игроке и методом, 
-         * который выводит информацию на экран.
-         * В классе обязательно должен быть конструктор
-         */
         public static void Main(string[] args)
         {
             Player player1 = new Player("Artorias", 100, 20, 9);
