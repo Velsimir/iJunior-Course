@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.NetworkInformation;
-using System.Runtime.CompilerServices;
 
 namespace iJunior
 {
@@ -81,14 +78,14 @@ namespace iJunior
 
     class Card
     {
-        public Suit Suit { get; private set; }
-        public Rank Rank { get; private set; }
-
         public Card(Suit suit, Rank rank)
         {
             Suit = suit;
             Rank = rank;
         }
+
+        public Suit Suit { get; private set; }
+        public Rank Rank { get; private set; }
     }
 
     class Deck
@@ -157,12 +154,13 @@ namespace iJunior
     class Player
     {
         private List<Card> _hand = new List<Card>();
-        public string Name { get; private set; }
 
         public Player(string name)
         {
             Name = name;
         }
+
+        public string Name { get; private set; }
 
         public void TakeCard(Card card)
         {
