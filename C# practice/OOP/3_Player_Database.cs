@@ -195,7 +195,11 @@ namespace iJunior
                         if (id > 0 && id <= _playerId)
                         {
                             isWorking = false;
-                            return _players[id];
+                            return _players[id - 1];
+                        }
+                        else
+                        {
+                            WriteUnCorrectInput();
                         }
                     }
                     else
