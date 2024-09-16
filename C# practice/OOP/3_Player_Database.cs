@@ -22,13 +22,13 @@ namespace iJunior
                 string userInput;
 
                 Console.Write($"Введите команду для продолжения" +
-                    $"\n{AddPlayerCommand} - добавить игрока" +
-                    $"\n{PrintPlayersCommand} - вывести всю базу" +
-                    $"\n{BlockPlayerCommand} - забанить игрока" +
-                    $"\n{UnBlockPlayerCommand} - разбанить игрока" +
-                    $"\n{DeletePlayerCommand} - удалить игрока" +
-                    $"\n{CloseProgrammCommand} - выход из программы" +
-                    $"\nВвод пользователя: ");
+                              $"\n{AddPlayerCommand} - добавить игрока" +
+                              $"\n{PrintPlayersCommand} - вывести всю базу" +
+                              $"\n{BlockPlayerCommand} - забанить игрока" +
+                              $"\n{UnBlockPlayerCommand} - разбанить игрока" +
+                              $"\n{DeletePlayerCommand} - удалить игрока" +
+                              $"\n{CloseProgrammCommand} - выход из программы" +
+                              $"\nВвод пользователя: ");
 
                 userInput = Console.ReadLine();
 
@@ -74,38 +74,37 @@ namespace iJunior
                 Console.Clear();
             }
         }
-    }
-    
-    class Player
-    {
-        public string Nickname { get; private set; }
-        public int Level { get; private set; }
-        public bool IsBlocked { get; private set; }
-        public int Id { get; private set; }
 
-        public Player(string nickname, int level, int id)
+        class Player
         {
-            Nickname = nickname;
-            Level = level;
-            Id = id;
-            IsBlocked = false;
-        }
+            public Player(string nickname, int level, int id)
+            {
+                Nickname = nickname;
+                Level = level;
+                Id = id;
+                IsBlocked = false;
+            }
 
-        public void ChangeStatusBlock()
-        {
-            IsBlocked = true;
-        }
+            public string Nickname { get; private set; }
+            public int Level { get; private set; }
+            public bool IsBlocked { get; private set; }
+            public int Id { get; private set; }
 
-        public void ChangeStatusUnBlock()
-        {
-            IsBlocked = false;
+            public void ChangeStatusBlock()
+            {
+                IsBlocked = true;
+            }
+
+            public void ChangeStatusUnBlock()
+            {
+                IsBlocked = false;
+            }
         }
-    }
-    
-            class Database
+        
+        class Database
         {
             private List<Player> _players = new List<Player>();
-            private int _playerID = 1;
+            private int _playerId = 1;
 
             public void AddPlayer()
             {
@@ -126,11 +125,11 @@ namespace iJunior
 
                     if (int.TryParse(userInput, out level))
                     {
-                        Player player = new Player(nickName, level, _playerID);
+                        Player player = new Player(nickName, level, _playerId);
 
                         _players.Add(player);
 
-                        _playerID++;
+                        _playerId++;
 
                         isWorking = false;
                     }
@@ -165,38 +164,26 @@ namespace iJunior
 
             public void BlockPlayer()
             {
-                Player player;
-
-                TryGetPlayer(out player);
-
-                player.ChangeStatusBlock();
+                GetPlayer().ChangeStatusBlock();
             }
 
             public void UnBlockPlayer()
             {
-                Player player;
-
-                TryGetPlayer(out player);
-
-                player.ChangeStatusUnBlock();
+                GetPlayer().ChangeStatusUnBlock();
             }
 
             public void DeletePlayer()
             {
-                Player player;
-
-                TryGetPlayer(out player);
-
-                _players.Remove(player);
+                _players.Remove(GetPlayer());
             }
 
-            private bool TryGetPlayer(out Player playerData)
+            private Player GetPlayer()
             {
-                bool result = true;
-                int id = 1;
+                bool isWorking = true;
+                int id;
                 string userInput;
 
-                while (result)
+                while (isWorking)
                 {
                     ShowPlayers();
 
@@ -205,35 +192,23 @@ namespace iJunior
 
                     if (int.TryParse(userInput, out id))
                     {
-                        if (id > 0 && id <= _playerID)
-                            result = false;
-                        else
-                            WriteUnCorrectInput();
-                    }
-                    else
-                        WriteUnCorrectInput();
-                }
-
-                if (_playerID >= id)
-                {
-                    foreach (var player in _players)
-                    {
-                        if (player.Id == id)
+                        if (id > 0 && id <= _playerId)
                         {
-                            playerData = player;
-                            return true;
+                            isWorking = false;
+                            return _players[id];
                         }
                     }
-                }
-                else
-                {
-                    WriteUnCorrectInput();
+                    else
+                    {
+                        WriteUnCorrectInput();
+                    }
+                    
+                    Console.Clear();
                 }
 
-                playerData = null;
-                return false;
+                return null;
             }
-
+            
             private void WriteUnCorrectInput()
             {
                 Console.WriteLine("Некорректный ввод" +
