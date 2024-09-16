@@ -21,16 +21,16 @@ namespace iJunior
 
     class Player
     {
-        public char BodySymbol { get; private set; }
-        public int CoordinateX { get; private set; }
-        public int CoordinateY { get; private set; }
-
         public Player(int coordinateX, int coordinateY, char bodySymbol)
         {
             CoordinateX = coordinateX;
             CoordinateY = coordinateY;
             BodySymbol = bodySymbol;
         }
+        
+        public char BodySymbol { get; private set; }
+        public int CoordinateX { get; private set; }
+        public int CoordinateY { get; private set; }
     }
 
     class Renderer

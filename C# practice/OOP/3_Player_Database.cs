@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.NetworkInformation;
-using System.Runtime.CompilerServices;
 
 namespace iJunior
 {
@@ -9,12 +7,12 @@ namespace iJunior
     {
         public static void Main(string[] args)
         {
-            const string AddPlayer = "Add";
-            const string PrintPlayers = "Show";
-            const string BlockPlayer = "Block";
-            const string UnBlockPlayer = "UnBlock";
-            const string DeletePlayer = "Delete";
-            const string CloseProgramm = "Close";
+            const string AddPlayerCommand = "Add";
+            const string PrintPlayersCommand = "Show";
+            const string BlockPlayerCommand = "Block";
+            const string UnBlockPlayerCommand = "UnBlock";
+            const string DeletePlayerCommand = "Delete";
+            const string CloseProgrammCommand = "Close";
 
             bool isWorking = true;
             Database dataBase = new Database();
@@ -24,41 +22,41 @@ namespace iJunior
                 string userInput;
 
                 Console.Write($"Введите команду для продолжения" +
-                    $"\n{AddPlayer} - добавить игрока" +
-                    $"\n{PrintPlayers} - вывести всю базу" +
-                    $"\n{BlockPlayer} - забанить игрока" +
-                    $"\n{UnBlockPlayer} - разбанить игрока" +
-                    $"\n{DeletePlayer} - удалить игрока" +
-                    $"\n{CloseProgramm} - выход из программы" +
+                    $"\n{AddPlayerCommand} - добавить игрока" +
+                    $"\n{PrintPlayersCommand} - вывести всю базу" +
+                    $"\n{BlockPlayerCommand} - забанить игрока" +
+                    $"\n{UnBlockPlayerCommand} - разбанить игрока" +
+                    $"\n{DeletePlayerCommand} - удалить игрока" +
+                    $"\n{CloseProgrammCommand} - выход из программы" +
                     $"\nВвод пользователя: ");
 
                 userInput = Console.ReadLine();
 
                 switch (userInput)
                 {
-                    case AddPlayer:
+                    case AddPlayerCommand:
                         dataBase.AddPlayer();
                         break;
 
-                    case PrintPlayers:
+                    case PrintPlayersCommand:
                         dataBase.ShowPlayers();
 
                         Console.ReadKey();
                         break;
 
-                    case BlockPlayer:
+                    case BlockPlayerCommand:
                         dataBase.BlockPlayer();
                         break;
 
-                    case UnBlockPlayer:
+                    case UnBlockPlayerCommand:
                         dataBase.UnBlockPlayer();
                         break;
 
-                    case DeletePlayer:
+                    case DeletePlayerCommand:
                         dataBase.DeletePlayer();
                         break;
 
-                    case CloseProgramm:
+                    case CloseProgrammCommand:
                         isWorking = false;
                         break;
 
@@ -77,7 +75,7 @@ namespace iJunior
             }
         }
     }
-
+    
     class Player
     {
         public string Nickname { get; private set; }
@@ -90,6 +88,7 @@ namespace iJunior
             Nickname = nickname;
             Level = level;
             Id = id;
+            IsBlocked = false;
         }
 
         public void ChangeStatusBlock()
@@ -102,166 +101,146 @@ namespace iJunior
             IsBlocked = false;
         }
     }
-
-    class Database
-    {
-        private List<Player> _players = new List<Player>();
-        private int _playerID = 1;
-
-        public void AddPlayer()
+    
+            class Database
         {
-            string nickName;
-            string userInput;
-            int level;
-            bool isWorking = true;
+            private List<Player> _players = new List<Player>();
+            private int _playerID = 1;
 
-            while (isWorking)
+            public void AddPlayer()
             {
-                Console.Clear();
-
-                Console.Write("Введите Nick Name игрока: ");
-                nickName = Console.ReadLine();
-
-                Console.Write("Введите уровень игрока: ");
-                userInput = Console.ReadLine();
-
-                if (ReadNumber(userInput, out level))
-                {
-                    Player player = new Player(nickName, level, _playerID);
-
-                    _players.Add(player);
-
-                    _playerID++;
-
-                    isWorking = false;
-                }
-                else
-                {
-                    WriteUnCorrectInput();
-                }
-            }
-        }
-
-        public void ShowPlayers()
-        {
-            Console.Clear();
-
-            foreach (var player in _players)
-            {
-                string blockStatus;
-
-                if (player.IsBlocked == false)
-                {
-                    blockStatus = "Разблокирован(а)";
-                }
-                else
-                {
-                    blockStatus = "Заблокирован(а)";
-                }
-
-                Console.WriteLine($"ID игрока - {player.Id}\tNickname игрока - {player.Nickname}" +
-                    $"\tLevel игрока - {player.Level}\tСтатус игрока - {blockStatus}");
-            }
-        }
-
-        public void BlockPlayer()
-        {
-            Player player;
-
-            TryGetPlayer(out player);
-
-            player.ChangeStatusBlock();
-        }
-
-        public void UnBlockPlayer()
-        {
-            Player player;
-
-            TryGetPlayer(out player);
-
-            player.ChangeStatusUnBlock();
-        }
-
-        public void DeletePlayer()
-        {
-            Player player;
-
-            TryGetPlayer(out player);
-
-            _players.Remove(player);
-        }
-
-        private bool TryGetPlayer(out Player playerData)
-        {
-            bool result = true;
-            int id = 1;
-
-            while (result)
-            {
+                string nickName;
                 string userInput;
+                int level;
+                bool isWorking = true;
 
-                ShowPlayers();
-
-                Console.WriteLine("\nВведите ID игрока");
-                userInput = Console.ReadLine();
-
-                if (ReadNumber(userInput, out int idInt))
+                while (isWorking)
                 {
+                    Console.Clear();
 
-                    if (idInt > 0 && idInt <= _playerID)
+                    Console.Write("Введите Nick Name игрока: ");
+                    nickName = Console.ReadLine();
+
+                    Console.Write("Введите уровень игрока: ");
+                    userInput = Console.ReadLine();
+
+                    if (int.TryParse(userInput, out level))
                     {
-                        id = idInt;
-                        result = false;
+                        Player player = new Player(nickName, level, _playerID);
+
+                        _players.Add(player);
+
+                        _playerID++;
+
+                        isWorking = false;
                     }
                     else
                     {
                         WriteUnCorrectInput();
                     }
                 }
+            }
+
+            public void ShowPlayers()
+            {
+                Console.Clear();
+
+                foreach (var player in _players)
+                {
+                    string blockStatus;
+
+                    if (player.IsBlocked == false)
+                    {
+                        blockStatus = "Разблокирован(а)";
+                    }
+                    else
+                    {
+                        blockStatus = "Заблокирован(а)";
+                    }
+
+                    Console.WriteLine($"ID игрока - {player.Id}\tNickname игрока - {player.Nickname}" +
+                                      $"\tLevel игрока - {player.Level}\tСтатус игрока - {blockStatus}");
+                }
+            }
+
+            public void BlockPlayer()
+            {
+                Player player;
+
+                TryGetPlayer(out player);
+
+                player.ChangeStatusBlock();
+            }
+
+            public void UnBlockPlayer()
+            {
+                Player player;
+
+                TryGetPlayer(out player);
+
+                player.ChangeStatusUnBlock();
+            }
+
+            public void DeletePlayer()
+            {
+                Player player;
+
+                TryGetPlayer(out player);
+
+                _players.Remove(player);
+            }
+
+            private bool TryGetPlayer(out Player playerData)
+            {
+                bool result = true;
+                int id = 1;
+                string userInput;
+
+                while (result)
+                {
+                    ShowPlayers();
+
+                    Console.WriteLine("\nВведите ID игрока");
+                    userInput = Console.ReadLine();
+
+                    if (int.TryParse(userInput, out id))
+                    {
+                        if (id > 0 && id <= _playerID)
+                            result = false;
+                        else
+                            WriteUnCorrectInput();
+                    }
+                    else
+                        WriteUnCorrectInput();
+                }
+
+                if (_playerID >= id)
+                {
+                    foreach (var player in _players)
+                    {
+                        if (player.Id == id)
+                        {
+                            playerData = player;
+                            return true;
+                        }
+                    }
+                }
                 else
                 {
                     WriteUnCorrectInput();
                 }
+
+                playerData = null;
+                return false;
             }
 
-            if (_playerID >= id)
+            private void WriteUnCorrectInput()
             {
-
-                foreach (var player in _players)
-                {
-
-                    if (player.Id == id)
-                    {
-                        playerData = player;
-                        return true;
-                    }
-                }
+                Console.WriteLine("Некорректный ввод" +
+                                  "\nНажмите любую клавишу, чтобы повторить...");
+                Console.ReadKey();
+                Console.Clear();
             }
-            else
-            {
-                WriteUnCorrectInput();
-            }
-
-            playerData = null;
-            return false;
-        }
-
-        private void WriteUnCorrectInput()
-        {
-            Console.WriteLine("Некорректный ввод" +
-                        "\nНажмите любую клавишу, чтобы повторить...");
-            Console.ReadKey();
-            Console.Clear();
-        }
-
-        private bool ReadNumber(string userInput, out int number)
-        {
-            if (int.TryParse(userInput, out number))
-            {
-                return true;
-            }
-
-            return false;
         }
     }
 }
