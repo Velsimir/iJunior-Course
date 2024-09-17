@@ -30,7 +30,7 @@ namespace iJunior
                 switch (userInput)
                 {
                     case CommandTakeCards:
-                        dealer.GetCards();
+                        dealer.TransferCardsToPlayer();
                         break;
 
                     case CommandShowHand:
@@ -94,7 +94,7 @@ namespace iJunior
             }
         }
 
-        public Card GetCard()
+        public Card GiveCard()
         {
             Card card;
             
@@ -132,7 +132,7 @@ namespace iJunior
             _deck.Shuffle();
         }
 
-        public void GetCards()
+        public void TransferCardsToPlayer()
         {
             int count;
 
@@ -149,7 +149,7 @@ namespace iJunior
             {
                 if (_deck.HasCards)
                 {
-                    _player.TakeCard(_deck.GetCard());
+                    _player.TakeCard(_deck.GiveCard());
                 }
                 else
                 {
