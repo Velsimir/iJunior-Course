@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace iJunior
 {
@@ -7,45 +8,45 @@ namespace iJunior
     {
         public static void Main(string[] args)
         {
-            const string CommandTakeCard = "Take";
-            const string CommandTakeFew = "TakeFew";
+            const string CommandTakeCards = "Take";
             const string CommandShowHand = "ShowHand";
+            const string CommandShuffleDeck = "ShuffleDeck";
             const string CommandExit = "Exit";
 
             bool isWorking = true;
             string userInput;
-            Deck deck = new Deck();
             Player player = new Player("John");
+            Dealer dealer = new Dealer(player);
 
             while (isWorking)
             {
                 Console.WriteLine($"Колода на столе, что вы хотите сделать?" +
-                    $"\nВзять карту - {CommandTakeCard}" +
-                    $"\nВзять несколько карт - {CommandTakeFew}" +
-                    $"\nПосмотреть карты в руке - {CommandShowHand}" +
-                    $"\nДля выхода - {CommandExit}");
+                                  $"\nВзять карты - {CommandTakeCards}" +
+                                  $"\nПосмотреть карты в руке - {CommandShowHand}" +
+                                  $"\nПеремешать карты в колоде - {CommandShuffleDeck}" +
+                                  $"\nДля выхода - {CommandExit}");
                 userInput = Console.ReadLine();
 
                 switch (userInput)
                 {
-                    case CommandTakeCard:
-                        player.TakeCard(deck.GiveCard());
-                        break;
-
-                    case CommandTakeFew:
-                        player.TakeFewCards(deck);
+                    case CommandTakeCards:
+                        dealer.GetCards();
                         break;
 
                     case CommandShowHand:
                         player.ShowHand();
                         break;
 
+                    case CommandShuffleDeck:
+                        dealer.ShuffleDeck();
+                        break;
+                    
                     case CommandExit:
                         isWorking = false;
                         break;
 
                     default:
-                        Console.WriteLine("Не корректный воод. \nНажмите клавишу, чтобы повторить...");
+                        Console.WriteLine("Некорректный ввод. \nНажмите клавишу, чтобы повторить...");
                         Console.ReadKey();
                         break;
                 }
@@ -54,29 +55,8 @@ namespace iJunior
             }
         }
     }
-
-    enum Suit
-    {
-        Hearts,
-        Clubs,
-        Diamonds,
-        Spades
-    }
-
-    enum Rank
-    {
-        Six,
-        Seven,
-        Eight,
-        Nine,
-        Ten,
-        Jack,
-        Queen,
-        King,
-        Ace
-    }
-
-    class Card
+    
+    public class Card
     {
         public Card(Suit suit, Rank rank)
         {
@@ -87,8 +67,8 @@ namespace iJunior
         public Suit Suit { get; private set; }
         public Rank Rank { get; private set; }
     }
-
-    class Deck
+    
+    public class Deck
     {
         private List<Card> _cards;
 
@@ -98,19 +78,30 @@ namespace iJunior
             Generate();
         }
 
-        public Card GiveCard()
+        public bool HasCards => _cards.Count > 0;
+        
+        public void Shuffle()
         {
-            if (_cards.Count > 0)
+            Random random = new Random();
+
+            for (int i = _cards.Count - 1; i >= 0; i--)
             {
-                Card card = _cards[0];
-                _cards.RemoveAt(0);
-                return card;
+                int index = random.Next(i + 1);
+
+                Card tempCard = _cards[index];
+                _cards[index] = _cards[i];
+                _cards[i] = tempCard;
             }
-            else
-            {
-                WriteError();
-                return null;
-            }
+        }
+
+        public Card GetCard()
+        {
+            Card card;
+            
+            card = _cards[0];
+            _cards.RemoveAt(0);
+
+            return card;
         }
 
         private void Generate()
@@ -126,114 +117,106 @@ namespace iJunior
                     _cards.Add(card);
                 }
             }
+        }
+    }
+    
+    public class Dealer
+    {
+        private Deck _deck;
+        private Player _player;
 
-            Shuffle();
+        public Dealer(Player player)
+        {
+            _player = player;
+            _deck = new Deck();
+            _deck.Shuffle();
         }
 
-        private void Shuffle()
+        public void GetCards()
         {
-            Random random = new Random();
+            int count;
 
-            for (int i = _cards.Count - 1; i >= 0; i--)
+            Console.Clear();
+            
+            Console.WriteLine("Сколько карт вы хотите взять?");
+            
+            while (int.TryParse(Console.ReadLine(), out count) == false)
             {
-                int index = random.Next(i + 1);
-
-                Card tempCard = _cards[index];
-                _cards[index] = _cards[i];
-                _cards[i] = tempCard;
+                Console.WriteLine("Не корректная команда, повторите ввод: ");
+            }
+            
+            for (int i = 0; i < count; i++)
+            {
+                if (_deck.HasCards)
+                {
+                    _player.TakeCard(_deck.GetCard());
+                }
+                else
+                {
+                    Console.WriteLine("В коллоде не осталось карт");
+                    Console.ReadKey();
+                    break;
+                }
             }
         }
 
-        private void WriteError()
+        public void ShuffleDeck()
         {
-            Console.WriteLine("Вы забрали все карты из коллоды\nНажмите клавишу, чтобы продолжить...");
-            Console.ReadKey();
+            _deck.Shuffle();
         }
     }
-
-    class Player
+    
+    public class Player
     {
-        private List<Card> _hand = new List<Card>();
+        private List<Card> _hand;
+        private string _name;
 
         public Player(string name)
         {
-            Name = name;
+            _name = name;
+            _hand = new List<Card>();
         }
-
-        public string Name { get; private set; }
 
         public void TakeCard(Card card)
         {
-            if (card == null)
-            {
-                Console.WriteLine("Карту взять не удалось.");
-                Console.ReadKey();
-            }
-            else
-            {
-                _hand.Add(card);
-            }
-        }
-
-        public void TakeFewCards(Deck deck)
-        {
-            string messege = "Сколько карт вы хотите взять?";
-            int value = GetNumber(messege);
-
-            for (int i = 0; i < value; i++)
-            {
-                Card card = deck.GiveCard();
-
-                if (card == null)
-                {
-                    break;
-                }
-
-                _hand.Add(card);
-            }
+            _hand.Add(card);
         }
 
         public void ShowHand()
         {
-            if (_hand.Count > 0)
+            Console.Clear();
+            
+            Console.WriteLine($"Карты в руке игрока {_name}:");
+            
+            foreach (var card in _hand)
             {
-                foreach (var card in _hand)
-                {
-                    Console.WriteLine($"{card.Rank}  {card.Suit}");
-                }
-                Console.ReadKey();
+                Console.WriteLine($"{card.Rank} {card.Suit}");
             }
-            else
-            {
-                Console.WriteLine("У вас в руке нет карт.\nНажмите клавишу клавишу, чтобы повторить...");
-                Console.ReadKey();
-            }
+            
+            Console.WriteLine();
+            Console.WriteLine("Нажмите любую клавишу для продолжения...");
+            Console.ReadKey();
         }
-
-        private int GetNumber(string message)
-        {
-            int value = 1;
-            bool isWorking = true;
-
-            while (isWorking)
-            {
-                Console.Write($"{message}");
-
-                if (int.TryParse((Console.ReadLine()), out value))
-                {
-                    isWorking = false;
-
-                    Console.Clear();
-                    return value;
-                }
-                else
-                {
-                    Console.WriteLine("Некорректный ввод. \nНажмите клавишу, чтобы повторить...");
-                    Console.ReadKey();
-                }
-            }
-
-            return value;
-        }
+    }
+    
+    public enum Suit
+    {
+        Hearts,
+        Clubs,
+        Diamonds,
+        Spades
+    }
+    
+    public enum Rank
+    {
+        Six,
+        Seven,
+        Eight,
+        Nine,
+        Ten,
+        Jack,
+        Queen,
+        King,
+        Ace
     }
 }
