@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.NetworkInformation;
-using System.Runtime.CompilerServices;
-using Internal;
 
 namespace iJunior
 {
@@ -384,12 +381,6 @@ namespace iJunior
 
     class Book
     {
-        public int Id { get; private set; }
-        public string Author { get; private set; }
-        public string NameBook { get; private set; }
-        public int ReleaseDate { get; private set; }
-        public Genre Genre { get; private set; }
-
         public Book(string author, string nameBook, int releaseDate, Genre genre, int id)
         {
             Id = id;
@@ -398,5 +389,11 @@ namespace iJunior
             ReleaseDate = releaseDate;
             Genre = genre;
         }
+        
+        public int Id { get; private set; }
+        public string Author { get; private set; }
+        public string NameBook { get; private set; }
+        public int ReleaseDate { get; private set; }
+        public Genre Genre { get; private set; }
     }
 }
