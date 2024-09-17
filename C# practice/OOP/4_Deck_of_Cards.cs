@@ -153,7 +153,7 @@ namespace iJunior
                 }
                 else
                 {
-                    Console.WriteLine("В коллоде не осталось карт");
+                    Console.WriteLine("В коллоде закончились карты");
                     Console.ReadKey();
                     break;
                 }
