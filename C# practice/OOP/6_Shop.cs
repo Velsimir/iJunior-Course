@@ -22,10 +22,10 @@ namespace iJunior
                 Console.Clear();
 
                 Console.Write($"Что хочешь сделать на этот раз?" +
-                    $"\n{CommandShowInventory}" +
-                    $"\n{CommandShowProducts}" +
-                    $"\n{CommandBuy}" +
-                    $"\nВведите ваш выбор: ");
+                              $"\n{CommandShowInventory}" +
+                              $"\n{CommandShowProducts}" +
+                              $"\n{CommandBuy}" +
+                              $"\nВведите ваш выбор: ");
                 userInput = Console.ReadLine();
 
                 switch (userInput)
@@ -45,26 +45,29 @@ namespace iJunior
             }
         }
     }
-
+    
+      
     class Human
     {
-        protected List<Product> Inventory;
-        protected string Name;
         protected int Gold;
 
+        private List<Product> _inventory;
+        private string Name;
         protected Human(string name, int gold)
         {
             Name = name;
             Gold = gold;
+            _inventory = new List<Product>();
+        }
+
+        protected List<Product> Inventory
+        {
+            get { return _inventory; }
+            private set { _inventory = value; }
         }
 
         protected void ShowInventory(bool isHold = true)
         {
-            int line = 3;
-            int column1 = 0;
-            int column2 = 10;
-            int column3 = 40;
-
             Console.Clear();
 
             Console.WriteLine($"{Name}\t" +
@@ -74,16 +77,7 @@ namespace iJunior
 
             foreach (var item in Inventory)
             {
-                Console.SetCursorPosition(column1, line);
-                Console.Write(item.Price);
-
-                Console.SetCursorPosition(column2, line);
-                Console.Write(item.Name);
-
-                Console.SetCursorPosition(column3, line);
-                Console.Write(item.Description);
-
-                line++;
+                Console.WriteLine($"{item.Price}\t  {item.Name}\t\t\t{item.Description}");
             }
 
             Console.WriteLine();
@@ -97,10 +91,7 @@ namespace iJunior
 
     class Player : Human
     {
-        public Player(string name, int gold) : base(name, gold)
-        {
-            Inventory = new List<Product>();
-        }
+        public Player(string name, int gold) : base(name, gold) { }
 
         public bool TryBuy(Product product)
         {
@@ -132,8 +123,6 @@ namespace iJunior
     {
         public Trader(string name, int gold) : base(name, gold)
         {
-            Inventory = new List<Product>();
-
             Inventory.Add(new Product("Алмаз", 20, "Используется только в самом дорогом оружии и снаряжении"));
             Inventory.Add(new Product("Амулет Змеи", 150, "Урон от яда +4"));
             Inventory.Add(new Product("Перстень Дракона", 100, "Магический урон на +10"));
@@ -158,11 +147,9 @@ namespace iJunior
 
             ShowInterface(isHold);
 
-            Product product = null;
+            Product product;
 
-            TryGetProduct(ref product);
-
-            if (product == null)
+            if (TryGetProduct(out product) == false)
             {
                 Console.WriteLine("Предмет, который вы хотите приобрести, отсутствует у продавца");
                 Console.ReadKey();
@@ -178,7 +165,7 @@ namespace iJunior
             }
         }
 
-        private bool TryGetProduct(ref Product product)
+        private bool TryGetProduct(out Product product)
         {
             string userInput;
 
@@ -194,6 +181,9 @@ namespace iJunior
                     return true;
                 }
             }
+            
+            product = null;
+            
             return false;
         }
     }
