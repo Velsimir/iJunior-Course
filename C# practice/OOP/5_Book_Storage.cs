@@ -17,28 +17,17 @@ namespace iJunior
             WareHouse wareHouse = new WareHouse();
             bool isWorking = true;
 
-            void ErrorMessege()
-            {
-                Console.Clear();
-
-                Console.WriteLine("Некорректный ввод");
-
-                Console.ReadKey();
-            }
-
             while (isWorking)
             {
-                string userInput;
-
                 Console.Write($"Введите команду для продолжения" +
-                    $"\n{AddBook} - добавить книгу" +
-                    $"\n{ShowAllBooks} - вывести все книги в хранилище" +
-                    $"\n{ShowByFilter} - найти книгу по фильтру" +
-                    $"\n{DeleteBook} - удалить книгу" +
-                    $"\n{CloseProgramm} - выход из программы" +
-                    $"\nВвод пользователя: ");
+                              $"\n{AddBook} - добавить книгу" +
+                              $"\n{ShowAllBooks} - вывести все книги в хранилище" +
+                              $"\n{ShowByFilter} - найти книгу по фильтру" +
+                              $"\n{DeleteBook} - удалить книгу" +
+                              $"\n{CloseProgramm} - выход из программы" +
+                              $"\nВвод пользователя: ");
 
-                userInput = Console.ReadLine();
+                string userInput = Console.ReadLine();
 
                 switch (userInput)
                 {
@@ -70,7 +59,17 @@ namespace iJunior
                 Console.Clear();
             }
         }
+    
+        private static void ErrorMessege()
+        {
+            Console.Clear();
+
+            Console.WriteLine("Некорректный ввод");
+
+            Console.ReadKey();
+        }
     }
+
 
     enum Genre
     {
@@ -155,15 +154,15 @@ namespace iJunior
             switch (userInput)
             {
                 case Genre:
-                    IsGenreFound();
+                    TryGenreFound();
                     break;
 
                 case Author:
-                    IsAuthorFound();
+                    TryAuthorFound();
                     break;
 
                 case Name:
-                    IsNameFound();
+                    TryNameFound();
                     break;
 
                 default:
@@ -173,7 +172,7 @@ namespace iJunior
             }
         }
 
-        private bool IsGenreFound()
+        private void TryGenreFound()
         {
             int value;
             bool haveBook = false;
@@ -190,18 +189,12 @@ namespace iJunior
             }
 
             if (haveBook == true)
-            {
                 WriteSuccessMessege();
-                return true;
-            }
             else
-            {
                 WriteErrorMessege();
-                return false;
-            }
         }
 
-        private bool IsAuthorFound()
+        private void TryAuthorFound()
         {
             bool haveBook = false;
 
@@ -215,18 +208,12 @@ namespace iJunior
             }
 
             if (haveBook == true)
-            {
                 WriteSuccessMessege();
-                return true;
-            }
             else
-            {
                 WriteErrorMessege();
-                return false;
-            }
         }
 
-        private bool IsNameFound()
+        private void TryNameFound()
         {
             bool haveBook = false;
 
@@ -240,15 +227,9 @@ namespace iJunior
             }
 
             if (haveBook == true)
-            {
                 WriteSuccessMessege();
-                return true;
-            }
             else
-            {
                 WriteErrorMessege();
-                return false;
-            }
         }
 
         private string GetAuthor()
@@ -284,14 +265,16 @@ namespace iJunior
             string message = "\nВыберите жанр книги: ";
             int idGenre = 1;
             bool isWorking = true;
-
+            int firstGenreIndex = (int)Enum.GetValues(typeof(Genre)).GetValue(0);
+            int lastGenreIndex = Enum.GetValues(typeof(Genre)).Length;
+            
             while (isWorking)
             {
                 ShowGenre();
 
                 idGenre = GetNumber(message);
 
-                if (idGenre >= 1 && idGenre <= 5)
+                if (idGenre >= firstGenreIndex && idGenre <= lastGenreIndex)
                 {
                     isWorking = false;
 
@@ -308,25 +291,11 @@ namespace iJunior
 
         private int GetNumber(string message)
         {
-            int value = 1;
-            bool isWorking = true;
+            int value;
 
-            while (isWorking)
+            while (int.TryParse((Console.ReadLine()), out value))
             {
                 Console.Write($"{message}");
-
-                if (int.TryParse((Console.ReadLine()), out value))
-                {
-                    isWorking = false;
-
-                    Console.Clear();
-                    return value;
-                }
-                else
-                {
-                    Console.WriteLine("Некорректный ввод. \nНажмите клавишу, чтобы повторить...");
-                    Console.ReadKey();
-                }
             }
 
             return value;
