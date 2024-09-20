@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.NetworkInformation;
-using System.Runtime.CompilerServices;
-using Internal;
 
 namespace iJunior
 {
@@ -52,7 +49,6 @@ namespace iJunior
     class Human
     {
         protected List<Product> Inventory;
-
         protected string Name;
         protected int Gold;
 
@@ -204,15 +200,15 @@ namespace iJunior
 
     class Product
     {
-        public string Name { get; private set; }
-        public int Price { get; private set; }
-        public string Description { get; private set; }
-
         public Product(string name, int price, string description)
         {
             Name = name;
             Price = price;
             Description = description;
         }
+        
+        public string Name { get; private set; }
+        public int Price { get; private set; }
+        public string Description { get; private set; }
     }
 }
