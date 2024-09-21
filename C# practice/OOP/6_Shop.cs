@@ -45,33 +45,31 @@ namespace iJunior
             }
         }
     }
-    
       
     class Human
     {
         protected int Gold;
-
-        private List<Product> _inventory;
-        private string Name;
+        private string _name;
+        
         protected Human(string name, int gold)
         {
-            Name = name;
+            _name = name;
             Gold = gold;
-            _inventory = new List<Product>();
+            Inventory = new List<Product>();
         }
 
         protected List<Product> Inventory
         {
-            get { return _inventory; }
-            private set { _inventory = value; }
+            get { return Inventory; }
+            private set { Inventory = value; }
         }
 
         protected void ShowInventory(bool isHold = true)
         {
             Console.Clear();
 
-            Console.WriteLine($"{Name}\t" +
-                $"Золотых в наличии - {Gold}");
+            Console.WriteLine($"{_name}\t" +
+                              $"Золотых в наличии - {Gold}");
 
             Console.WriteLine("Цена:\t  Предметы:\t\t\tОписание:");
 
