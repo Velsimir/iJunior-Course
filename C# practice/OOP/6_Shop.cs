@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -31,11 +31,11 @@ namespace iJunior
                 switch (userInput)
                 {
                     case CommandShowInventory:
-                        player.ShowBag();
+                        player.ShowInventory();
                         break;
 
                     case CommandShowProducts:
-                        npcSeller.ShowInterface();
+                        npcSeller.ShowInventory();
                         break;
 
                     case CommandBuy:
@@ -57,14 +57,10 @@ namespace iJunior
             Gold = gold;
             Inventory = new List<Product>();
         }
+        
+        protected List<Product> Inventory { get; private set; }
 
-        protected List<Product> Inventory
-        {
-            get { return Inventory; }
-            private set { Inventory = value; }
-        }
-
-        protected void ShowInventory(bool isHold = true)
+        public void ShowInventory(bool isNeedStop = true)
         {
             Console.Clear();
 
@@ -80,8 +76,9 @@ namespace iJunior
 
             Console.WriteLine();
 
-            if (isHold)
+            if (isNeedStop)
             {
+                Console.WriteLine("Нажмите клавишу, чтобы продолжить...");
                 Console.ReadKey();
             }
         }
@@ -110,11 +107,6 @@ namespace iJunior
         {
             Inventory.Add(product);
         }
-
-        public void ShowBag()
-        {
-            ShowInventory();
-        }
     }
 
     class Trader : Human
@@ -134,16 +126,11 @@ namespace iJunior
             Inventory.Add(new Product("Руна Тейваз", 390, "Аура атаки +20"));
         }
 
-        public void ShowInterface(bool isHold = true)
-        {
-            ShowInventory(isHold);
-        }
-
         public void Sell(Player player)
         {
             bool isHold = false;
 
-            ShowInterface(isHold);
+            ShowInventory(isNeedStop: false);
 
             Product product;
 
