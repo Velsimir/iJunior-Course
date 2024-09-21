@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -16,6 +16,7 @@ namespace iJunior
             string userInput;
             Trader npcSeller = new Trader("Sam", 1000);
             Player player = new Player("John", 1000);
+            Shop shop = new Shop(player, npcSeller);
 
             while (isWorking)
             {
@@ -39,7 +40,7 @@ namespace iJunior
                         break;
 
                     case CommandBuy:
-                        npcSeller.Sell(player);
+                        shop.Trade();
                         break;
                 }
             }
@@ -92,7 +93,6 @@ namespace iJunior
         {
             if (Gold >= product.Price)
             {
-                Gold -= product.Price;
                 return true;
             }
             else
@@ -105,6 +105,8 @@ namespace iJunior
 
         public void AddProductToBag(Product product)
         {
+            Gold -= product.Price;
+
             Inventory.Add(product);
         }
     }
@@ -126,31 +128,7 @@ namespace iJunior
             Inventory.Add(new Product("Руна Тейваз", 390, "Аура атаки +20"));
         }
 
-        public void Sell(Player player)
-        {
-            bool isHold = false;
-
-            ShowInventory(isNeedStop: false);
-
-            Product product;
-
-            if (TryGetProduct(out product) == false)
-            {
-                Console.WriteLine("Предмет, который вы хотите приобрести, отсутствует у продавца");
-                Console.ReadKey();
-            }
-            else
-            {
-                if (player.TryBuy(product) == true)
-                {
-                    Gold += product.Price;
-                    Inventory.Remove(product);
-                    player.AddProductToBag(product);
-                }
-            }
-        }
-
-        private bool TryGetProduct(out Product product)
+        public bool TryGetProduct(out Product product)
         {
             string userInput;
 
@@ -166,10 +144,16 @@ namespace iJunior
                     return true;
                 }
             }
-            
+
             product = null;
-            
+
             return false;
+        }
+
+        public void Sell(Product product)
+        {
+            Inventory.Remove(product);
+            Gold += product.Price;
         }
     }
 
@@ -185,5 +169,38 @@ namespace iJunior
         public string Name { get; private set; }
         public int Price { get; private set; }
         public string Description { get; private set; }
+    }
+
+    class Shop
+    {
+        private Player _player;
+        private Trader _trader;
+        
+        public Shop(Player player, Trader trader)
+        {
+            _player = player;
+            _trader = trader;
+        }
+
+        public void Trade()
+        {
+            _trader.ShowInventory(isNeedStop: false);
+
+            Product product;
+
+            if (_trader.TryGetProduct(out product) == false)
+            {
+                Console.WriteLine("Предмет, который вы хотите приобрести, отсутствует у продавца");
+                Console.ReadKey();
+            }
+            else
+            {
+                if (_player.TryBuy(product) == true)
+                {
+                    _trader.Sell(product);
+                    _player.AddProductToBag(product);
+                }
+            }
+        }
     }
 }
