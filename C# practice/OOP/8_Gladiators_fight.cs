@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Internal;
 
 namespace iJunior
 {
@@ -19,17 +18,17 @@ namespace iJunior
     {
         protected int NecessaryChanceOfSuccess = 50;
 
-        public int HealthPoint { get; protected set; }
-        public int ManaPoint { get; protected set; }
-        public int AttackPower { get; protected set; }
-        public int SpellChance { get; protected set; }
-
         protected Fighter(int healthPoint, int manaPoint, int physicalAttack)
         {
             HealthPoint = healthPoint;
             ManaPoint = manaPoint;
             AttackPower = physicalAttack;
         }
+
+        public int HealthPoint { get; protected set; }
+        public int ManaPoint { get; protected set; }
+        public int AttackPower { get; protected set; }
+        public int SpellChance { get; protected set; }
 
         public virtual void Attack(Fighter enemyFighter)
         {
@@ -230,7 +229,6 @@ namespace iJunior
     {
         private Random _random = new Random();
         private bool _isEwade;
-
 
         public ElfWarrior() : base(133, 100, 4) { }
 
