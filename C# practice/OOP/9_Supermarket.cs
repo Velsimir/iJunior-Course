@@ -49,27 +49,32 @@ namespace iJunior
 
     class Supermarket
     { 
+        private List<Product> _products;
         private Queue<Client> _clients = new Queue<Client>();
 
         public Supermarket()
         {
-            Products = new List<Product>();
-            
-            Products.Add(new Product("Сыр", 149));
-            Products.Add(new Product("Колбаса", 239));
-            Products.Add(new Product("Хлеб", 99));
-            Products.Add(new Product("Молоко", 89));
-            Products.Add(new Product("Яйца", 119));
-            Products.Add(new Product("Картофель 1кг", 78));
-            Products.Add(new Product("Шоколад", 129));
-            Products.Add(new Product("Лимонад", 119));
-            Products.Add(new Product("Печенье", 47));
-            Products.Add(new Product("Мясо", 339));
-            Products.Add(new Product("Гречка", 79));
-            Products.Add(new Product("Макароны", 79));
+            _products = new List<Product>();
+        
+            _products.Add(new Product("Сыр", 149));
+            _products.Add(new Product("Колбаса", 239));
+            _products.Add(new Product("Хлеб", 99));
+            _products.Add(new Product("Молоко", 89));
+            _products.Add(new Product("Яйца", 119));
+            _products.Add(new Product("Картофель 1кг", 78));
+            _products.Add(new Product("Шоколад", 129));
+            _products.Add(new Product("Лимонад", 119));
+            _products.Add(new Product("Печенье", 47));
+            _products.Add(new Product("Мясо", 339));
+            _products.Add(new Product("Гречка", 79));
+            _products.Add(new Product("Макароны", 79));
         }
         
-        public List<Product> Products { get; private set; }
+        public List<Product> Products
+        {
+            get { return new List<Product>(_products);}
+            private set { _products = value; }
+        }
         public int Money { get; private set; } = 0;
 
         public void ServeClients()
@@ -259,8 +264,7 @@ namespace iJunior
         private Product TakeRandomProduct(List<Product> products)
         {
             int firstProduct = 0;
-            int lastProduct = products.Count();
-            int randomIndex = UserUtils.GetRandomNumber(lastProduct,firstProduct);
+            int randomIndex = UserUtils.GetRandomNumber(products.Count(),firstProduct);
 
             return products[randomIndex];
         }
@@ -269,9 +273,8 @@ namespace iJunior
     public static class UserUtils
     {
         private const int MinValue = 0;
-        private const int MaxValue = 101;
 
-        private static Random _random = new Random();
+        private static Random s_random = new Random();
 
         public static int GetRandomNumber(int max, int min = MinValue)
         {
