@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Internal;
 
 namespace iJunior
 {
@@ -16,6 +15,7 @@ namespace iJunior
             bool isWorking = true;
             string userInput;
             Supermarket superMarket = new Supermarket();
+            ClientFactory clientFactory = new ClientFactory();
 
             do
             {
@@ -32,7 +32,7 @@ namespace iJunior
                 switch (userInput)
                 {
                     case CommandAddClients:
-                        superMarket.AddQueueClients();
+                        superMarket.AddClients(clientFactory.CreateClients(superMarket.Products));
                         break;
 
                     case CommandServeClient:
@@ -49,25 +49,27 @@ namespace iJunior
 
     class Supermarket
     { 
-        private List<Product> _products = new List<Product>();
         private Queue<Client> _clients = new Queue<Client>();
 
         public Supermarket()
         {
-            _products.Add(new Product("Сыр", 149));
-            _products.Add(new Product("Колбаса", 239));
-            _products.Add(new Product("Хлеб", 99));
-            _products.Add(new Product("Молоко", 89));
-            _products.Add(new Product("Яйца", 119));
-            _products.Add(new Product("Картофель 1кг", 78));
-            _products.Add(new Product("Шоколад", 129));
-            _products.Add(new Product("Лимонад", 119));
-            _products.Add(new Product("Печенье", 47));
-            _products.Add(new Product("Мясо", 339));
-            _products.Add(new Product("Гречка", 79));
-            _products.Add(new Product("Макароны", 79));
+            Products = new List<Product>();
+            
+            Products.Add(new Product("Сыр", 149));
+            Products.Add(new Product("Колбаса", 239));
+            Products.Add(new Product("Хлеб", 99));
+            Products.Add(new Product("Молоко", 89));
+            Products.Add(new Product("Яйца", 119));
+            Products.Add(new Product("Картофель 1кг", 78));
+            Products.Add(new Product("Шоколад", 129));
+            Products.Add(new Product("Лимонад", 119));
+            Products.Add(new Product("Печенье", 47));
+            Products.Add(new Product("Мясо", 339));
+            Products.Add(new Product("Гречка", 79));
+            Products.Add(new Product("Макароны", 79));
         }
         
+        public List<Product> Products { get; private set; }
         public int Money { get; private set; } = 0;
 
         public void ServeClients()
@@ -89,15 +91,10 @@ namespace iJunior
             Console.ReadKey();
         }
 
-        public void AddQueueClients()
+        public void AddClients(Queue<Client> clients)
         {
-            int minClients = 5;
-            int maxClients = 15;
-            int clientsInQueue = UserUtils.GetCustomRandomNumber(maxClients, minClients);
-
-            for (int i = 0; i < clientsInQueue; i++)
+            foreach (var client in clients)
             {
-                Client client = new Client(GiveProducts(_products));
                 _clients.Enqueue(client);
             }
         }
@@ -105,7 +102,7 @@ namespace iJunior
         private int CalculatePriceProducts(Client client)
         {
             int basketCost = 0;
-            List<Product> products = client.GiveBasket();
+            List<Product> products = client.Basket;
 
             for (int i = 0; i < products.Count(); i++)
             {
@@ -123,9 +120,9 @@ namespace iJunior
             {
                 basketCost = CalculatePriceProducts(client);
 
-                if (client.VerifyEnoughMoney(basketCost))
+                if (client.CanPay(basketCost))
                 {
-                    client.RemoveRundomProduct();
+                    client.RemoveRandomProduct();
                 }
                 else
                 {
@@ -136,18 +133,6 @@ namespace iJunior
 
             Console.ReadKey();
         }
-
-        private List<Product> GiveProducts(List<Product> products)
-        {
-            List<Product> tempProducts = new List<Product>();
-
-            foreach (var product in products)
-            {
-                tempProducts.Add(product);
-            }
-
-            return tempProducts;
-        }
     }
 
     class Client
@@ -155,41 +140,29 @@ namespace iJunior
         private List<Product> _shoppingBasket;
         private List<Product> _bag;
 
-        public Client(List<Product> products)
+        public int Money { get; private set; }
+
+        public Client()
         {
             int minMoney = 500;
             int maxMoney = 1500;
             _shoppingBasket = new List<Product>();
             _bag = new List<Product>();
 
-            Money = UserUtils.GetCustomRandomNumber(maxMoney, minMoney);
-
-            FillBasket(products);
+            Money = UserUtils.GetRandomNumber(maxMoney, minMoney);
         }
-        
-        public int Money { get; private set; }
+    
         public int ProductsCount => _shoppingBasket.Count();
+        public List<Product> Basket => new List<Product>(_shoppingBasket);
 
-        public bool VerifyEnoughMoney(int basketCost)
+        public bool CanPay(int basketCost)
         {
             return basketCost >= Money;
         }
 
-        public List<Product> GiveBasket()
+        public void RemoveRandomProduct()
         {
-            List<Product> products = new List<Product>();
-
-            foreach (var product in _shoppingBasket)
-            {
-                products.Add(product);
-            }
-
-            return products;
-        }
-
-        public void RemoveRundomProduct()
-        {
-            Product product = _shoppingBasket[GetRandomIndex(_shoppingBasket.Count)];
+            Product product = _shoppingBasket[UserUtils.GetRandomNumber(_shoppingBasket.Count)];
             _shoppingBasket.Remove(product);
 
             Console.WriteLine($"Из корзины убрал продукт: {product.Name}");
@@ -198,7 +171,7 @@ namespace iJunior
         public void BuyProducts(int cost)
         {
             TransferProductsToBag(_shoppingBasket);
-            
+        
             foreach (var product in _bag)
             {
                 Console.WriteLine($"Приобрел: {product.Name} за цену - {product.Cost}");
@@ -207,46 +180,22 @@ namespace iJunior
             Money -= cost;
         }
 
+        public void FillBasket(List<Product> products)
+        {
+            foreach (var product in products)
+            {
+                _shoppingBasket.Add(product);
+            }
+        }
+    
         private void TransferProductsToBag(List<Product> boughtProducts)
         {
             foreach (var product in boughtProducts)
             {
                 _bag.Add(product);
             }
-            
+        
             boughtProducts.Clear();
-        }
-
-        private int GetRandomIndex(int maxProducts)
-        {
-            int lastProduct = maxProducts;
-            int randomIndex = UserUtils.GetCustomRandomNumber(lastProduct);
-
-            return randomIndex;
-        }
-
-        private Product TakeRandomProduct(List<Product> products)
-        {
-            int firstProduct = 0;
-            int lastProduct = products.Count();
-            int randomIndex = UserUtils.GetCustomRandomNumber(lastProduct,firstProduct);
-
-            return products[randomIndex];
-        }
-
-        private void FillBasket(List<Product> products)
-        {
-            int minProducts = 5;
-            int maxProducts = 15;
-
-            int countOfProducts = UserUtils.GetCustomRandomNumber(maxProducts, minProducts);
-
-            for (int i = 0; i < countOfProducts; i++)
-            {
-                Product product = TakeRandomProduct(products);
-
-                _shoppingBasket.Add(new Product(product.Name, product.Cost));
-            }
         }
     }
 
@@ -257,9 +206,64 @@ namespace iJunior
             Name = name;
             Cost = cost;
         }
-        
+    
         public string Name { get; private set; }
         public int Cost { get; private set; }
+    }
+    
+    public class ClientFactory
+    {
+        private List<Product> _tempProducts;
+
+        public Queue<Client> CreateClients(List<Product> products)
+        {
+            Queue<Client> clients = new Queue<Client>();
+        
+            int countOfClients = UserUtils.GetRandomNumber(10);
+
+            for (int i = 0; i < countOfClients; i++)
+            {
+                clients.Enqueue(Create(products));
+            }
+
+            return clients;
+        }
+
+        private Client Create(List<Product> products)
+        {
+            Client client = new Client();
+
+            CreateBasket(products);
+        
+            client.FillBasket(_tempProducts);
+
+            return client;
+        }
+
+        private void CreateBasket(List<Product> products)
+        {
+            _tempProducts = new List<Product>();
+        
+            int minProducts = 5;
+            int maxProducts = 15;
+
+            int countOfProducts = UserUtils.GetRandomNumber(maxProducts, minProducts);
+
+            for (int i = 0; i < countOfProducts; i++)
+            {
+                Product product = TakeRandomProduct(products);
+                _tempProducts.Add(product);
+            }
+        }
+
+        private Product TakeRandomProduct(List<Product> products)
+        {
+            int firstProduct = 0;
+            int lastProduct = products.Count();
+            int randomIndex = UserUtils.GetRandomNumber(lastProduct,firstProduct);
+
+            return products[randomIndex];
+        }
     }
     
     public static class UserUtils
@@ -269,9 +273,9 @@ namespace iJunior
 
         private static Random _random = new Random();
 
-        public static int GetCustomRandomNumber(int max, int min = MinValue)
+        public static int GetRandomNumber(int max, int min = MinValue)
         {
-            return _random.Next(MinValue, max + 1);
+            return _random.Next(MinValue, max);
         }
     }
 }
