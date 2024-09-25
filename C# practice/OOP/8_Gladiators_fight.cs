@@ -14,7 +14,7 @@ namespace iJunior
         }
     }
 
-    abstract class Fighter
+    public abstract class Fighter
     {
         protected int NecessaryChanceOfSuccess = 50;
 
@@ -24,11 +24,11 @@ namespace iJunior
             ManaPoint = manaPoint;
             AttackPower = physicalAttack;
         }
-
+    
         public int HealthPoint { get; protected set; }
         public int ManaPoint { get; protected set; }
         public int AttackPower { get; protected set; }
-        public int SpellChance { get; protected set; }
+        protected int SpellChance { get; set; }
 
         public virtual void Attack(Fighter enemyFighter)
         {
@@ -40,17 +40,17 @@ namespace iJunior
         {
             HealthPoint -= damage;
         }
+
+        public abstract Fighter Clone();
     }
 
-    class HumanWarrior : Fighter
+    public class HumanWarrior : Fighter
     {
-        private Random _random = new Random();
-
         public HumanWarrior() : base(126, 100, 4) { }
 
         public override void Attack(Fighter enemyFighter)
         {
-            SpellChance = _random.Next(100);
+            SpellChance = UserUtils.GetRandomNumber(0, 100);
 
             if (SpellChance > NecessaryChanceOfSuccess)
             {
@@ -61,6 +61,11 @@ namespace iJunior
                 base.Attack(enemyFighter);
             }
         }
+    
+        public override Fighter Clone()
+        {
+            return new HumanWarrior();
+        }
 
         private int CastMultiplierAttack()
         {
@@ -70,7 +75,7 @@ namespace iJunior
             {
                 int minCritical = 1;
                 int maxCritical = 4;
-                int criticalMultiplier = _random.Next(minCritical, maxCritical);
+                int criticalMultiplier = UserUtils.GetRandomNumber(minCritical, maxCritical);
                 int damage;
 
                 Console.Write("Использует Critical Attack| ");
@@ -86,18 +91,15 @@ namespace iJunior
             Console.WriteLine($" Не хватает маны! Наносит противнику {AttackPower} единиц урона!");
             return AttackPower;
         }
-
     }
 
-    class HumanMage : Fighter
+    public class HumanMage : Fighter
     {
-        private Random _random = new Random();
-
         public HumanMage() : base(90, 100, 7) { }
 
         public override void Attack(Fighter enemyFighter)
         {
-            SpellChance = _random.Next(100);
+            SpellChance = UserUtils.GetRandomNumber(0, 100);
 
             if (SpellChance > NecessaryChanceOfSuccess)
             {
@@ -107,6 +109,11 @@ namespace iJunior
             {
                 base.Attack(enemyFighter);
             }
+        }
+    
+        public override Fighter Clone()
+        {
+            return new HumanMage();
         }
 
         private int CastMagicSpell()
@@ -133,16 +140,16 @@ namespace iJunior
         }
     }
 
-    class OrkWarrior : Fighter
+    public class OrkWarrior : Fighter
     {
-        private Random _random = new Random();
-
-        public OrkWarrior() : base(133, 100, 4) { }
+        public OrkWarrior() : base(133, 100, 4)
+        {
+        }
 
         public override void Attack(Fighter enemyFighter)
         {
             int manaCouast = 20;
-            SpellChance = _random.Next(100);
+            SpellChance = UserUtils.GetRandomNumber(0, 100);
 
             if (SpellChance > NecessaryChanceOfSuccess && ManaPoint > manaCouast)
             {
@@ -153,12 +160,17 @@ namespace iJunior
                 base.Attack(enemyFighter);
             }
         }
+    
+        public override Fighter Clone()
+        {
+            return new OrkWarrior();
+        }
 
         private int CastMortalBlow(Fighter fighter)
         {
             int spellDamage = 8;
             int damage;
-            int killerChanse = _random.Next(10);
+            int killerChanse = UserUtils.GetRandomNumber(0, 10);
             int necessaryKillerChanse = 1;
 
             Console.Write("Использует Mortal Blow");
@@ -176,16 +188,14 @@ namespace iJunior
             return damage;
         }
     }
-
-    class OrkMage : Fighter
+    
+    public class OrkMage : Fighter
     {
-        private Random _random = new Random();
-
         public OrkMage() : base(105, 100, 4) { }
 
         public override void Attack(Fighter enemyFighter)
         {
-            SpellChance = _random.Next(100);
+            SpellChance = UserUtils.GetRandomNumber(0, 100);
 
             if (SpellChance > NecessaryChanceOfSuccess)
             {
@@ -196,17 +206,22 @@ namespace iJunior
                 base.Attack(enemyFighter);
             }
         }
+    
+        public override Fighter Clone()
+        {
+            return new OrkMage();
+        }
 
         private int CastHeal()
         {
             int manaCoast = 40;
             int minHealPoint = 10;
             int maxHealPoint = 25;
-            int lowHP = 40;
+            int lowHealthPoint = 40;
 
-            if (ManaPoint >= manaCoast && HealthPoint < lowHP)
+            if (ManaPoint >= manaCoast && HealthPoint < lowHealthPoint)
             {
-                int heal = _random.Next(minHealPoint, maxHealPoint);
+                int heal = UserUtils.GetRandomNumber(minHealPoint, maxHealPoint);
                 int damage;
 
                 Console.Write("Использует Heal| ");
@@ -215,7 +230,8 @@ namespace iJunior
                 HealthPoint += heal;
                 ManaPoint -= manaCoast;
 
-                Console.WriteLine($" наносит противнику {damage} единиц урона! А также восстанавливает {heal} единиц здоровья");
+                Console.WriteLine(
+                    $" наносит противнику {damage} единиц урона! А также восстанавливает {heal} единиц здоровья");
 
                 return damage;
             }
@@ -225,16 +241,18 @@ namespace iJunior
         }
     }
 
-    class ElfWarrior : Fighter
+    public class ElfWarrior : Fighter
     {
-        private Random _random = new Random();
         private bool _isEwade;
 
-        public ElfWarrior() : base(133, 100, 4) { }
+
+        public ElfWarrior() : base(133, 100, 4)
+        {
+        }
 
         public override void Attack(Fighter enemyFighter)
         {
-            SpellChance = _random.Next(100);
+            SpellChance = UserUtils.GetRandomNumber(0, 100);
 
             if (SpellChance > NecessaryChanceOfSuccess)
             {
@@ -257,6 +275,11 @@ namespace iJunior
                 Console.Write(" | Уворот!");
             }
         }
+    
+        public override Fighter Clone()
+        {
+            return new ElfWarrior();
+        }
 
         private int CastDodge()
         {
@@ -273,7 +296,8 @@ namespace iJunior
                 damage = AttackPower;
                 ManaPoint -= manaCoast;
 
-                Console.WriteLine($" наносит противнику {damage} единиц урона! А также готовиться увернуться от следующего удара");
+                Console.WriteLine(
+                    $" наносит противнику {damage} единиц урона! А также готовиться увернуться от следующего удара");
 
                 return damage;
             }
@@ -281,20 +305,20 @@ namespace iJunior
             Console.WriteLine($" Не хватает маны! Наносит противнику {AttackPower} единиц урона!");
             return AttackPower;
         }
-
     }
 
-    class ElfMage : Fighter
+    public class ElfMage : Fighter
     {
         private int _spellChanse;
-        private Random _random = new Random();
         private bool _isEwade;
 
-        public ElfMage() : base(96, 100, 2) { }
+        public ElfMage() : base(96, 100, 2)
+        {
+        }
 
         public override void Attack(Fighter enemyFighter)
         {
-            SpellChance = _random.Next(100);
+            SpellChance = UserUtils.GetRandomNumber(0, 100);
 
             if (SpellChance > NecessaryChanceOfSuccess)
             {
@@ -316,6 +340,11 @@ namespace iJunior
             {
                 Console.WriteLine(" | Удар прошел насквозь!");
             }
+        }
+
+        public override Fighter Clone()
+        {
+            return new ElfMage();
         }
 
         private int CastDisembodied()
@@ -343,134 +372,122 @@ namespace iJunior
         }
     }
 
-    class Arena
+    public class Arena
+{
+    private List<Fighter> _allFighters;
+    private Fighter _fighterLeft;
+    private Fighter _fighterRight;
+    private string _nameLeftFighter = "Боец 1: ";
+    private string _nameRightFighter = "Боец 2: ";
+
+    public Arena()
     {
-        private Fighter[] _allFighters;
-        private Fighter _fighterLeft;
-        private Fighter _fighterRight;
-        private string _nameLeftFighter = "Боец 1: ";
-        private string _nameRightFighter = "Боец 2: ";
+        ShowAllFighters(CreateFightersList());
 
-        public Arena()
+        _fighterLeft = CreateFighter(ChoseFighter());
+
+        CreateFightersList();
+
+        _fighterRight = CreateFighter(ChoseFighter());
+
+        Console.Clear();
+        Console.WriteLine("Вы выбрали:");
+        ShowFighterInfo(_fighterLeft, _nameLeftFighter);
+        ShowFighterInfo(_fighterRight, _nameRightFighter);
+
+        Console.ReadKey();
+    }
+
+    public void Fight()
+    {
+        while (_fighterLeft.HealthPoint > 0 && _fighterRight.HealthPoint > 0)
         {
-            ShowAllFighters(CreateFightersList());
-
-            _fighterLeft = CreateFighter(TakeIndexFighter());
-
-            CreateFightersList();
-
-            _fighterRight = CreateFighter(TakeIndexFighter());
-
             Console.Clear();
-            Console.WriteLine("Вы выбрали:");
+
             ShowFighterInfo(_fighterLeft, _nameLeftFighter);
+
+            _fighterLeft.Attack(_fighterRight);
+
             ShowFighterInfo(_fighterRight, _nameRightFighter);
 
-            Console.ReadKey();
-        }
-
-        public void Fight()
-        {
-            while (_fighterLeft.HealthPoint > 0 && _fighterRight.HealthPoint > 0)
-            {
-                Console.Clear();
-
-                ShowFighterInfo(_fighterLeft, _nameLeftFighter);
-
-                _fighterLeft.Attack(_fighterRight);
-
-                ShowFighterInfo(_fighterRight, _nameRightFighter);
-
-                _fighterRight.Attack(_fighterLeft);
-
-                Console.ReadKey();
-            }
-
-            if (_fighterLeft.HealthPoint < 0 && _fighterRight.HealthPoint < 0)
-            {
-                Console.WriteLine("Ого! Оба бойца отдали концы %)");
-            }
-            else if (_fighterLeft.HealthPoint < 0)
-            {
-                Console.WriteLine("Боец 2 Победил!");
-            }
-            else if (_fighterRight.HealthPoint < 0)
-            {
-                Console.WriteLine("Боец 1 Победил!");
-            }
+            _fighterRight.Attack(_fighterLeft);
 
             Console.ReadKey();
         }
+        
+        ShowResultOfFight();
+    }
 
-        private void ShowFighterInfo(Fighter fighter, string nameFighter)
+    private void ShowResultOfFight()
+    {
+        if (_fighterLeft.HealthPoint < 0 && _fighterRight.HealthPoint < 0)
         {
-            Console.WriteLine($"{nameFighter} HP - {fighter.HealthPoint} | MP {fighter.ManaPoint} | Phys Attack {fighter.AttackPower}");
+            Console.WriteLine("Ого! Оба бойца отдали концы %)");
         }
-
-        private void ShowAllFighters(Fighter[] fighters)
+        else if (_fighterLeft.HealthPoint < 0)
         {
-            int numberFighter = 1;
-
-            foreach (var fighter in fighters)
-            {
-                Console.WriteLine($"{numberFighter})HP - {fighter.HealthPoint} | MP {fighter.ManaPoint} | Phys Attack {fighter.AttackPower}");
-                numberFighter++;
-            }
+            Console.WriteLine("Боец 2 Победил!");
         }
-
-        private int TakeIndexFighter()
+        else if (_fighterRight.HealthPoint < 0)
         {
-            string userInputString;
-            int userInputInt;
-
-            do
-            {
-                Console.WriteLine("Выбери бойца. Вам необходимо ввести число из списка: ");
-                userInputString = Console.ReadLine();
-
-            } while (int.TryParse(userInputString, out userInputInt) == false || userInputInt <= 0 || userInputInt > _allFighters.Length);
-
-
-            return userInputInt;
-        }
-
-        private Fighter CreateFighter(int fighter)
-        {
-            switch (fighter)
-            {
-                case 1:
-                    return _allFighters[fighter];
-
-                case 2:
-                    return _allFighters[fighter];
-
-                case 3:
-                    return _allFighters[fighter];
-
-                case 4:
-                    return _allFighters[fighter];
-
-                case 5:
-                    return _allFighters[fighter];
-
-                case 6:
-                    return _allFighters[fighter];
-            }
-
-            return null;
-        }
-
-        private Fighter[] CreateFightersList()
-        {
-            _allFighters = new Fighter[6];
-            _allFighters[0] = new HumanWarrior();
-            _allFighters[1] = new HumanMage();
-            _allFighters[2] = new OrkWarrior();
-            _allFighters[3] = new OrkMage();
-            _allFighters[4] = new ElfWarrior();
-            _allFighters[5] = new ElfMage();
-
-            return _allFighters;
+            Console.WriteLine("Боец 1 Победил!");
         }
     }
+
+    private void ShowFighterInfo(Fighter fighter, string nameFighter)
+    {
+        Console.WriteLine(
+            $"{nameFighter} HP - {fighter.HealthPoint} | MP {fighter.ManaPoint} | Phys Attack {fighter.AttackPower}");
+    }
+
+    private void ShowAllFighters(List<Fighter> fighters)
+    {
+        int numberFighter = 1;
+
+        foreach (var fighter in fighters)
+        {
+            Console.WriteLine(
+                $"{numberFighter})HP - {fighter.HealthPoint} | MP {fighter.ManaPoint} | Phys Attack {fighter.AttackPower}");
+
+            numberFighter++;
+        }
+    }
+
+    private Fighter ChoseFighter()
+    {
+        string userInputString;
+        int userInputInt;
+
+        do
+        {
+            Console.WriteLine("Выбери бойца. Вам необходимо ввести число из списка: ");
+            userInputString = Console.ReadLine();
+        } while (int.TryParse(userInputString, out userInputInt) == false ||
+                 userInputInt <= 0 ||
+                 userInputInt > _allFighters.Count);
+
+
+        return _allFighters[userInputInt-1];
+    }
+
+    private Fighter CreateFighter(Fighter fighter)
+    {
+        Fighter copyFighter = fighter.Clone();
+        
+        return copyFighter;
+    }
+
+    private List<Fighter> CreateFightersList()
+    {
+        _allFighters = new List<Fighter>();
+        _allFighters.Add(new HumanWarrior());
+        _allFighters.Add(new HumanMage());
+        _allFighters.Add(new OrkWarrior());
+        _allFighters.Add(new OrkMage());
+        _allFighters.Add(new ElfWarrior());
+        _allFighters.Add(new ElfMage());
+
+        return _allFighters;
+    }
+}
 }
