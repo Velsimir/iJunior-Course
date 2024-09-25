@@ -151,8 +151,6 @@ namespace iJunior
         private List<Product> _shoppingBasket;
         private List<Product> _bag;
 
-        public int Money { get; private set; }
-
         public Client()
         {
             int minMoney = 500;
@@ -162,6 +160,8 @@ namespace iJunior
 
             Money = UserUtils.GetRandomNumber(maxMoney, minMoney);
         }
+    
+        public int Money { get; private set; }
     
         public int ProductsCount => _shoppingBasket.Count();
         public List<Product> Basket => new List<Product>(_shoppingBasket);
@@ -207,7 +207,7 @@ namespace iJunior
             }
         
             boughtProducts.Clear();
-        }
+        }   
     }
 
     class Product
@@ -224,8 +224,6 @@ namespace iJunior
     
     public class ClientFactory
     {
-        private List<Product> _tempProducts;
-
         public Queue<Client> CreateClients(List<Product> products)
         {
             Queue<Client> clients = new Queue<Client>();
@@ -244,16 +242,14 @@ namespace iJunior
         {
             Client client = new Client();
 
-            CreateBasket(products);
-        
-            client.FillBasket(_tempProducts);
+            client.FillBasket(CreateBasket(products));
 
             return client;
         }
 
-        private void CreateBasket(List<Product> products)
+        private List<Product> CreateBasket(List<Product> products)
         {
-            _tempProducts = new List<Product>();
+            List<Product> tempProducts = new List<Product>();
         
             int minProducts = 5;
             int maxProducts = 15;
@@ -263,14 +259,17 @@ namespace iJunior
             for (int i = 0; i < countOfProducts; i++)
             {
                 Product product = TakeRandomProduct(products);
-                _tempProducts.Add(product);
+                tempProducts.Add(product);
             }
+
+            return tempProducts;
         }
 
         private Product TakeRandomProduct(List<Product> products)
         {
             int firstProduct = 0;
-            int randomIndex = UserUtils.GetRandomNumber(products.Count(),firstProduct);
+            int lastProduct = products.Count();
+            int randomIndex = UserUtils.GetRandomNumber(lastProduct,firstProduct);
 
             return products[randomIndex];
         }
@@ -279,8 +278,9 @@ namespace iJunior
     public static class UserUtils
     {
         private const int MinValue = 0;
+        private const int MaxValue = 101;
 
-        private static Random s_random = new Random();
+        private static Random _random = new Random();
 
         public static int GetRandomNumber(int max, int min = MinValue)
         {
