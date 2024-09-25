@@ -142,7 +142,7 @@ namespace iJunior
 
     public class OrkWarrior : Fighter
     {
-        private int _MortalBlowMaxChance = 10;
+        private int _mortalBlowMaxChance = 10;
         public OrkWarrior() : base(133, 100, 4)
         {
         }
@@ -171,7 +171,7 @@ namespace iJunior
         {
             int spellDamage = 8;
             int damage;
-            int killerChanse = UserUtils.GetCustomRandomNumber(_MortalBlowMaxChance);
+            int killerChanse = UserUtils.GetCustomRandomNumber(_mortalBlowMaxChance);
             int necessaryKillerChanse = 1;
 
             Console.Write("Использует Mortal Blow");
@@ -495,16 +495,16 @@ namespace iJunior
         private const int MinValue = 0;
         private const int MaxValue = 101;
     
-        private static Random _random = new Random();
+        private static Random s_random = new Random();
     
         public static int GetCustomRandomNumber(int max, int min = MinValue)
         {
-            return _random.Next(MinValue, max + 1);
+            return s_random.Next(MinValue, max + 1);
         }
 
         public static int GetRandomNumberByHundred()
         {
-            return _random.Next(MinValue, MaxValue);
+            return s_random.Next(MinValue, MaxValue);
         }
     }
 }
