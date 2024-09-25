@@ -47,34 +47,22 @@ namespace iJunior
         }
     }
 
-    class Supermarket
-    { 
+    public class Supermarket
+    {
         private List<Product> _products;
         private Queue<Client> _clients = new Queue<Client>();
 
         public Supermarket()
         {
-            _products = new List<Product>();
-        
-            _products.Add(new Product("Сыр", 149));
-            _products.Add(new Product("Колбаса", 239));
-            _products.Add(new Product("Хлеб", 99));
-            _products.Add(new Product("Молоко", 89));
-            _products.Add(new Product("Яйца", 119));
-            _products.Add(new Product("Картофель 1кг", 78));
-            _products.Add(new Product("Шоколад", 129));
-            _products.Add(new Product("Лимонад", 119));
-            _products.Add(new Product("Печенье", 47));
-            _products.Add(new Product("Мясо", 339));
-            _products.Add(new Product("Гречка", 79));
-            _products.Add(new Product("Макароны", 79));
+            CreateProducts();
         }
-        
+
         public List<Product> Products
         {
-            get { return new List<Product>(_products);}
+            get { return new List<Product>(_products); }
             private set { _products = value; }
         }
+
         public int Money { get; private set; } = 0;
 
         public void ServeClients()
@@ -102,6 +90,24 @@ namespace iJunior
             {
                 _clients.Enqueue(client);
             }
+        }
+
+        private void CreateProducts()
+        {
+            _products = new List<Product>();
+
+            _products.Add(new Product("Сыр", 149));
+            _products.Add(new Product("Колбаса", 239));
+            _products.Add(new Product("Хлеб", 99));
+            _products.Add(new Product("Молоко", 89));
+            _products.Add(new Product("Яйца", 119));
+            _products.Add(new Product("Картофель 1кг", 78));
+            _products.Add(new Product("Шоколад", 129));
+            _products.Add(new Product("Лимонад", 119));
+            _products.Add(new Product("Печенье", 47));
+            _products.Add(new Product("Мясо", 339));
+            _products.Add(new Product("Гречка", 79));
+            _products.Add(new Product("Макароны", 79));
         }
 
         private int CalculatePriceProducts(Client client)
