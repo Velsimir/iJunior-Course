@@ -28,7 +28,7 @@ namespace iJunior
         public int HealthPoint { get; protected set; }
         public int ManaPoint { get; protected set; }
         public int AttackPower { get; protected set; }
-        protected int SpellChance { get; set; }
+        protected int SpellChance { get; private protected set; }
 
         public virtual void Attack(Fighter enemyFighter)
         {
@@ -43,14 +43,14 @@ namespace iJunior
 
         public abstract Fighter Clone();
     }
-
+    
     public class HumanWarrior : Fighter
     {
         public HumanWarrior() : base(126, 100, 4) { }
 
         public override void Attack(Fighter enemyFighter)
         {
-            SpellChance = UserUtils.GetRandomNumber(0, 100);
+            SpellChance = UserUtils.GetRandomNumberByHundred();
 
             if (SpellChance > NecessaryChanceOfSuccess)
             {
@@ -75,7 +75,7 @@ namespace iJunior
             {
                 int minCritical = 1;
                 int maxCritical = 4;
-                int criticalMultiplier = UserUtils.GetRandomNumber(minCritical, maxCritical);
+                int criticalMultiplier = UserUtils.GetCustomRandomNumber(maxCritical, minCritical);
                 int damage;
 
                 Console.Write("Использует Critical Attack| ");
@@ -99,7 +99,7 @@ namespace iJunior
 
         public override void Attack(Fighter enemyFighter)
         {
-            SpellChance = UserUtils.GetRandomNumber(0, 100);
+            SpellChance = UserUtils.GetRandomNumberByHundred();
 
             if (SpellChance > NecessaryChanceOfSuccess)
             {
@@ -142,6 +142,7 @@ namespace iJunior
 
     public class OrkWarrior : Fighter
     {
+        private int _MortalBlowMaxChance = 10;
         public OrkWarrior() : base(133, 100, 4)
         {
         }
@@ -149,7 +150,7 @@ namespace iJunior
         public override void Attack(Fighter enemyFighter)
         {
             int manaCouast = 20;
-            SpellChance = UserUtils.GetRandomNumber(0, 100);
+            SpellChance = UserUtils.GetRandomNumberByHundred();
 
             if (SpellChance > NecessaryChanceOfSuccess && ManaPoint > manaCouast)
             {
@@ -170,7 +171,7 @@ namespace iJunior
         {
             int spellDamage = 8;
             int damage;
-            int killerChanse = UserUtils.GetRandomNumber(0, 10);
+            int killerChanse = UserUtils.GetCustomRandomNumber(_MortalBlowMaxChance);
             int necessaryKillerChanse = 1;
 
             Console.Write("Использует Mortal Blow");
@@ -195,7 +196,7 @@ namespace iJunior
 
         public override void Attack(Fighter enemyFighter)
         {
-            SpellChance = UserUtils.GetRandomNumber(0, 100);
+            SpellChance = UserUtils.GetRandomNumberByHundred();
 
             if (SpellChance > NecessaryChanceOfSuccess)
             {
@@ -221,7 +222,7 @@ namespace iJunior
 
             if (ManaPoint >= manaCoast && HealthPoint < lowHealthPoint)
             {
-                int heal = UserUtils.GetRandomNumber(minHealPoint, maxHealPoint);
+                int heal = UserUtils.GetCustomRandomNumber(maxHealPoint, minHealPoint);
                 int damage;
 
                 Console.Write("Использует Heal| ");
@@ -245,14 +246,13 @@ namespace iJunior
     {
         private bool _isEwade;
 
-
         public ElfWarrior() : base(133, 100, 4)
         {
         }
 
         public override void Attack(Fighter enemyFighter)
         {
-            SpellChance = UserUtils.GetRandomNumber(0, 100);
+            SpellChance = UserUtils.GetRandomNumberByHundred();
 
             if (SpellChance > NecessaryChanceOfSuccess)
             {
@@ -309,7 +309,6 @@ namespace iJunior
 
     public class ElfMage : Fighter
     {
-        private int _spellChanse;
         private bool _isEwade;
 
         public ElfMage() : base(96, 100, 2)
@@ -318,7 +317,7 @@ namespace iJunior
 
         public override void Attack(Fighter enemyFighter)
         {
-            SpellChance = UserUtils.GetRandomNumber(0, 100);
+            SpellChance = UserUtils.GetRandomNumberByHundred();
 
             if (SpellChance > NecessaryChanceOfSuccess)
             {
@@ -382,7 +381,9 @@ namespace iJunior
 
     public Arena()
     {
-        ShowAllFighters(CreateFightersList());
+        CreateFightersList();
+        
+        ShowAllFighters(_allFighters);
 
         _fighterLeft = CreateFighter(ChoseFighter());
 
@@ -477,7 +478,7 @@ namespace iJunior
         return copyFighter;
     }
 
-    private List<Fighter> CreateFightersList()
+    private void CreateFightersList()
     {
         _allFighters = new List<Fighter>();
         _allFighters.Add(new HumanWarrior());
@@ -486,8 +487,24 @@ namespace iJunior
         _allFighters.Add(new OrkMage());
         _allFighters.Add(new ElfWarrior());
         _allFighters.Add(new ElfMage());
-
-        return _allFighters;
     }
 }
+    
+    public static class UserUtils
+    {
+        private const int MinValue = 0;
+        private const int MaxValue = 101;
+    
+        private static Random _random = new Random();
+    
+        public static int GetCustomRandomNumber(int max, int min = MinValue)
+        {
+            return _random.Next(MinValue, max + 1);
+        }
+
+        public static int GetRandomNumberByHundred()
+        {
+            return _random.Next(MinValue, MaxValue);
+        }
+    }
 }
