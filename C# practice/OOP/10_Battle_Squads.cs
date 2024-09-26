@@ -2,8 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.NetworkInformation;
-using System.Runtime.CompilerServices;
 
 namespace iJunior
 {
@@ -11,417 +9,149 @@ namespace iJunior
     {
         public static void Main(string[] args)
         {
-            Country country1 = new Country();
-            Country country2 = new Country();
-            Battlefield battlefield = new Battlefield();
-
-            battlefield.FighеСountries(country1, country2);
+            
         }
     }
-
-    class Barrack
+    
+    public class Battlefield
     {
+        public void FightPlatoons(Platoon platoon1, Platoon platoon2)
+        {
+            ShowStatusPlatoons(platoon1, platoon2);
+        
+            while (platoon1.IsPlatoonAnySolder && platoon2.IsPlatoonAnySolder)
+            {
+                FightSoldiers(platoon1, platoon2);
+                platoon1.DeleteDeadSoldier();
+
+                if (platoon1.IsPlatoonAnySolder)
+                {
+                    FightSoldiers(platoon2, platoon1);
+                    platoon2.DeleteDeadSoldier();
+                }
+            }
+
+            ShowResult(platoon1, platoon2);
+        }
+
+        private void ShowResult(Platoon country1, Platoon country2)
+        {
+            if (country1.IsPlatoonAnySolder == false && country2.IsPlatoonAnySolder == false)
+            {
+                Console.WriteLine("Оба отряда потерпели поражение");
+            }
+            else if (country1.IsPlatoonAnySolder == false)
+            {
+                Console.WriteLine("Отряд 2 одержал победу");
+            }
+            else if (country2.IsPlatoonAnySolder == false)
+            {
+                Console.WriteLine("Отряд 1 одержал победу");
+            }
+        }
+
+        private void ShowStatusPlatoons(Platoon country1, Platoon country2)
+        {
+            Console.WriteLine("Первый отряд:");
+            country1.ShowPlatoon();
+        
+            Console.WriteLine();
+        
+            Console.WriteLine("Второй отряд:");
+            country2.ShowPlatoon();
+        
+            Console.WriteLine();
+        }
+
+        private void FightSoldiers(Platoon platoon1, Platoon platoon2)
+        {
+            foreach (var soldier in platoon1.Soldiers)
+            {
+                if (soldier.CanMultiHit)
+                    soldier.AttackMultyTarget(platoon2.Soldiers);
+                else
+                    soldier.AttackSoloTarget(platoon2.GetRandomSoldier());
+            }
+        }
+    }
+    
+    public class Barrack
+    {
+        private List<Soldier> _soldiers;
+
+        public Barrack()
+        {
+            _soldiers = new List<Soldier>();
+        
+            CreateSoldiers();
+        }
+
         public Soldier GetSoldier()
         {
-            List<Soldier> allSoldiers = new List<Soldier>();
-            Random random = new Random();
-
-            CreateSoldiers(allSoldiers);
-
-            int soldier = (allSoldiers.Count);
-
-            return allSoldiers[soldier];
+            return _soldiers[UserUtils.GetRandomNumber(_soldiers.Count)];
         }
 
-        private void CreateSoldiers(List<Soldier> allSoldiers)
+        private void CreateSoldiers()
         {
-            allSoldiers.Add(new Specialist());
-            allSoldiers.Add(new Corporal());
-            allSoldiers.Add(new Sergeant());
-            allSoldiers.Add(new StaffSergeant());
-            allSoldiers.Add(new MasterSergeant());
-            allSoldiers.Add(new FirstSergeant());
+            _soldiers.Add(new Specialist());
+            _soldiers.Add(new Corporal());
+            _soldiers.Add(new Sergeant());
+            _soldiers.Add(new StaffSergeant());
         }
     }
-
-    abstract class Soldier
+    
+    public class Platoon
     {
-        protected int NecessaryChanceOfSuccess = 50;
-
-        public int HealthPoint { get; protected set; }
-        public int RagePoint { get; protected set; }
-        public int AttackPower { get; protected set; }
-        public int SpellChance { get; protected set; }
-        public string Rank { get; private set; }
-
-        protected Soldier(int healthPoint, int ragePoint, int physicalAttack, string rank)
-        {
-            HealthPoint = healthPoint;
-            RagePoint = ragePoint;
-            AttackPower = physicalAttack;
-            Rank = rank;
-        }
-
-        public void ShowRank()
-        {
-            Console.WriteLine(Rank);
-        }
-
-        public virtual void Attack(Soldier enemyFighter)
-        {
-            Console.WriteLine($"Наносит обычный удар в {AttackPower} единиц урона");
-            enemyFighter.TakeDamage(AttackPower);
-        }
-
-        public virtual void TakeDamage(int damage)
-        {
-            HealthPoint -= damage;
-        }
-    }
-
-    class Specialist : Soldier
-    {
-        private Random _random = new Random();
-
-        public Specialist() : base(126, 100, 4, "Specialist") { }
-
-        public override void Attack(Soldier enemyFighter)
-        {
-            SpellChance = _random.Next(100);
-
-            if (SpellChance > NecessaryChanceOfSuccess)
-            {
-                enemyFighter.TakeDamage(CastMultiplierAttack());
-            }
-            else
-            {
-                base.Attack(enemyFighter);
-            }
-        }
-
-        private int CastMultiplierAttack()
-        {
-            int rageCost = 10;
-
-            if (RagePoint >= rageCost)
-            {
-                int minCritical = 1;
-                int maxCritical = 4;
-                int criticalMultiplier = _random.Next(minCritical, maxCritical);
-                int damage;
-
-                Console.Write("Использует Critical Attack| ");
-
-                damage = criticalMultiplier * AttackPower;
-                RagePoint -= rageCost;
-
-                Console.WriteLine($" и наносит противнику {damage} единиц урона!");
-
-                return damage;
-            }
-
-            Console.WriteLine($" Не хватает ярости! Наносит противнику {AttackPower} единиц урона!");
-            return AttackPower;
-        }
-    }
-
-    class Corporal : Soldier
-    {
-        private Random _random = new Random();
-
-        public Corporal() : base(90, 100, 7, "Corporal") { }
-
-        public override void Attack(Soldier enemyFighter)
-        {
-            SpellChance = _random.Next(100);
-
-            if (SpellChance > NecessaryChanceOfSuccess)
-            {
-                enemyFighter.TakeDamage(CastMagicSpell());
-            }
-            else
-            {
-                base.Attack(enemyFighter);
-            }
-        }
-
-        public override void TakeDamage(int damage)
-        {
-            HealthPoint -= damage;
-        }
-
-        private int CastMagicSpell()
-        {
-            int rageCost = 20;
-            int spellDamage = 18;
-            int damage;
-
-            if (RagePoint >= rageCost)
-            {
-                Console.Write("Использует Wind Strike");
-
-                damage = spellDamage + AttackPower;
-
-                Console.WriteLine($" и наносит противнику {damage} единиц урона!");
-
-                RagePoint -= rageCost;
-
-                return damage;
-            }
-
-            Console.WriteLine($" Не хватает ярости! Наносит противнику {AttackPower} единиц урона!");
-            return AttackPower;
-        }
-    }
-
-    class Sergeant : Soldier
-    {
-        private Random _random = new Random();
-
-        public Sergeant() : base(133, 100, 4, "Sergeant") { }
-
-        public override void Attack(Soldier enemyFighter)
-        {
-            int rageCost = 20;
-            SpellChance = _random.Next(100);
-
-            if (SpellChance > NecessaryChanceOfSuccess && RagePoint > rageCost)
-            {
-                enemyFighter.TakeDamage(CastMortalBlow(enemyFighter));
-            }
-            else
-            {
-                base.Attack(enemyFighter);
-            }
-        }
-
-        private int CastMortalBlow(Soldier fighter)
-        {
-            int spellDamage = 8;
-            int damage;
-            int killerChanse = _random.Next(10);
-            int escessaryKillerChanse = 1;
-
-            Console.Write("Использует Mortal Blow");
-
-            if (killerChanse == escessaryKillerChanse)
-            {
-                damage = fighter.HealthPoint - 1;
-                Console.WriteLine($" и наносит противнику {damage} единиц урона!!!!");
-                return damage;
-            }
-
-            damage = spellDamage + AttackPower;
-
-            Console.WriteLine($" и наносит противнику {damage} единиц урона!");
-            return damage;
-        }
-    }
-
-    class StaffSergeant : Soldier
-    {
-        private Random _random = new Random();
-
-        public StaffSergeant() : base(105, 100, 4, "StaffSergeant") { }
-
-        public override void Attack(Soldier enemyFighter)
-        {
-            SpellChance = _random.Next(100);
-
-            if (SpellChance > NecessaryChanceOfSuccess)
-            {
-                enemyFighter.TakeDamage(CastHeal());
-            }
-            else
-            {
-                base.Attack(enemyFighter);
-            }
-        }
-
-        private int CastHeal()
-        {
-            int rageCost = 40;
-            int lowHealth = 40;
-
-            if (RagePoint >= rageCost && HealthPoint < lowHealth)
-            {
-                int heal = _random.Next(10, 25);
-                int damage;
-
-                Console.Write("Использует Heal| ");
-
-                damage = AttackPower;
-                HealthPoint += heal;
-                RagePoint -= rageCost;
-
-                Console.WriteLine($" наносит противнику {damage} единиц урона! А также восстанавливает {heal} единиц здоровья");
-
-                return damage;
-            }
-
-            Console.WriteLine($" Не хватает ярости! Наносит противнику {AttackPower} единиц урона!");
-            return AttackPower;
-        }
-    }
-
-    class MasterSergeant : Soldier
-    {
-        private Random _random = new Random();
-        private bool _isEvade;
-
-
-        public MasterSergeant() : base(133, 100, 4, "MasterSergeant") { }
-
-        public override void Attack(Soldier enemyFighter)
-        {
-            SpellChance = _random.Next(100);
-
-            if (SpellChance > NecessaryChanceOfSuccess)
-            {
-                enemyFighter.TakeDamage(CastDodge());
-            }
-            else
-            {
-                base.Attack(enemyFighter);
-            }
-        }
-
-        public override void TakeDamage(int damage)
-        {
-            if (_isEvade == false)
-            {
-                HealthPoint -= damage;
-            }
-            else
-            {
-                Console.WriteLine(" | Уворот!");
-            }
-        }
-
-        private int CastDodge()
-        {
-            int rageCost = 10;
-            _isEvade = false;
-
-            if (RagePoint >= rageCost)
-            {
-                _isEvade = true;
-                int damage;
-
-                Console.Write("Использует Dodge| ");
-
-                damage = AttackPower;
-                RagePoint -= rageCost;
-
-                Console.WriteLine($" наносит противнику {damage} единиц урона! А также готовиться увернуться от следующего удара");
-
-                return damage;
-            }
-
-            Console.WriteLine($" Не хватает ярости! Наносит противнику {AttackPower} единиц урона!");
-            return AttackPower;
-        }
-    }
-
-    class FirstSergeant : Soldier
-    {
-        private int _spellChanse;
-        private Random _random = new Random();
-        private bool _isEvade;
-
-        public FirstSergeant() : base(96, 100, 4, "FirstSergeant") { }
-
-        public override void Attack(Soldier enemyFighter)
-        {
-            SpellChance = _random.Next(100);
-
-            if (SpellChance > NecessaryChanceOfSuccess)
-            {
-                enemyFighter.TakeDamage(CastDisembodied());
-            }
-            else
-            {
-                base.Attack(enemyFighter);
-            }
-        }
-
-        public override void TakeDamage(int damage)
-        {
-            if (_isEvade == false)
-            {
-                HealthPoint -= damage;
-            }
-            else
-            {
-                Console.WriteLine(" | Удар прошел насквозь!");
-            }
-        }
-
-        private int CastDisembodied()
-        {
-            int rageCost = 20;
-            _isEvade = false;
-
-            if (RagePoint >= rageCost)
-            {
-                int damage;
-                _isEvade = true;
-
-                Console.Write("Использует Disembodied| ");
-
-                damage = AttackPower + rageCost;
-                RagePoint -= rageCost;
-
-                Console.WriteLine($" наносит противнику {damage} единиц урона! А также его тело стало прозрачным");
-
-                return damage;
-            }
-
-            Console.WriteLine($" Не хватает ярости! Наносит противнику {AttackPower} единиц урона!");
-            return AttackPower;
-        }
-    }
-
-    class Country
-    {
-        private Queue<Soldier> _platoon;
+        private List<Soldier> _soldiers;
         private int _maxSoldiersInPlatoon = 10;
 
-        public Country()
+        public Platoon()
         {
-            _platoon = new Queue<Soldier>();
+            _soldiers = new List<Soldier>();
 
             CreatePlatoon();
         }
 
-        public void ShowPlatoon(int positionY, int positionX)
+        public bool IsPlatoonAnySolder => _soldiers.Count > 0;
+        public List<Soldier> Soldiers 
         {
-            foreach (var soldier in _platoon)
+            get
             {
-                Console.SetCursorPosition(positionY, positionX);
+                return _soldiers.ToList();
+            }
+            private set
+            {
+                _soldiers = value;
+            }
+        }
 
+        public void ShowPlatoon()
+        {
+            foreach (var soldier in _soldiers)
+            {
                 soldier.ShowRank();
-
-                positionX++;
             }
         }
 
-        public void DeleteDeadSoldier(Soldier soldier)
+        public void DeleteDeadSoldier()
         {
-            if (soldier.HealthPoint <= 0)
+            Queue<Soldier> deadSoldiers = new Queue<Soldier>();
+
+            foreach (var soldier in _soldiers)
             {
-                _platoon.Dequeue();
+                if (soldier.IsDead)
+                    deadSoldiers.Enqueue(soldier);
+            }
+
+            while (deadSoldiers.Count > 0)
+            {
+                _soldiers.Remove(deadSoldiers.Dequeue());
             }
         }
 
-        public Soldier GetSoldier()
+        public Soldier GetRandomSoldier()
         {
-            return _platoon.Peek();
-        }
-
-        public bool IsPlatoonAnySolder()
-        {
-            return (_platoon.Count > 0);
+            return _soldiers[UserUtils.GetRandomNumber(_soldiers.Count)];
         }
 
         private void CreatePlatoon()
@@ -430,70 +160,222 @@ namespace iJunior
 
             for (int i = 0; i < _maxSoldiersInPlatoon; i++)
             {
-                _platoon.Enqueue(barrack.GetSoldier());
+                _soldiers.Add(barrack.GetSoldier().Clone());
             }
         }
     }
-
-    class Battlefield
+    
+    public abstract class Soldier
     {
-        public void FighеСountries(Country country1, Country country2)
+        private int _healthPoint;
+
+        protected Soldier(int healthPoint, int physicalAttack, bool canMultiHit, string rank)
         {
-            while (country1.IsPlatoonAnySolder() == true && country2.IsPlatoonAnySolder() == true)
-            {
-                Console.Clear();
-
-                ShowStatusPlatoons(country1, country2);
-
-                Soldier soldier1 = country1.GetSoldier();
-                Soldier soldier2 = country2.GetSoldier();
-
-                FightSoldiers(soldier1, soldier2);
-
-                country1.DeleteDeadSoldier(soldier1);
-                country2.DeleteDeadSoldier(soldier2);
-            }
-
-            ShowResult(country1, country2);
-
-            Console.ReadKey();
+            _healthPoint = healthPoint;
+            AttackPower = physicalAttack;
+            CanMultiHit = canMultiHit;
+            Rank = rank;
         }
 
-        private void ShowResult(Country country1, Country country2)
+        public bool CanMultiHit { get; private set; }
+        public bool IsDead => _healthPoint <= 0;
+        protected string Rank { get; private set; }
+        protected int AttackPower { get; private set; }
+
+        public void ShowRank()
         {
-            if (country1.IsPlatoonAnySolder() == false && country2.IsPlatoonAnySolder() == false)
-            {
-                Console.WriteLine("Обе страны потерпели поражение");
-            }
-            else if (country1.IsPlatoonAnySolder() == false)
-            {
-                Console.WriteLine("Страна 2 одержала победу");
-            }
-            else if (country2.IsPlatoonAnySolder() == false)
-            {
-                Console.WriteLine("Страна 1 одержала победу");
-            }
+            Console.WriteLine(Rank);
         }
 
-        private void ShowStatusPlatoons(Country country1, Country country2)
+        public virtual void AttackSoloTarget(Soldier enemyFighter)
         {
-            country1.ShowPlatoon(0, 0);
-            country2.ShowPlatoon(20, 0);
+            Console.WriteLine($"{Rank} Наносит обычный удар в {AttackPower} единиц урона {enemyFighter.Rank}");
+            enemyFighter.TakeDamage(AttackPower);
+        }
+    
+        public virtual void AttackMultyTarget(List<Soldier> enemyPlatoon) { }
+
+        private void TakeDamage(int damage)
+        {
+            if (damage >= 0)
+                _healthPoint -= damage;
+        }
+
+        public abstract Soldier Clone();
+    }
+    
+    public class Corporal : Soldier
+    {
+        public Corporal() : base(90, 6, false,"Corporal") { }
+
+        public override void AttackSoloTarget(Soldier enemyFighter)
+        {
+            base.AttackSoloTarget(enemyFighter);
+        
             Console.WriteLine();
         }
 
-        private void FightSoldiers(Soldier soldier1, Soldier soldier2)
+        public override Soldier Clone()
         {
-            while (soldier1.HealthPoint > 0 && soldier2.HealthPoint > 0)
+            return new Corporal();
+        }
+    }
+    
+    public class Sergeant : Soldier
+    {
+        public Sergeant() : base(133, 4, false, "Sergeant") { }
+
+        public override void AttackSoloTarget(Soldier enemyFighter)
+        {
+            int damage = MultiHit();
+        
+            if (damage == 0)
+                Console.WriteLine($"{Rank} размахался так сильно, что нанес {damage}!!! (но бил в другую сторону)");
+            else
+                Console.WriteLine($"{Rank} размахался так сильно, что нанес {damage}!!!");
+        
+            Console.WriteLine();
+        }
+
+        public override Soldier Clone()
+        {
+            return new Sergeant();
+        }
+
+        private int MultiHit()
+        {
+            int chance = 5;
+        
+            return UserUtils.GetRandomNumber(chance) * AttackPower;
+        }
+    }
+    
+    public class Specialist : Soldier
+    {
+        private int _index;
+        public Specialist() : base(126, 3, true, "Specialist") { }
+
+        public override void AttackMultyTarget(List<Soldier> enemyPlatoon)
+        {
+            int maxSoldiers = 5;
+            maxSoldiers = enemyPlatoon.Count > maxSoldiers ? maxSoldiers : enemyPlatoon.Count;
+        
+            Queue<Soldier> tempSoldiers = ChooseRandomSoldiers(enemyPlatoon,UserUtils.GetRandomNumber(maxSoldiers));
+
+            while (tempSoldiers.Count > 0)
             {
-                Console.WriteLine("Солдат 1: ");
-                soldier1.Attack(soldier2);
-
-                Console.WriteLine("Солдат 2: ");
-                soldier2.Attack(soldier1);
-
-                Console.ReadKey();
+                AttackSoloTarget(tempSoldiers.Dequeue());
             }
+        
+            Console.WriteLine();
+        }
+
+        public override Soldier Clone()
+        {
+            return new Specialist();
+        }
+
+        private Queue<Soldier> ChooseRandomSoldiers(List<Soldier> enemies, int soldiersTook)
+        {
+            Queue<Soldier> tempSoldiers = new Queue<Soldier>();
+        
+            do
+            {
+                _index = UserUtils.GetRandomNumber(enemies.Count);
+            
+                tempSoldiers.Enqueue(enemies[_index]);
+                enemies.RemoveAt(_index);
+            
+                soldiersTook--;
+            } while (soldiersTook > 0);
+
+            return tempSoldiers;
+        }
+    }
+    
+    public class StaffSergeant : Soldier
+    {
+        public StaffSergeant() : base(105, 3, true, "StaffSergeant") { }
+
+        public override void AttackMultyTarget(List<Soldier> enemyPlatoon)
+        {
+            int maxSoldiers = 5;
+            maxSoldiers = enemyPlatoon.Count > maxSoldiers ? maxSoldiers : enemyPlatoon.Count;
+        
+            Queue<Soldier> tempSoldiers = ChooseRandomSoldiers(enemyPlatoon,UserUtils.GetRandomNumber(maxSoldiers));
+
+            while (tempSoldiers.Count > 0)
+            {
+                AttackSoloTarget(tempSoldiers.Dequeue());
+            }
+        
+            Console.WriteLine();
+        }
+
+        public override Soldier Clone()
+        {
+            return new StaffSergeant();
+        }
+
+        private Queue<Soldier> ChooseRandomSoldiers(List<Soldier> enemies, int soldiersTook)
+        {
+            Queue<Soldier> tempSoldiersQueue = new Queue<Soldier>();
+            List<Soldier> tempSoldiersList;
+            int index;
+
+            tempSoldiersList = ShuffleSoldiers(enemies);
+        
+            do
+            {
+                index = UserUtils.GetRandomNumber(tempSoldiersList.Count);
+            
+                tempSoldiersQueue.Enqueue(tempSoldiersList[index]);
+                tempSoldiersList.RemoveAt(index);
+            
+                soldiersTook--;
+            } while (soldiersTook > 0);
+
+            return tempSoldiersQueue;
+        }
+
+        private List<Soldier> ShuffleSoldiers(List<Soldier> enemies)
+        {
+            List<Soldier> tempSoldiers = new List<Soldier>();
+
+            foreach (var soldier in enemies)
+            {
+                tempSoldiers.Add(soldier);
+            }
+        
+            Shuffle(tempSoldiers);
+        
+            return tempSoldiers;
+        }
+
+        private void Shuffle(List<Soldier> enemies)
+        {
+            Soldier tempSoldier;
+            int randomIndex;
+        
+            for (int i = 0; i < enemies.Count; i++)
+            {
+                randomIndex = UserUtils.GetRandomNumber(enemies.Count);
+                tempSoldier = enemies[randomIndex];
+                enemies[randomIndex] = enemies[i];
+                enemies[i] = tempSoldier;
+            }
+        }
+    }
+    
+    public static class UserUtils
+    {
+        private const int MinValue = 0;
+
+        private static Random _random = new Random();
+
+        public static int GetRandomNumber(int max, int min = MinValue)
+        {
+            return _random.Next(MinValue, max);
         }
     }
 }
