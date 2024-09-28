@@ -4,181 +4,217 @@ using System.Linq;
 
 namespace iJunior
 {
-class MainClass
-{
-    public static void Main(string[] args)
+    class MainClass
     {
-        const string CommandAdd = "1";
-        const string CommandRemove = "2";
-        const string CommandWait = "3";
-        const string CommandExit = "4";
-        const string AddInfo = "Добавить";
-        const string RemoveInfo = "Убрать";
-        const string WaitInfo = "Подождать";
-        const string ExitInfo = "Выключить";
-
-        string userInput;
-        bool isWorking = true;
-        Aquarium aquarium = new Aquarium();
-
-        while (isWorking)
+        public static void Main(string[] args)
         {
-            Console.Clear();
-            aquarium.ShowAllFish();
+            const string CommandAdd = "1";
+            const string CommandRemove = "2";
+            const string CommandWait = "3";
+            const string CommandExit = "4";
+            const string AddInfo = "Добавить";
+            const string RemoveInfo = "Убрать";
+            const string WaitInfo = "Подождать";
+            const string ExitInfo = "Выключить";
 
-            Console.WriteLine($"Что вы хотите сделать?\n{CommandAdd} - {AddInfo}" +
-                              $"\n{CommandRemove} - {RemoveInfo}" +
-                              $"\n{CommandWait} - {WaitInfo}" +
-                              $"\n{CommandExit} - {ExitInfo}");
+            string userInput;
+            bool isWorking = true;
+            Aquarium aquarium = new Aquarium();
 
-            userInput = Console.ReadLine();
-
-            switch (userInput)
+            Console.CursorVisible = false;
+            
+            while (isWorking)
             {
-                case CommandAdd:
-                    aquarium.AddFish();
-                    break;
+                Console.Clear();
+                aquarium.ShowAllFish();
 
-                case CommandRemove:
-                    aquarium.PullOutFish();
-                    break;
+                Console.WriteLine($"Что вы хотите сделать?\n{CommandAdd} - {AddInfo}" +
+                                  $"\n{CommandRemove} - {RemoveInfo}" +
+                                  $"\n{CommandWait} - {WaitInfo}" +
+                                  $"\n{CommandExit} - {ExitInfo}");
 
-                case CommandWait:
-                    aquarium.SpendDay();
-                    break;
+                userInput = Console.ReadLine();
 
-                case CommandExit:
-                    isWorking = false;
-                    break;
-            }
-        }
-    }
-    
-    class Aquarium
-    {
-        private List<Fish> _fishes;
-        private int _maxFishIn = 7;
-        private string _userInput;
-
-        public Aquarium()
-        {
-            _fishes = new List<Fish>();
-        }
-
-        public void ShowAllFish()
-        {
-            if (_fishes.Count > 0)
-            {
-                for (int i = 0; i < _fishes.Count(); i++)
+                switch (userInput)
                 {
-                    _fishes[i].ShowLifeStatus();
+                    case CommandAdd:
+                        aquarium.AddFish();
+                        break;
+
+                    case CommandRemove:
+                        aquarium.PullOutFish();
+                        break;
+
+                    case CommandWait:
+                        aquarium.SpendDay();
+                        break;
+
+                    case CommandExit:
+                        isWorking = false;
+                        break;
                 }
             }
-            else
-            {
-                Console.WriteLine("В аквариуме пока никого нет :)");
-            }
         }
-
-        public void AddFish()
+        
+        class Aquarium
         {
-            if (_fishes.Count < _maxFishIn)
-            {
-                _fishes.Add(new Fish());
-            }
-            else
-            {
-                Console.WriteLine("В аквариуме не осталось места!");
-            }
+            private List<Fish> _fishes;
+            private int _maxFishIn = 7;
+            private string _userInput;
 
-            SpendDay();
-        }
-
-        public void PullOutFish()
-        {
-            if (_fishes.Count > 0 && TryGetFish(out Fish fish))
+            public Aquarium()
             {
-                DeleteFish(fish);
-            }
-            else
-            {
-                Console.WriteLine("Вы хотите убрать рыбку, которой нет в аквариуме...");
-                Console.ReadKey();
+                _fishes = new List<Fish>();
             }
 
-            SpendDay();
-        }
-
-        public void SpendDay()
-        {
-            foreach (var fish in _fishes)
+            public void ShowAllFish()
             {
-                fish.SpendDay();
-            }
-        }
-
-        private void DeleteFish(Fish fish)
-        {
-            _fishes.Remove(fish);
-        }
-
-        private bool TryGetFish(out Fish findedFish)
-        {
-            int index = GetIndex();
-
-            foreach (Fish fish in _fishes)
-            {
-                if (fish.Index == index)
+                if (_fishes.Count > 0)
                 {
-                    findedFish = fish;
-                    return true;
+                    for (int i = 0; i < _fishes.Count(); i++)
+                    {
+                        _fishes[i].ShowLifeStatus();
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("В аквариуме пока никого нет :)");
                 }
             }
 
-            findedFish = null;
-            return false;
-        }
-
-        private int GetIndex()
-        {
-            int index = 1;
-
-            do
+            public void AddFish()
             {
-                Console.Write("Какую рыбку вы хотите выбрать? Необходимо ввести ее номер: ");
-                _userInput = Console.ReadLine();
-            } while (int.TryParse(_userInput, out index) == false);
+                if (_fishes.Count < _maxFishIn)
+                {
+                    _fishes.Add(new Fish());
+                }
+                else
+                {
+                    Console.WriteLine("В аквариуме не осталось места!");
+                }
 
-            return index;
+                SpendDay();
+            }
+
+            public void PullOutFish()
+            {
+                if (_fishes.Count > 0 && TryGetFish(out Fish fish))
+                {
+                    DeleteFish(fish);
+                }
+                else
+                {
+                    Console.WriteLine("Вы хотите убрать рыбку, которой нет в аквариуме...");
+                    Console.ReadKey();
+                }
+
+                SpendDay();
+            }
+
+            public void SpendDay()
+            {
+                foreach (var fish in _fishes)
+                {
+                    fish.SpendDay();
+                }
+            }
+
+            private void DeleteFish(Fish fish)
+            {
+                _fishes.Remove(fish);
+            }
+
+            private bool TryGetFish(out Fish findedFish)
+            {
+                int index = GetIndex();
+
+                foreach (Fish fish in _fishes)
+                {
+                    if (fish.Index == index)
+                    {
+                        findedFish = fish;
+                        return true;
+                    }
+                }
+
+                findedFish = null;
+                return false;
+            }
+
+            private int GetIndex()
+            {
+                int index = 1;
+
+                do
+                {
+                    Console.Write("Какую рыбку вы хотите выбрать? Необходимо ввести ее номер: ");
+                    _userInput = Console.ReadLine();
+                } while (int.TryParse(_userInput, out index) == false);
+
+                return index;
+            }
         }
-    }
-    
-    class Fish
-    {
-        private static int s_globalIndex = 0;
         
-        private int _daysToDie = 15;
-        private bool _isDead => _daysToDie <= 0;
-
-        public Fish()
+        class Fish
         {
-            Index = ++s_globalIndex;
-        }
-        
-        public int Index { get; private set; }
+            private static int s_globalIndex = 0;
+            
+            private int _daysToDie;
+            private int _daysLived = 0;
+            private ConsoleColor _color;
+            private bool _isDead => _daysToDie <= 0;
 
-        public void SpendDay()
-        {
-            _daysToDie--;
-        }
-        
-        public void ShowLifeStatus()
-        {
-            if (_isDead)
-                Console.WriteLine($"Номер рыбки {Index}) - мертва");
-            else
-                Console.WriteLine($"Номер рыбки {Index}) Она живет в аквариуме дней - {_daysToDie}");
-        }
+            public Fish()
+            {
+                int minLivedDays = 5;
+                int maxLivedDays = 15;
+                
+                Index = ++s_globalIndex;
+                _daysToDie = UserUtils.GetRandomNumber(maxLivedDays, minLivedDays);
+                _color = SetRandomColor();
+            }
+            
+            public int Index { get; private set; }
 
+            public void SpendDay()
+            {
+                ++_daysLived;
+                _daysToDie--;
+            }
+            
+            public void ShowLifeStatus()
+            {
+                Console.Write($"{Index}) ");
+                DrowFish();
+                
+                if (_isDead)
+                    Console.WriteLine(" - мертва");
+                else
+                {
+                    Console.WriteLine($" Она живет в аквариуме дней - {_daysLived}");
+                }
+
+            }
+
+            private void DrowFish()
+            {
+                Console.ForegroundColor = _color;
+
+                if (_isDead)
+                    Console.Write("><(((X>");
+                else
+                    Console.Write("><(((8>");
+
+                Console.ResetColor();
+            }
+
+            private ConsoleColor SetRandomColor()
+            {
+                var colors = Enum.GetValues(typeof(ConsoleColor));
+                ConsoleColor randomColor = (ConsoleColor)colors.GetValue(UserUtils.GetRandomNumber(colors.Length));
+                
+                return randomColor;
+            }
+        }
     }
 }
