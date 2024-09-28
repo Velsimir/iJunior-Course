@@ -1,70 +1,63 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Globalization;
 using System.Linq;
-using System.Runtime;
-using Internal;
 
 namespace iJunior
 {
-    class MainClass
+class MainClass
+{
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
+        const string CommandAdd = "1";
+        const string CommandRemove = "2";
+        const string CommandWait = "3";
+        const string CommandExit = "4";
+        const string AddInfo = "Добавить";
+        const string RemoveInfo = "Убрать";
+        const string WaitInfo = "Подождать";
+        const string ExitInfo = "Выключить";
+
+        string userInput;
+        bool isWorking = true;
+        Aquarium aquarium = new Aquarium();
+
+        while (isWorking)
         {
-            const string CommandAdd = "1";
-            const string CommandRemove = "2";
-            const string CommandWait = "3";
-            const string CommandExit = "4";
-            const string AddInfo = "Добавить";
-            const string RemoveInfo = "Убрать";
-            const string WaitInfo = "Подождать";
-            const string ExitInfo = "Выключить";
+            Console.Clear();
+            aquarium.ShowAllFish();
 
-            string userInput;
-            bool isWorking = true;
-            Aquarium aquarium = new Aquarium();
+            Console.WriteLine($"Что вы хотите сделать?\n{CommandAdd} - {AddInfo}" +
+                              $"\n{CommandRemove} - {RemoveInfo}" +
+                              $"\n{CommandWait} - {WaitInfo}" +
+                              $"\n{CommandExit} - {ExitInfo}");
 
-            while (isWorking)
+            userInput = Console.ReadLine();
+
+            switch (userInput)
             {
-                Console.Clear();
-                aquarium.ShowAllFish();
+                case CommandAdd:
+                    aquarium.AddFish();
+                    break;
 
-                Console.WriteLine($"Что вы хотите сделать?\n{CommandAdd} - {AddInfo}" +
-                    $"\n{CommandRemove} - {RemoveInfo}" +
-                    $"\n{CommandWait} - {WaitInfo}" +
-                    $"\n{CommandExit} - {ExitInfo}");
+                case CommandRemove:
+                    aquarium.PullOutFish();
+                    break;
 
-                userInput = Console.ReadLine();
+                case CommandWait:
+                    aquarium.SpendDay();
+                    break;
 
-                switch (userInput)
-                {
-                    case CommandAdd:
-                        aquarium.AddFish();
-                        break;
-
-                    case CommandRemove:
-                        aquarium.PullOutFish();
-                        break;
-
-                    case CommandWait:
-                        aquarium.SkipDay();
-                        break;
-
-                    case CommandExit:
-                        isWorking = false;
-                        break;
-                }
+                case CommandExit:
+                    isWorking = false;
+                    break;
             }
         }
     }
-
+    
     class Aquarium
     {
         private List<Fish> _fishes;
         private int _maxFishIn = 7;
-        private int _currentDay = 1;
-        private int _indexFish = 1;
         private string _userInput;
 
         public Aquarium()
@@ -78,7 +71,7 @@ namespace iJunior
             {
                 for (int i = 0; i < _fishes.Count(); i++)
                 {
-                    _fishes[i].ShowLifeStatus(_currentDay);
+                    _fishes[i].ShowLifeStatus();
                 }
             }
             else
@@ -91,15 +84,14 @@ namespace iJunior
         {
             if (_fishes.Count < _maxFishIn)
             {
-                _fishes.Add(new Fish(_currentDay, _indexFish));
-                _indexFish++;
+                _fishes.Add(new Fish());
             }
             else
             {
                 Console.WriteLine("В аквариуме не осталось места!");
             }
 
-            SkipDay();
+            SpendDay();
         }
 
         public void PullOutFish()
@@ -114,12 +106,15 @@ namespace iJunior
                 Console.ReadKey();
             }
 
-            SkipDay();
+            SpendDay();
         }
 
-        public void SkipDay()
+        public void SpendDay()
         {
-            _currentDay++;
+            foreach (var fish in _fishes)
+            {
+                fish.SpendDay();
+            }
         }
 
         private void DeleteFish(Fish fish)
@@ -157,39 +152,33 @@ namespace iJunior
             return index;
         }
     }
-
+    
     class Fish
     {
-        private int _lifeCycleInDays = 15;
-        private int _birthday;
-        private int _lifeTime;
-        private bool _isDead = false;
+        private static int s_globalIndex = 0;
+        
+        private int _daysToDie = 15;
+        private bool _isDead => _daysToDie <= 0;
 
+        public Fish()
+        {
+            Index = ++s_globalIndex;
+        }
+        
         public int Index { get; private set; }
 
-        public Fish(int birthday, int index)
+        public void SpendDay()
         {
-            _birthday = birthday;
-            Index = index;
+            _daysToDie--;
         }
-
-        public void ShowLifeStatus(int currentDay)
+        
+        public void ShowLifeStatus()
         {
-            if (IsFishDead(currentDay))
-            {
+            if (_isDead)
                 Console.WriteLine($"Номер рыбки {Index}) - мертва");
-            }
             else
-            {
-                Console.WriteLine($"Номер рыбки {Index}) Она живет в аквариуме дней - {_lifeTime}");
-            }
+                Console.WriteLine($"Номер рыбки {Index}) Она живет в аквариуме дней - {_daysToDie}");
         }
 
-        private bool IsFishDead(int currentDay)
-        {
-            _lifeTime = currentDay - _birthday;
-
-            return _isDead = _lifeTime >= _lifeCycleInDays;
-        }
     }
 }
