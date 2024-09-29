@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Internal;
 
 namespace iJunior
 {
@@ -9,40 +8,32 @@ namespace iJunior
     {
         public static void Main(string[] args)
         {
-            Zoo zoo = new Zoo();
+            List<Aviary> aviaries = new List<Aviary>()
+                {new Aviary(), new Aviary(), new Aviary(), new Aviary(), new Aviary()};
+            
+            Zoo zoo = new Zoo(aviaries);
 
             zoo.ShowMenu();
         }
     }
 
-    enum Animals
-    {
-        Cats = 1,
-        Dogs,
-        Cows,
-        Mouse,
-        Fox
-    }
-
     class Zoo
     {
-        private const int CommandExit = 0;
+        private List<Aviary> _aviaries;
 
-        private List<Aviary> _aviaries = new List<Aviary>();
-
-        public Zoo()
+        public Zoo(List<Aviary> aviaries)
         {
-            _aviaries.Add(new Aviary(Animals.Cats));
-            _aviaries.Add(new Aviary(Animals.Dogs));
-            _aviaries.Add(new Aviary(Animals.Cows));
-            _aviaries.Add(new Aviary(Animals.Mouse));
-            _aviaries.Add(new Aviary(Animals.Fox));
+            _aviaries = new List<Aviary>();
+            
+            _aviaries = aviaries;
         }
 
         public void ShowMenu()
         {
+            const int CommandExit = 0;
             bool isWorking = true;
-
+            int index;
+            
             while (isWorking)
             {
                 Console.Clear();
@@ -54,16 +45,14 @@ namespace iJunior
 
                 ShowAllAviary();
 
-                int index = GetIndex();
-
-                if (index >= 0)
-                {
-                    _aviaries[index].ShowInfo();
-                }
+                index = UserUtils.GetIndex(_aviaries.Count);
+                
+                if (index > 0)
+                    _aviaries[index - 1].ShowInfo();
                 else
-                {
                     isWorking = false;
-                }
+
+                Console.ReadLine();
             }
         }
 
@@ -74,99 +63,44 @@ namespace iJunior
                 Console.WriteLine($"{i + 1}) {_aviaries[i].Name}");
             }
         }
-
-        private int GetIndex()
-        {
-            int index = 1;
-            string userInput;
-
-            do
-            {
-                do
-                {
-                    Console.Write("Press number to chose: ");
-                    userInput = Console.ReadLine();
-
-                } while (int.TryParse(userInput, out index) == false);
-
-            } while (index < 0 | index > _aviaries.Count);
-
-            return index - 1;
-        }
     }
 
     class Aviary
     {
-        private const string CommandSoundOn = "y";
-        private const string CommandSoundOff = "n";
-
-        private int _maleCount;
-        private int _femaleCount;
+        private Animal _typeOfAnimal;
         private List<Animal> _animals;
+        private int _femaleCount;
+        private int _maleCount;
 
-        public string Name { get; private set; }
-
-        public Aviary(Animals animals)
+        public Aviary()
         {
-            AddAnimals(animals);
-
+            AddAnimals();
             CountAnimalGender();
-
-            Name = _animals[0].Name;
+            Name = _typeOfAnimal.Name;
         }
+        
+        public string Name { get; private set; }
 
         public void ShowInfo()
         {
             Console.Clear();
 
-            Animal typeOfAnimal = _animals[0];
-
-            Console.WriteLine($"Aviary:\n{typeOfAnimal.Name} - {typeOfAnimal.Discription}." +
+            Console.WriteLine($"Aviary:\n{_typeOfAnimal.Name} - {_typeOfAnimal.Discription}." +
                 $"\nAnimals:{_animals.Count()}\tMale: {_maleCount}\tFemale: {_femaleCount}");
-
-            ListenSound();
+            _typeOfAnimal.MakeSound();
         }
 
-        private void ListenSound()
+        private void AddAnimals()
         {
-            bool isChosing = true;
-            string userInput;
-
-            do
-            {
-                Console.WriteLine($"Wanna listen animals sound?\n{CommandSoundOn} - yes\n{CommandSoundOff} - no");
-                userInput = Console.ReadLine();
-
-                switch (userInput)
-                {
-                    case CommandSoundOn:
-                        _animals[0].MakeSound();
-                        isChosing = false;
-                        break;
-
-                    case CommandSoundOff:
-                        isChosing = false;
-                        break;
-
-                    default:
-                        Console.WriteLine("Incorrect command");
-                        break;
-                }
-
-            } while (isChosing);
-        }
-
-        private void AddAnimals(Animals animals)
-        {
-            Random random = new Random();
+            _typeOfAnimal = UserUtils.GetRandomAnimal();
             int minAnimals = 5;
             int maxAnimals = 15;
-            int _countOfAnimalsToCreate = random.Next(minAnimals, maxAnimals);
+            int _countOfAnimalsToCreate = UserUtils.GetRandomNumber(maxAnimals, minAnimals);
             _animals = new List<Animal>();
-
+            
             for (int i = 0; i < _countOfAnimalsToCreate; i++)
             {
-                _animals.Add(CreateAnimal(animals));
+                _animals.Add(_typeOfAnimal.Copy());
             }
         }
 
@@ -174,98 +108,135 @@ namespace iJunior
         {
             foreach (var animal in _animals)
             {
-                if (animal.IsSexFemale)
-                {
-                    _femaleCount++;
-                }
-                else if (animal.IsSexFemale == false)
-                {
+                if (animal.Gender == Gender.Male)
                     _maleCount++;
-                }
+                else
+                    _femaleCount++;
             }
-        }
-
-        private Animal CreateAnimal(Animals animals)
-        {
-            switch (animals)
-            {
-                case Animals.Cats:
-                    return new Cat();
-
-                case Animals.Dogs:
-                    return new Dog();
-
-                case Animals.Cows:
-                    return new Cow();
-
-                case Animals.Mouse:
-                    return new Mouse();
-
-                case Animals.Fox:
-                    return new Fox();
-            }
-
-            return null;
         }
     }
 
-    abstract class Animal
+    public abstract class Animal
     {
-        private Random _random = new Random();
-        private int _chanseChose = 50;
-
-        public string Name { get; private set; }
-        public string Discription { get; private set; }
-        public string Sound { get; private set; }
-        public bool IsSexFemale { get; private set; }
-
         protected Animal(string name, string sound, string discription)
         {
             Discription = discription;
             Name = name;
             Sound = sound;
-
-            ChoseGender();
+            Gender = UserUtils.GetRandomGender();
         }
+        
+        public string Name { get; private set; }
+        public string Discription { get; private set; }
+        public string Sound { get; private set; }
+        public Gender Gender { get; private set; }
 
         public void MakeSound()
         {
-            Console.WriteLine($"{Name} make sound {Sound}");
-            Console.ReadKey();
+            Console.Write($"Make sound {Sound}");
         }
 
-        private void ChoseGender()
+        public abstract Animal Copy();
+    }
+    
+    public static class UserUtils
+    {
+        private const int MinValue = 0;
+        private const int _chanseChose = 100;
+        private const int _halfChanse = 50;
+        private const int _male = 0;
+        private const int _female = 1;
+
+        private static List<Animal> _allAnimals;
+
+        private static Random _random = new Random();
+
+        public static Animal GetRandomAnimal()
         {
-            int gender;
+            _allAnimals = new List<Animal>()
+                {new Cat(), new Dog(), new Cow(), new Mouse(), new Fox()};
+            
+            return _allAnimals[GetRandomNumber(_allAnimals.Count)];
+        }
 
-            gender = _random.Next(100);
+        public static int GetRandomNumber(int max, int min = MinValue)
+        {
+            return _random.Next(min, max);
+        }
 
-            IsSexFemale = gender >= _chanseChose;
+        public static Gender GetRandomGender()
+        {
+            Gender gender;
+
+            return gender = GetRandomNumber(_chanseChose) > _halfChanse ? Gender.Male : Gender.Female;
+        }
+    
+        public static int GetIndex(int maxAvaries)
+        {
+            int index = 1;
+
+            do
+            {
+                Console.WriteLine("Enter correct index: ");
+            } while (int.TryParse(Console.ReadLine(), out index) == false || index > maxAvaries || index < 0);
+
+            return index;
         }
     }
 
     class Cat : Animal
     {
         public Cat() : base("Cat", "Meow", "The cat (Felis catus) is a domestic species of small carnivorous mammal") { }
+        
+        public override Animal Copy()
+        {
+            return new Cat();
+        }
     }
 
     class Dog : Animal
     {
         public Dog() : base("Dog", "Bark", "The dog (Canis familiaris or Canis lupus familiaris) is a domesticated descendant of the wolf") { }
+        
+        public override Animal Copy()
+        {
+            return new Dog();
+        }
     }
 
     class Cow : Animal
     {
         public Cow() : base("Cow", "Moo", "Cows are peaceful animals. They are vegetarians and eat grass, giving people milk") { }
+        
+        public override Animal Copy()
+        {
+            return new Cow();
+        }
     }
 
     class Mouse : Animal
     {
         public Mouse() : base("Mouse", "Squeak", "Characteristically, mice are known to have a pointed snout, small rounded ears, a body-length scaly tail, and a high breeding rate") { }
+        
+        public override Animal Copy()
+        {
+            return new Mouse();
+        }
     }
 
     class Fox : Animal
     {
         public Fox() : base("Fox", "What does the fox say?", "The fox has triangular face, dark pricked ears, black eyes and elongated muzzle. Its whiskers are black the body is red and the lower part of the face and the chest are white. It has a bushy tail.") { }
+        
+        public override Animal Copy()
+        {
+            return new Fox();
+        }
+    }
+
+    public enum Gender
+    {
+        Male,
+        Female
     }
 }
