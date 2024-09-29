@@ -8,63 +8,82 @@ namespace iJunior
     {
         public static void Main(string[] args)
         {
-            const string CommandAdd = "1";
-            const string CommandRemove = "2";
-            const string CommandWait = "3";
-            const string CommandExit = "4";
-            const string AddInfo = "Добавить";
-            const string RemoveInfo = "Убрать";
-            const string WaitInfo = "Подождать";
-            const string ExitInfo = "Выключить";
+            int maxFish = 7;
+            Aquarium aquarium = new Aquarium(maxFish);
 
-            string userInput;
-            bool isWorking = true;
-            Aquarium aquarium = new Aquarium();
+            Aquarist aquarist = new Aquarist(aquarium);
+            
+            aquarist.CaringAquarium();
+        }
+    }
+    
+    class Aquarist
+    {
+        private const string CommandAdd = "1";
+        private const string CommandRemove = "2";
+        private const string CommandWait = "3";
+        private const string CommandExit = "4";
+        private const string AddInfo = "Добавить";
+        private const string RemoveInfo = "Убрать";
+        private const string WaitInfo = "Подождать";
+        private const string ExitInfo = "Выключить";
 
+        private string _userInput;
+        private bool _isWorking = true;
+        private Aquarium _aquarium;
+
+        public Aquarist(Aquarium aquarium)
+        {
+            _aquarium = aquarium;
+        }
+
+        public void CaringAquarium()
+        {
             Console.CursorVisible = false;
-
-            while (isWorking)
+            
+            while (_isWorking)
             {
                 Console.Clear();
-                aquarium.ShowAllFish();
+                _aquarium.ShowAllFish();
 
                 Console.WriteLine($"Что вы хотите сделать?\n{CommandAdd} - {AddInfo}" +
                                   $"\n{CommandRemove} - {RemoveInfo}" +
                                   $"\n{CommandWait} - {WaitInfo}" +
                                   $"\n{CommandExit} - {ExitInfo}");
 
-                userInput = Console.ReadLine();
+                _userInput = Console.ReadLine();
 
-                switch (userInput)
+                switch (_userInput)
                 {
                     case CommandAdd:
-                        aquarium.AddFish();
+                        _aquarium.AddFish();
                         break;
 
                     case CommandRemove:
-                        aquarium.PullOutFish();
+                        _aquarium.PullOutFish();
                         break;
 
                     case CommandWait:
-                        aquarium.SpendDay();
+                        _aquarium.SpendDay();
                         break;
 
                     case CommandExit:
-                        isWorking = false;
+                        _isWorking = false;
                         break;
                 }
             }
         }
     }
-
+    
     class Aquarium
     {
         private List<Fish> _fishes;
         private int _maxFishIn = 7;
         private string _userInput;
 
-        public Aquarium()
+        public Aquarium(int maxFishIn)
         {
+            _maxFishIn = maxFishIn;
             _fishes = new List<Fish>();
         }
 
@@ -86,13 +105,9 @@ namespace iJunior
         public void AddFish()
         {
             if (_fishes.Count < _maxFishIn)
-            {
-                _fishes.Add(new Fish());
-            }
+                _fishes.Add(new Fish(Render.GetRandomColor(), UserUtils.GetRandomLiveDays()));
             else
-            {
                 Console.WriteLine("В аквариуме не осталось места!");
-            }
 
             SpendDay();
         }
@@ -127,7 +142,8 @@ namespace iJunior
 
         private bool TryGetFish(out Fish findedFish)
         {
-            int index = GetIndex();
+            string message = "Какую рыбку вы хотите выбрать? Необходимо ввести ее номер: ";
+            int index = UserUtils.GetIndex(message);
 
             foreach (Fish fish in _fishes)
             {
@@ -141,92 +157,68 @@ namespace iJunior
             findedFish = null;
             return false;
         }
-
-        private int GetIndex()
-        {
-            int index = 1;
-
-            do
-            {
-                Console.Write("Какую рыбку вы хотите выбрать? Необходимо ввести ее номер: ");
-                _userInput = Console.ReadLine();
-            } while (int.TryParse(_userInput, out index) == false);
-
-            return index;
-        }
     }
-        
-    class Fish
+    
+    static class Render
     {
-        private static int s_globalIndex = 0;
-        
-        private int _daysToDie;
-        private int _daysLived = 0;
-        private ConsoleColor _color;
-        private bool _isDead => _daysToDie <= 0;
+        private static string s_aliveFish = ">)))8>";
+        private static string s_deadFish = ">)))X>";
+        public static void DrowFish(ConsoleColor color, bool isFishDead)
+        {
+            Console.ForegroundColor = color;
 
-        public Fish()
-        {
-            int minLivedDays = 5;
-            int maxLivedDays = 15;
-            
-            Index = ++s_globalIndex;
-            _daysToDie = UserUtils.GetRandomNumber(maxLivedDays, minLivedDays);
-            _color = SetRandomColor();
-        }
-        
-        public int Index { get; private set; }
-
-        public void SpendDay()
-        {
-            ++_daysLived;
-            _daysToDie--;
-        }
-        
-        public void ShowLifeStatus()
-        {
-            Console.Write($"{Index}) ");
-            DrowFish();
-            
-            if (_isDead)
-                Console.WriteLine(" - мертва");
+            if (isFishDead)
+                Console.Write(s_deadFish);
             else
-            {
-                Console.WriteLine($" Она живет в аквариуме дней - {_daysLived}");
-            }
-
-        }
-
-        private void DrowFish()
-        {
-            Console.ForegroundColor = _color;
-
-            if (_isDead)
-                Console.Write("><(((X>");
-            else
-                Console.Write("><(((8>");
-
+                Console.Write(s_aliveFish);
+                
             Console.ResetColor();
         }
 
-        private ConsoleColor SetRandomColor()
+        public static ConsoleColor GetRandomColor()
         {
             var colors = Enum.GetValues(typeof(ConsoleColor));
             ConsoleColor randomColor = (ConsoleColor)colors.GetValue(UserUtils.GetRandomNumber(colors.Length));
-            
+                
             return randomColor;
         }
     }
     
-    public static class UserUtils
+    class Fish
     {
-        private const int MinValue = 0;
+        private static int s_globalIndex = 0;
+            
+        private int _maxAge;
+        private int _currentAge = 0;
+        private ConsoleColor _color;
 
-        private static Random _random = new Random();
-
-        public static int GetRandomNumber(int max, int min = MinValue)
+        public Fish(ConsoleColor color, int maxAge)
         {
-            return _random.Next(min, max + 1);
+
+                
+            Index = ++s_globalIndex;
+            _maxAge = maxAge;
+            _color = color;
+        }
+            
+        private bool IsDead => _currentAge >= _maxAge;
+            
+        public int Index { get; private set; }
+
+        public void SpendDay()
+        {
+            ++_currentAge;
+        }
+            
+        public void ShowLifeStatus()
+        {
+            Console.Write($"{Index}) ");
+            Render.DrowFish(_color, IsDead);
+                
+            if (IsDead)
+                Console.WriteLine(" - мертва");
+            else
+                Console.WriteLine($" Она живет в аквариуме дней - {_currentAge}");
         }
     }
 }
