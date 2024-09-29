@@ -13,23 +13,14 @@ namespace iJunior
 
             Aquarist aquarist = new Aquarist(aquarium);
             
-            aquarist.CaringAquarium();
+            Console.CursorVisible = false;
+            
+            aquarist.CareAquarium();
         }
     }
     
     class Aquarist
     {
-        private const string CommandAdd = "1";
-        private const string CommandRemove = "2";
-        private const string CommandWait = "3";
-        private const string CommandExit = "4";
-        private const string AddInfo = "Добавить";
-        private const string RemoveInfo = "Убрать";
-        private const string WaitInfo = "Подождать";
-        private const string ExitInfo = "Выключить";
-
-        private string _userInput;
-        private bool _isWorking = true;
         private Aquarium _aquarium;
 
         public Aquarist(Aquarium aquarium)
@@ -37,23 +28,26 @@ namespace iJunior
             _aquarium = aquarium;
         }
 
-        public void CaringAquarium()
+        public void CareAquarium()
         {
-            Console.CursorVisible = false;
+            const string CommandAdd = "1";
+            const string CommandRemove = "2";
+            const string CommandWait = "3";
+            const string CommandExit = "4";
             
-            while (_isWorking)
+            bool isWorking = true;
+            
+            while (isWorking)
             {
                 Console.Clear();
                 _aquarium.ShowAllFish();
 
-                Console.WriteLine($"Что вы хотите сделать?\n{CommandAdd} - {AddInfo}" +
-                                  $"\n{CommandRemove} - {RemoveInfo}" +
-                                  $"\n{CommandWait} - {WaitInfo}" +
-                                  $"\n{CommandExit} - {ExitInfo}");
+                Console.WriteLine($"Что вы хотите сделать?\n{CommandAdd} - Добавить" +
+                                  $"\n{CommandRemove} - Убрать" +
+                                  $"\n{CommandWait} - Подождать" +
+                                  $"\n{CommandExit} - Выключить");
 
-                _userInput = Console.ReadLine();
-
-                switch (_userInput)
+                switch (Console.ReadLine())
                 {
                     case CommandAdd:
                         _aquarium.AddFish();
@@ -64,13 +58,14 @@ namespace iJunior
                         break;
 
                     case CommandWait:
-                        _aquarium.SpendDay();
                         break;
 
                     case CommandExit:
-                        _isWorking = false;
+                        isWorking = false;
                         break;
                 }
+                
+                _aquarium.SpendDay();
             }
         }
     }
@@ -108,8 +103,6 @@ namespace iJunior
                 _fishes.Add(new Fish(Render.GetRandomColor(), UserUtils.GetRandomLiveDays()));
             else
                 Console.WriteLine("В аквариуме не осталось места!");
-
-            SpendDay();
         }
 
         public void PullOutFish()
@@ -123,15 +116,13 @@ namespace iJunior
                 Console.WriteLine("Вы хотите убрать рыбку, которой нет в аквариуме...");
                 Console.ReadKey();
             }
-
-            SpendDay();
         }
 
         public void SpendDay()
         {
             foreach (var fish in _fishes)
             {
-                fish.SpendDay();
+                fish.IncreaceAge();
             }
         }
 
@@ -194,8 +185,6 @@ namespace iJunior
 
         public Fish(ConsoleColor color, int maxAge)
         {
-
-                
             Index = ++s_globalIndex;
             _maxAge = maxAge;
             _color = color;
@@ -205,7 +194,7 @@ namespace iJunior
             
         public int Index { get; private set; }
 
-        public void SpendDay()
+        public void IncreaceAge()
         {
             ++_currentAge;
         }
