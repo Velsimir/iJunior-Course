@@ -221,4 +221,36 @@ namespace iJunior
                 Console.WriteLine($" Она живет в аквариуме дней - {_currentAge}");
         }
     }
+    
+    public static class UserUtils
+    {
+        private const int MinValue = 0;
+
+        private static Random _random = new Random();
+
+        public static int GetRandomNumber(int max, int min = MinValue)
+        {
+            return _random.Next(min, max + 1);
+        }
+
+        public static int GetRandomLiveDays()
+        {
+            int minLivedDays = 5;
+            int maxLivedDays = 15;
+
+            return GetRandomNumber(maxLivedDays, minLivedDays);
+        }
+    
+        public static int GetIndex(string message)
+        {
+            int index = 1;
+
+            do
+            {
+                Console.Write(message);
+            } while (int.TryParse(Console.ReadLine(), out index) == false);
+
+            return index;
+        }
+    }
 }
