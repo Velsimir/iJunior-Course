@@ -3,40 +3,26 @@ using System.Collections.Generic;
 
 namespace iJunior
 {
-    
     class MainClass
     {
         public static void Main(string[] args)
         {
-            DetailCreator.Fill();
+            DetailCreator detailCreator = new DetailCreator();
 
-            Service service = new Service();
+            Service service = new Service(detailCreator);
             
             service.Work();
         }
     }
 
-    class Client
-    {
-        private Car _car;
-
-        public Client()
-        {
-            _car = new Car();
-        }
-
-        public Car GiveCar()
-        {
-            return _car;
-        }
-    }
-
     class Car
     {
+        private DetailCreator _detailCreator;
         private List<Detail> _details;
 
-        public Car()
+        public Car(DetailCreator detailCreator)
         {
+            _detailCreator = detailCreator;
             CreateListDetails();
         }
         
@@ -62,6 +48,7 @@ namespace iJunior
                 if (detailCar.Name == newDetail.Name)
                 {
                     detailToChange = detailCar;
+                    break;
                 }
             }
 
@@ -73,17 +60,19 @@ namespace iJunior
         {
             _details = new List<Detail>();
             
-            _details = DetailCreator.GetAllForCar();
+            _details = _detailCreator.GetAllForCar();
         }
     }
 
     class Warehouse
     {
+        private DetailCreator _detailCreator;
         private Dictionary<string, Queue<Detail>> _details;
         private int _maxPlaces = 10;
 
-        public Warehouse()
+        public Warehouse(DetailCreator detailCreator)
         {
+            _detailCreator = detailCreator;
             _details = new Dictionary<string, Queue<Detail>>();
             
             Fill();
@@ -132,7 +121,7 @@ namespace iJunior
         {
             int minDetails = 1;
             
-            Detail detail = DetailCreator.GetRandomNew();
+            Detail detail = _detailCreator.GetRandomNew();
             Queue<Detail> tempDetails = new Queue<Detail>();
 
             for (int i = 0; i < UserUtils.GetRandomNumber(_maxPlaces, minDetails); i++)
@@ -187,17 +176,16 @@ namespace iJunior
     class Service
     {
         private Warehouse _warehouse;
+        private DetailCreator _detailCreator;
         private int _costWork = 400;
         private int _compensation = 200;
-        private Queue<Client> _clients;
-        private Car _carClient;
-        private List<Detail> _detailsToRepair;
+        private Queue<Car> _cars;
 
-        public Service()
+        public Service(DetailCreator detailCreator)
         {
-            _warehouse = new Warehouse();
-            _detailsToRepair = new List<Detail>();
-            _clients = new Queue<Client>();
+            _warehouse = new Warehouse(_detailCreator);
+            _detailCreator = detailCreator;
+            _cars = new Queue<Car>();
 
             InviteNewClients();
         }
@@ -264,25 +252,21 @@ namespace iJunior
             
             for (int i = 0; i < UserUtils.GetRandomNumber(maxClients, minClients); i++)
             {
-                _clients.Enqueue(new Client());
+                _cars.Enqueue(new Car(_detailCreator));
             }
         }
         
         public void SkipClient()
         {
-            if (_clients.Count > 0)
-                _clients.Dequeue();
+            if (_cars.Count > 0)
+                _cars.Dequeue();
         }
         
         public void ShowCarDetails()
         {
-            _carClient = _clients.Peek().GiveCar();
-            
-            _detailsToRepair = _carClient.Details;
+            Console.WriteLine("\nДетали в машине:");
 
-            Console.WriteLine("\nДетали в машине клиента:");
-
-            foreach (var detail in _detailsToRepair)
+            foreach (var detail in _cars.Peek().Details)
             {
                 if (detail.IsWorkable == false)
                 {
@@ -302,7 +286,7 @@ namespace iJunior
 
             if (_warehouse.TryGetDetail(out detail))
             {
-                if (_carClient.GetDetailStatusWorkable(detail))
+                if (_cars.Peek().GetDetailStatusWorkable(detail))
                 {
                     Console.WriteLine($"Вы заменили рабочую деталь! Выплата комепенсации в размере {detail.Cost + _compensation}");
                     PayCompensation(detail.Cost + _compensation);
@@ -310,7 +294,7 @@ namespace iJunior
                 }
                 else
                 {
-                    _carClient.ChangeDetail(detail);
+                    _cars.Peek().ChangeDetail(detail);
 
                     Money += detail.Cost + _costWork;
                 }
@@ -331,68 +315,81 @@ namespace iJunior
 
     class Detail
     {
-        public string Name { get; private set; }
-        public int Cost { get; private set; }
-        public bool IsWorkable { get; private set; }
-
         public  Detail(string name, int cost, bool isWorkable = true)
         {
             Name = name;
             Cost = cost;
             IsWorkable = isWorkable;
         }
+        
+        public string Name { get; private set; }
+        public int Cost { get; private set; }
+        public bool IsWorkable { get; private set; }
 
-        public void SetWorkableStatus(bool isWorkable)
+        public void Broke()
         {
-            IsWorkable = isWorkable;
+            IsWorkable = false;
+        }
+
+        public void Repair()
+        {
+            IsWorkable = true;
         }
 
         public Detail Copy()
         {
-            return new Detail(this.Name, this.Cost);
+            return new Detail(Name, Cost);
         }
     }
 
-    static class DetailCreator
+    class DetailCreator
     {
-        static private int s_maxPercent = 100;
-        static private List<Detail> s_details;
+        private int _maxPercent = 100;
+        private List<Detail> _details;
 
-        static public Detail GetRandomNew()
+        public DetailCreator()
+        {
+            Fill();
+        }
+
+        public Detail GetRandomNew()
         {
             int minIndex = 1;
-            int index = UserUtils.GetRandomNumber(s_details.Count, minIndex);
+            int index = UserUtils.GetRandomNumber(_details.Count, minIndex);
             
-            return s_details[index - 1].Copy();
+            return _details[index - 1].Copy();
         }
         
-        static public List<Detail> GetAllForCar()
+        public List<Detail> GetAllForCar()
         {
-            List<Detail> tempDetail = s_details.ToList();
+            List<Detail> tempDetail = _details.ToList();
 
             foreach (var detail in tempDetail)
             {
-                detail.SetWorkableStatus(GetWorkableStatus());
+                if (GetWorkableStatus())
+                    detail.Repair();
+                else
+                    detail.Broke();
             }
 
             return tempDetail;
         }
 
-        static public void Fill()
+        public void Fill()
         {
-            s_details = new List<Detail>();
+            _details = new List<Detail>();
             
-            s_details.Add(new Detail("Деврь", 1000));
-            s_details.Add(new Detail("Колесо", 750));
-            s_details.Add(new Detail("Дворники", 350));
-            s_details.Add(new Detail("Зеркало заднего вида", 250));
-            s_details.Add(new Detail("Двигатель", 4000));
-            s_details.Add(new Detail("Стекла", 600));
+            _details.Add(new Detail("Дверь", 1000));
+            _details.Add(new Detail("Колесо", 750));
+            _details.Add(new Detail("Дворники", 350));
+            _details.Add(new Detail("Зеркало заднего вида", 250));
+            _details.Add(new Detail("Двигатель", 4000));
+            _details.Add(new Detail("Стекла", 600));
         }
 
-        static private bool GetWorkableStatus()
+        private bool GetWorkableStatus()
         {
-            int brokenChanse = UserUtils.GetRandomNumber(s_maxPercent);
+            int brokenChanse = UserUtils.GetRandomNumber(_maxPercent);
             int necessaryСhance = 50;
 
             if (brokenChanse > necessaryСhance)
@@ -406,12 +403,11 @@ namespace iJunior
     {
         private const int MinValue = 0;
 
-        private static Random _random = new Random();
+        private static Random s_random = new Random();
 
         public static int GetRandomNumber(int max, int min = MinValue)
         {
-            return _random.Next(min, max);
+            return s_random.Next(min, max);
         }
     }
-
 }
