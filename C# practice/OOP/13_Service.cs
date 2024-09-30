@@ -1,60 +1,255 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security.Policy;
-using System.Threading;
-using System.Threading.Channels;
-using Internal;
 
 namespace iJunior
 {
+    
     class MainClass
     {
         public static void Main(string[] args)
         {
-            const string CommandYes = "y";
-            const string CommandNo = "n";
-            const string CommandExit = "e";
+            DetailCreator.Fill();
 
-            bool isWorking = true;
-            string userInput;
             Service service = new Service();
+            
+            service.Work();
+        }
+    }
 
-            while (isWorking)
+    class Client
+    {
+        private Car _car;
+
+        public Client()
+        {
+            _car = new Car();
+        }
+
+        public Car GiveCar()
+        {
+            return _car;
+        }
+    }
+
+    class Car
+    {
+        private List<Detail> _details;
+
+        public Car()
+        {
+            CreateListDetails();
+        }
+        
+        public List<Detail> Details => _details.ToList();
+
+        public bool GetDetailStatusWorkable(Detail serchingDetail)
+        {
+            foreach (var detail in _details)
+            {
+                if (detail.Name == serchingDetail.Name)
+                    return detail.IsWorkable;
+            }
+
+            return false;
+        }
+
+        public void ChangeDetail(Detail newDetail)
+        {
+            Detail detailToChange = null;
+
+            foreach (var detailCar in _details)
+            {
+                if (detailCar.Name == newDetail.Name)
+                {
+                    detailToChange = detailCar;
+                }
+            }
+
+            _details.Remove(detailToChange);
+            _details.Add(newDetail);
+        }
+
+        private void CreateListDetails()
+        {
+            _details = new List<Detail>();
+            
+            _details = DetailCreator.GetAllForCar();
+        }
+    }
+
+    class Warehouse
+    {
+        private Dictionary<string, Queue<Detail>> _details;
+        private int _maxPlaces = 10;
+
+        public Warehouse()
+        {
+            _details = new Dictionary<string, Queue<Detail>>();
+            
+            Fill();
+        }
+
+        public void Fill()
+        {
+            int randomDetailsMax = 10;
+            int randomDetailsMin = 5;
+            
+            for (int i = 0; i < UserUtils.GetRandomNumber(randomDetailsMax, randomDetailsMin); i++)
+            {
+                AddDetails(OrderDetails());
+            }
+        }
+        
+        public bool TryGetDetail(out Detail detail)
+        {
+            const string CommandNo = "нет";
+            string userInput;
+            Console.WriteLine("Введите название детали, чтобы ее заказать: " +
+                              "\n(если детали нет на складе, напишите - нет)");
+            
+            ShowDetails();
+
+            do
+            {
+                userInput = Console.ReadLine();
+            } while (TryFindDetail(userInput) == false && userInput != CommandNo);
+
+            if (userInput == CommandNo)
+            {
+                detail = null;
+                return false;
+            }
+            else
+            {
+                detail = _details[userInput].Dequeue();
+                DeletePosition(userInput);
+                return true;
+            }
+            
+        }
+
+        private Queue<Detail> OrderDetails()
+        {
+            int minDetails = 1;
+            
+            Detail detail = DetailCreator.GetRandomNew();
+            Queue<Detail> tempDetails = new Queue<Detail>();
+
+            for (int i = 0; i < UserUtils.GetRandomNumber(_maxPlaces, minDetails); i++)
+            {
+                tempDetails.Enqueue(detail);
+            }
+            
+            return tempDetails;
+        }
+
+        private void AddDetails(Queue<Detail> details)
+        {
+            if (TryFindDetail(details.Peek().Name))
+            {
+                for (int i = 0; i < details.Count; i++)
+                {
+                    _details[details.Peek().Name].Enqueue(details.Dequeue());
+                }
+            }
+            else
+            {
+                _details.Add(details.Peek().Name, details);
+            }
+        }
+
+        private bool TryFindDetail(string name)
+        {
+            foreach (var detail in _details)
+            {
+                if (detail.Key == name)
+                    return true;
+            }
+            
+            return false;
+        }
+
+        private void ShowDetails()
+        {
+            foreach (var detail in _details)
+            {
+                Console.WriteLine($"{detail.Key} на складе осталось = {detail.Value.Count}");
+            }
+        }
+
+        private void DeletePosition(string detail)
+        {
+            if (_details[detail].Count == 0)
+                _details.Remove(detail);
+        }
+    }
+
+    class Service
+    {
+        private Warehouse _warehouse;
+        private int _costWork = 400;
+        private int _compensation = 200;
+        private Queue<Client> _clients;
+        private Car _carClient;
+        private List<Detail> _detailsToRepair;
+
+        public Service()
+        {
+            _warehouse = new Warehouse();
+            _detailsToRepair = new List<Detail>();
+            _clients = new Queue<Client>();
+
+            InviteNewClients();
+        }
+        
+        public int Money { get; private set; } = 100;
+
+        public void Work()
+        {
+            const string CommandYes = "Обслужить";
+            const string CommandNo = "Пропустить";
+            const string CommandOrder = "Заказать";
+            const string CommandExit = "Выход";
+        
+            bool isWork = true;
+
+            while (isWork)
             {
                 Console.Clear();
+                
+                Console.WriteLine($"Счет автосервиса: {Money}" +
+                                  $"\nХотите обслужить текущего клиента? Или заказать детали?" +
+                                  $"\n{CommandYes}" +
+                                  $"\n{CommandNo}" +
+                                  $"\n{CommandOrder}" +
+                                  $"\n{CommandExit}");
 
-                Console.WriteLine($"Счет автосервиса: {service.Money}" +
-                    $"\nХотите обслужить текущего клиента?" +
-                    $"\n{CommandYes} - Да" +
-                    $"\n{CommandNo} - Нет" +
-                    $"\n{CommandExit} - Выход");
-
-                service.ShowCarDetails();
-
-                userInput = Console.ReadLine();
-
-                Console.Clear();
-
-                service.ShowCarDetails();
-
-                switch (userInput)
+                ShowCarDetails();
+                
+                switch (Console.ReadLine())
                 {
                     case CommandYes:
-                        service.ChangeDetail();
+                        ChangeDetail();
                         break;
 
                     case CommandNo:
-                        service.InviteNewClient();
+                        SkipClient();
+                        break;
+                    
+                    case CommandOrder:
+                        _warehouse.Fill();
                         break;
 
                     case CommandExit:
-                        isWorking = false;
+                        isWork = false;
                         break;
                 }
+                
+                Console.Clear();
 
-                if (service.Money < 0)
+                if (Money < 0)
                 {
-                    isWorking = false;
+                    isWork = false;
 
                     Console.WriteLine("Ваш автосервис остался без средств :(");
                     Console.ReadKey();
@@ -62,350 +257,161 @@ namespace iJunior
             }
         }
 
-        class Client
+        public void InviteNewClients()
         {
-            private Car _car;
-
-            public Client()
+            int maxClients = 10;
+            int minClients = 1;
+            
+            for (int i = 0; i < UserUtils.GetRandomNumber(maxClients, minClients); i++)
             {
-                _car = new Car();
-            }
-
-            public Car GiveCar()
-            {
-                return _car;
+                _clients.Enqueue(new Client());
             }
         }
-
-        class Car
+        
+        public void SkipClient()
         {
-            private List<Detail> _details;
-
-            public Car()
-            {
-                _details = new List<Detail>();
-
-                CreateListDetails();
-            }
-
-            public void ChangeDetail(Detail detailNew)
-            {
-                Detail detailToChange = null;
-
-                foreach (var detailCar in _details)
-                {
-                    if (detailCar.Name == detailNew.Name)
-                    {
-                        detailToChange = detailCar;
-                    }
-                }
-
-                _details.Remove(detailToChange);
-                _details.Add(detailNew);
-            }
-
-            public List<Detail> GetDetails()
-            {
-                List<Detail> allDetails = new List<Detail>();
-
-                foreach (var detail in _details)
-                {
-                    allDetails.Add(detail);
-                }
-
-                return allDetails;
-            }
-
-            private void CreateListDetails()
-            {
-                _details.Add(new WindScreenWiper());
-                _details.Add(new Wheel());
-                _details.Add(new Bumper());
-                _details.Add(new Door());
-            }
+            if (_clients.Count > 0)
+                _clients.Dequeue();
         }
-
-        class Warehouse
+        
+        public void ShowCarDetails()
         {
-            private Queue<Detail> _windScreenWipers;
-            private Queue<Detail> _wheels;
-            private Queue<Detail> _bumpers;
-            private Queue<Detail> _doors;
-            private int _maxPlaces = 10;
+            _carClient = _clients.Peek().GiveCar();
+            
+            _detailsToRepair = _carClient.Details;
 
-            public Warehouse()
+            Console.WriteLine("\nДетали в машине клиента:");
+
+            foreach (var detail in _detailsToRepair)
             {
-                _windScreenWipers = new Queue<Detail>();
-                _wheels = new Queue<Detail>();
-                _bumpers = new Queue<Detail>();
-                _doors = new Queue<Detail>();
-
-                for (int i = 0; i < _maxPlaces; i++)
+                if (detail.IsWorkable == false)
                 {
-                    Fill(TypeOfDetail.windScreenWiper);
-                    Fill(TypeOfDetail.wheel);
-                    Fill(TypeOfDetail.bumper);
-                    Fill(TypeOfDetail.door);
-                }
-            }
-
-            public bool TryGetDetail(TypeOfDetail typeOfDetail)
-            {
-                switch (typeOfDetail)
-                {
-                    case TypeOfDetail.windScreenWiper:
-                        return 0 < _windScreenWipers.Count;
-
-                    case TypeOfDetail.bumper:
-                        return 0 < _bumpers.Count;
-
-                    case TypeOfDetail.wheel:
-                        return 0 < _wheels.Count;
-
-                    case TypeOfDetail.door:
-                        return 0 < _doors.Count;
-                }
-
-                return typeOfDetail == null;
-            }
-
-            public Detail SwitchDetail(TypeOfDetail typeOfDetail)
-            {
-                Detail detail = null;
-
-                switch (typeOfDetail)
-                {
-                    case TypeOfDetail.windScreenWiper:
-                        return _windScreenWipers.Dequeue();
-
-                    case TypeOfDetail.bumper:
-                        return _bumpers.Dequeue();
-
-                    case TypeOfDetail.wheel:
-                        return _wheels.Dequeue();
-
-                    case TypeOfDetail.door:
-                        return _doors.Dequeue();
-                }
-
-                return detail;
-            }
-
-            public TypeOfDetail ChoseDetail()
-            {
-                string userInputString;
-                int userInputInt;
-
-                do
-                {
-                    do
-                    {
-                        ShowMenu();
-
-                        userInputString = Console.ReadLine();
-
-                    } while (int.TryParse(userInputString, out userInputInt) == false);
-
-                } while ((userInputInt < 1 || userInputInt > Enum.GetNames(typeof(TypeOfDetail)).Length));
-
-                return (TypeOfDetail)userInputInt;
-            }
-
-            private void Fill(TypeOfDetail typeOfDetail)
-            {
-                switch (typeOfDetail)
-                {
-                    case TypeOfDetail.windScreenWiper:
-                        AddDetail(_windScreenWipers, new WindScreenWiper(true));
-                        break;
-
-                    case TypeOfDetail.bumper:
-                        AddDetail(_bumpers, new Bumper(true));
-                        break;
-
-                    case TypeOfDetail.wheel:
-                        AddDetail(_wheels, new Wheel(true));
-                        break;
-
-                    case TypeOfDetail.door:
-                        AddDetail(_doors, new Door(true));
-                        break;
-                }
-            }
-
-            private void ShowMenu()
-            {
-                Console.WriteLine("\nКакую деталь для замены взять со склада?");
-                Console.WriteLine($"{TypeOfDetail.windScreenWiper.GetHashCode()} - Дворники (остаток на складе {_windScreenWipers.Count})" +
-                    $"\n{TypeOfDetail.wheel.GetHashCode()} - Колесо (остаток на складе {_wheels.Count})" +
-                    $"\n{TypeOfDetail.bumper.GetHashCode()} - Бампер (остаток на складе {_bumpers.Count})" +
-                    $"\n{TypeOfDetail.door.GetHashCode()} - Дверь (остаток на складе {_doors.Count})");
-            }
-
-            private void AddDetail(Queue<Detail> details, Detail detail)
-            {
-                if (details.Count < _maxPlaces)
-                {
-                    details.Enqueue(detail);
-                }
-            }
-        }
-
-        class Service
-        {
-            private Warehouse _warehouse;
-            private int _costWork = 40;
-            private int _compensation = 20;
-            private Client _client;
-            private Car _carClient;
-            private List<Detail> _detailsToRepair;
-
-            public int Money { get; private set; } = 100;
-
-            public Service()
-            {
-                _warehouse = new Warehouse();
-                _detailsToRepair = new List<Detail>();
-
-                InviteNewClient();
-            }
-
-            public void InviteNewClient()
-            {
-                _client = new Client();
-                _carClient = _client.GiveCar();
-                _detailsToRepair = _carClient.GetDetails();
-            }
-
-            public void ShowCarDetails()
-            {
-                _detailsToRepair = _carClient.GetDetails();
-
-                Console.WriteLine("\nДетали в машине клиента:");
-                for (int i = 0; i < _detailsToRepair.Count(); i++)
-                {
-                    if (_detailsToRepair[i].IsWorkable == false)
-                    {
-                        Console.WriteLine($"{i + 1}) Деталь - {_detailsToRepair[i].Name} | Статус - сломано " +
-                            $"| Цена замены {_detailsToRepair[i].Cost} (дополнительно за работу {_costWork})");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"{i + 1}) Деталь - {_detailsToRepair[i].Name} | Статус - целое");
-                    }
-                }
-            }
-
-            public void ChangeDetail()
-            {
-                Detail detail;
-
-                TypeOfDetail typeOfDetail = _warehouse.ChoseDetail();
-
-                if (_warehouse.TryGetDetail(typeOfDetail))
-                {
-                    detail = _warehouse.SwitchDetail(typeOfDetail);
-
-                    if (CancelChange(detail) == false)
-                    {
-                        _carClient.ChangeDetail(detail);
-
-                        Money += detail.Cost + _costWork;
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Вы заменили рабочую деталь! Выплата комепенсации в размере {detail.Cost + _compensation}");
-                        PayCompensation(detail.Cost + _compensation);
-                        Console.ReadKey();
-                    }
+                    Console.WriteLine($"Деталь - {detail.Name} | Статус - сломано " +
+                                      $"| Цена замены {detail.Cost} (дополнительно за работу {_costWork})");
                 }
                 else
                 {
-                    Console.WriteLine($"Детали нет на складе, мы выплатили компенсацию в размере {_compensation}");
-                    PayCompensation(_compensation);
+                    Console.WriteLine($"Деталь - {detail.Name} | Статус - целое");
+                }
+            }
+        }
+
+        public void ChangeDetail()
+        {
+            Detail detail;
+
+            if (_warehouse.TryGetDetail(out detail))
+            {
+                if (_carClient.GetDetailStatusWorkable(detail))
+                {
+                    Console.WriteLine($"Вы заменили рабочую деталь! Выплата комепенсации в размере {detail.Cost + _compensation}");
+                    PayCompensation(detail.Cost + _compensation);
                     Console.ReadKey();
                 }
-            }
-
-            private bool CancelChange(Detail detailService)
-            {
-                foreach (var detailCar in _detailsToRepair)
+                else
                 {
-                    if (detailCar.Name == detailService.Name)
-                    {
-                        return detailCar.IsWorkable;
-                    }
+                    _carClient.ChangeDetail(detail);
+
+                    Money += detail.Cost + _costWork;
                 }
-
-                return false;
             }
-
-            private void PayCompensation(int cost)
+            else
             {
-                Money -= cost;
+                Console.WriteLine($"Детали нет на складе, мы выплатили компенсацию в размере {_compensation}");
+                PayCompensation(_compensation);
+                Console.ReadKey();
             }
+        }
+
+        private void PayCompensation(int cost)
+        {
+            Money -= cost;
         }
     }
 
-    abstract class Detail
+    class Detail
     {
-        private Random _random = new Random();
-        private int _maxPercent = 100;
-
         public string Name { get; private set; }
         public int Cost { get; private set; }
         public bool IsWorkable { get; private set; }
 
-        protected Detail(string name, int cost, bool isNew = false)
+        public  Detail(string name, int cost, bool isWorkable = true)
         {
-            if (isNew == false)
-            {
-                SetWorkableStatus();
-            }
-            else
-            {
-                IsWorkable = true;
-            }
-
             Name = name;
             Cost = cost;
+            IsWorkable = isWorkable;
         }
 
-        private void SetWorkableStatus()
+        public void SetWorkableStatus(bool isWorkable)
         {
-            int brokenChanse = _random.Next(_maxPercent);
+            IsWorkable = isWorkable;
+        }
+
+        public Detail Copy()
+        {
+            return new Detail(this.Name, this.Cost);
+        }
+    }
+
+    static class DetailCreator
+    {
+        static private int s_maxPercent = 100;
+        static private List<Detail> s_details;
+
+        static public Detail GetRandomNew()
+        {
+            int minIndex = 1;
+            int index = UserUtils.GetRandomNumber(s_details.Count, minIndex);
+            
+            return s_details[index - 1].Copy();
+        }
+        
+        static public List<Detail> GetAllForCar()
+        {
+            List<Detail> tempDetail = s_details.ToList();
+
+            foreach (var detail in tempDetail)
+            {
+                detail.SetWorkableStatus(GetWorkableStatus());
+            }
+
+            return tempDetail;
+        }
+
+        static public void Fill()
+        {
+            s_details = new List<Detail>();
+            
+            s_details.Add(new Detail("Деврь", 1000));
+            s_details.Add(new Detail("Колесо", 750));
+            s_details.Add(new Detail("Дворники", 350));
+            s_details.Add(new Detail("Зеркало заднего вида", 250));
+            s_details.Add(new Detail("Двигатель", 4000));
+            s_details.Add(new Detail("Стекла", 600));
+        }
+
+        static private bool GetWorkableStatus()
+        {
+            int brokenChanse = UserUtils.GetRandomNumber(s_maxPercent);
             int necessaryСhance = 50;
 
             if (brokenChanse > necessaryСhance)
-            {
-                IsWorkable = false;
-            }
+                return false;
             else
-            {
-                IsWorkable = true;
-            }
+                return true;
         }
     }
 
-    class WindScreenWiper : Detail
+    public static class UserUtils
     {
-        public WindScreenWiper(bool isNew = false) : base("Дворники", 100, isNew) { }
+        private const int MinValue = 0;
+
+        private static Random _random = new Random();
+
+        public static int GetRandomNumber(int max, int min = MinValue)
+        {
+            return _random.Next(min, max);
+        }
     }
 
-    class Wheel : Detail
-    {
-        public Wheel(bool isNew = false) : base("Колесо", 200, isNew) { }
-    }
-
-    class Bumper : Detail
-    {
-        public Bumper(bool isNew = false) : base("Бампер", 300, isNew) { }
-    }
-
-    class Door : Detail
-    {
-        public Door(bool isNew = false) : base("Дверь", 500, isNew) { }
-    }
-
-    enum TypeOfDetail { windScreenWiper = 1, wheel, bumper, door }
 }
