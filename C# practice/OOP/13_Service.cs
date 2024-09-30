@@ -17,16 +17,31 @@ namespace iJunior
 
     class Car
     {
-        private DetailCreator _detailCreator;
         private List<Detail> _details;
 
-        public Car(DetailCreator detailCreator)
+        public Car(List<Detail> carDetails)
         {
-            _detailCreator = detailCreator;
-            CreateListDetails();
+            _details = new List<Detail>();
+
+            _details = carDetails;
         }
         
         public List<Detail> Details => _details.ToList();
+        
+        public bool IsBroke {
+            get
+            {
+                foreach (var detail in _details)
+                {
+                    if (detail.IsWorkable == false)
+                        return true;
+                }
+
+                return false;
+            }
+
+            private set { }
+        }
 
         public bool GetDetailStatusWorkable(Detail serchingDetail)
         {
@@ -54,13 +69,6 @@ namespace iJunior
 
             _details.Remove(detailToChange);
             _details.Add(newDetail);
-        }
-
-        private void CreateListDetails()
-        {
-            _details = new List<Detail>();
-            
-            _details = _detailCreator.GetAllForCar();
         }
     }
 
@@ -180,17 +188,18 @@ namespace iJunior
         private int _costWork = 400;
         private int _compensation = 200;
         private Queue<Car> _cars;
+        private Car _currentCar;
 
         public Service(DetailCreator detailCreator)
         {
-            _warehouse = new Warehouse(_detailCreator);
             _detailCreator = detailCreator;
+            _warehouse = new Warehouse(_detailCreator);
             _cars = new Queue<Car>();
 
             InviteNewClients();
         }
         
-        public int Money { get; private set; } = 100;
+        public int Money { get; private set; } = 500;
 
         public void Work()
         {
@@ -252,7 +261,7 @@ namespace iJunior
             
             for (int i = 0; i < UserUtils.GetRandomNumber(maxClients, minClients); i++)
             {
-                _cars.Enqueue(new Car(_detailCreator));
+                _cars.Enqueue(new Car(_detailCreator.GetAllForCar()));
             }
         }
         
@@ -264,9 +273,11 @@ namespace iJunior
         
         public void ShowCarDetails()
         {
+            _currentCar = _cars.Peek();
+            
             Console.WriteLine("\nДетали в машине:");
 
-            foreach (var detail in _cars.Peek().Details)
+            foreach (var detail in _currentCar.Details)
             {
                 if (detail.IsWorkable == false)
                 {
@@ -286,7 +297,7 @@ namespace iJunior
 
             if (_warehouse.TryGetDetail(out detail))
             {
-                if (_cars.Peek().GetDetailStatusWorkable(detail))
+                if (_currentCar.GetDetailStatusWorkable(detail))
                 {
                     Console.WriteLine($"Вы заменили рабочую деталь! Выплата комепенсации в размере {detail.Cost + _compensation}");
                     PayCompensation(detail.Cost + _compensation);
@@ -294,7 +305,7 @@ namespace iJunior
                 }
                 else
                 {
-                    _cars.Peek().ChangeDetail(detail);
+                    _currentCar.ChangeDetail(detail);
 
                     Money += detail.Cost + _costWork;
                 }
@@ -362,14 +373,16 @@ namespace iJunior
         
         public List<Detail> GetAllForCar()
         {
-            List<Detail> tempDetail = _details.ToList();
+            List<Detail> tempDetail = new List<Detail>();
 
-            foreach (var detail in tempDetail)
+            for (int i = 0; i < _details.Count; i++)
             {
+                tempDetail.Add(_details[i].Copy());
+                
                 if (GetWorkableStatus())
-                    detail.Repair();
+                    tempDetail[i].Repair();
                 else
-                    detail.Broke();
+                    tempDetail[i].Broke();
             }
 
             return tempDetail;
