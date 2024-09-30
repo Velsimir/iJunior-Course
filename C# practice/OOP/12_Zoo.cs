@@ -13,7 +13,7 @@ namespace iJunior
             
             Zoo zoo = new Zoo(aviaries);
 
-            zoo.ShowMenu();
+            zoo.StartWork();
         }
     }
 
@@ -28,32 +28,29 @@ namespace iJunior
             _aviaries = aviaries;
         }
 
-        public void ShowMenu()
+        public void StartWork()
         {
-            const int CommandExit = 0;
             bool isWorking = true;
-            int index;
-            
+
             while (isWorking)
             {
-                Console.Clear();
-
-                Console.WriteLine($"Welcome to Zoo!" +
-                    $"\nWhich aviar do you want to chose?" +
-                    $"\nPress number to chose:" +
-                    $"\n{CommandExit}) Exit");
-
-                ShowAllAviary();
-
-                index = UserUtils.GetIndex(_aviaries.Count);
-                
-                if (index > 0)
-                    _aviaries[index - 1].ShowInfo();
-                else
-                    isWorking = false;
-
-                Console.ReadLine();
+                ShowMenu();
+                ChooseCommand(ref isWorking);
             }
+        }
+
+        private void ShowMenu()
+        {
+            const int CommandExit = 0;
+
+            Console.Clear();
+
+            Console.WriteLine($"Welcome to Zoo!" +
+                              $"\nWhich aviar do you want to chose?" +
+                              $"\nPress number to chose:" +
+                              $"\n{CommandExit}) Exit");
+
+            ShowAllAviary();
         }
 
         private void ShowAllAviary()
@@ -62,6 +59,17 @@ namespace iJunior
             {
                 Console.WriteLine($"{i + 1}) {_aviaries[i].Name}");
             }
+        }
+
+        private void ChooseCommand(ref bool isWorking)
+        {
+            int index;
+            index = UserUtils.GetIndex(_aviaries.Count);
+            
+            if (index > 0)
+                _aviaries[index - 1].ShowInfo();
+            else
+                isWorking = false;
         }
     }
 
@@ -88,17 +96,19 @@ namespace iJunior
             Console.WriteLine($"Aviary:\n{_typeOfAnimal.Name} - {_typeOfAnimal.Discription}." +
                 $"\nAnimals:{_animals.Count()}\tMale: {_maleCount}\tFemale: {_femaleCount}");
             _typeOfAnimal.MakeSound();
+            
+            Console.ReadLine();
         }
 
         private void AddAnimals()
         {
             _typeOfAnimal = UserUtils.GetRandomAnimal();
+            _animals = new List<Animal>();
             int minAnimals = 5;
             int maxAnimals = 15;
-            int _countOfAnimalsToCreate = UserUtils.GetRandomNumber(maxAnimals, minAnimals);
-            _animals = new List<Animal>();
+            int countOfAnimalsToCreate = UserUtils.GetRandomNumber(maxAnimals, minAnimals);
             
-            for (int i = 0; i < _countOfAnimalsToCreate; i++)
+            for (int i = 0; i < countOfAnimalsToCreate; i++)
             {
                 _animals.Add(_typeOfAnimal.Copy());
             }
@@ -142,13 +152,12 @@ namespace iJunior
     public static class UserUtils
     {
         private const int MinValue = 0;
-        private const int _chanseChose = 100;
-        private const int _halfChanse = 50;
-        private const int _male = 0;
-        private const int _female = 1;
+        private const int ChanseChose = 100;
+        private const int HalfChanse = 50;
+        private const int Male = 0;
+        private const int Female = 1;
 
         private static List<Animal> _allAnimals;
-
         private static Random _random = new Random();
 
         public static Animal GetRandomAnimal()
@@ -168,7 +177,7 @@ namespace iJunior
         {
             Gender gender;
 
-            return gender = GetRandomNumber(_chanseChose) > _halfChanse ? Gender.Male : Gender.Female;
+            return gender = GetRandomNumber(ChanseChose) > HalfChanse ? Gender.Male : Gender.Female;
         }
     
         public static int GetIndex(int maxAvaries)
