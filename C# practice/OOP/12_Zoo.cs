@@ -8,10 +8,7 @@ namespace iJunior
     {
         public static void Main(string[] args)
         {
-            List<Aviary> aviaries = new List<Aviary>()
-                {new Aviary(), new Aviary(), new Aviary(), new Aviary(), new Aviary()};
-            
-            Zoo zoo = new Zoo(aviaries);
+            Zoo zoo = new Zoo();
 
             zoo.StartWork();
         }
@@ -19,14 +16,8 @@ namespace iJunior
 
     class Zoo
     {
-        private List<Aviary> _aviaries;
-
-        public Zoo(List<Aviary> aviaries)
-        {
-            _aviaries = new List<Aviary>();
-            
-            _aviaries = aviaries;
-        }
+        private List<Aviary> _aviaries = new List<Aviary>()
+        {new Aviary(), new Aviary(), new Aviary(), new Aviary(), new Aviary()};
 
         public void StartWork()
         {
@@ -75,7 +66,7 @@ namespace iJunior
 
     class Aviary
     {
-        private Animal _typeOfAnimal;
+        private Animal _animal;
         private List<Animal> _animals;
         private int _femaleCount;
         private int _maleCount;
@@ -84,7 +75,7 @@ namespace iJunior
         {
             AddAnimals();
             CountAnimalGender();
-            Name = _typeOfAnimal.Name;
+            Name = _animal.Name;
         }
         
         public string Name { get; private set; }
@@ -93,16 +84,16 @@ namespace iJunior
         {
             Console.Clear();
 
-            Console.WriteLine($"Aviary:\n{_typeOfAnimal.Name} - {_typeOfAnimal.Discription}." +
+            Console.WriteLine($"Aviary:\n{_animal.Name} - {_animal.Discription}." +
                 $"\nAnimals:{_animals.Count()}\tMale: {_maleCount}\tFemale: {_femaleCount}");
-            _typeOfAnimal.MakeSound();
+            _animal.MakeSound();
             
             Console.ReadLine();
         }
 
         private void AddAnimals()
         {
-            _typeOfAnimal = UserUtils.GetRandomAnimal();
+            _animal = UserUtils.GetRandomAnimal();
             _animals = new List<Animal>();
             int minAnimals = 5;
             int maxAnimals = 15;
@@ -110,7 +101,7 @@ namespace iJunior
             
             for (int i = 0; i < countOfAnimalsToCreate; i++)
             {
-                _animals.Add(_typeOfAnimal.Copy());
+                _animals.Add(_animal.Copy());
             }
         }
 
