@@ -9,23 +9,23 @@ namespace iJunior
     {
         public static void Main(string[] args)
         {
-            List<Criminal> criminals = new List<Criminal>();
             Database database = new Database();
-
-            criminals.Add(new Criminal("John", "ru", 172, 60, false));
-            criminals.Add(new Criminal("Ken", "eu", 164, 79, true));
-            criminals.Add(new Criminal("Sam", "ru", 174, 92, false));
-            criminals.Add(new Criminal("Max", "eu", 189, 98, true));
-            criminals.Add(new Criminal("Joel", "ru", 167, 55, true));
-            criminals.Add(new Criminal("Alex", "eu", 169, 59, false));
-
-            database.FindByParameters(criminals);
+            
+            database.FindByParameters();
         }
     }
-
+    
     class Database
     {
-        public void FindByParameters(List<Criminal> criminals)
+        private List<Criminal> _criminals;
+
+        public Database()
+        {
+            _criminals = new List<Criminal>();
+            Fill();
+        }
+
+        public void FindByParameters()
         {
             int height = ReturnParameter("Введите рост:");
 
@@ -34,12 +34,12 @@ namespace iJunior
             Console.WriteLine("Введите национальность (ru/eu):");
             string nationality = Console.ReadLine();
 
-            var filterList = from Criminal criminal in criminals
-                             where criminal.Weight > weight
-                             && criminal.Height > height
-                             && criminal.Nationality == nationality
-                             && criminal.IsArested == false
-                             select criminal;
+            var filterList = from Criminal criminal in _criminals
+                where criminal.Weight > weight
+                      && criminal.Height > height
+                      && criminal.Nationality == nationality
+                      && criminal.IsArested == false
+                select criminal;
 
             ShowList(filterList);
 
@@ -70,16 +70,20 @@ namespace iJunior
 
             return userInputInt;
         }
+
+        private void Fill()
+        {
+            _criminals.Add(new Criminal("John", "ru", 172, 60, false));
+            _criminals.Add(new Criminal("Ken", "eu", 164, 79, true));
+            _criminals.Add(new Criminal("Sam", "ru", 174, 92, false));
+            _criminals.Add(new Criminal("Max", "eu", 189, 98, true));
+            _criminals.Add(new Criminal("Joel", "ru", 167, 55, true));
+            _criminals.Add(new Criminal("Alex", "eu", 169, 59, false));
+        }
     }
 
     class Criminal
     {
-        public string Name { get; private set; }
-        public string Nationality { get; private set; }
-        public int Height { get; private set; }
-        public int Weight { get; private set; }
-        public bool IsArested { get; private set; }
-
         public Criminal(string name, string nationality, int height, int weight, bool isArested)
         {
             Name = name;
@@ -88,5 +92,11 @@ namespace iJunior
             Weight = weight;
             IsArested = isArested;
         }
+        
+        public string Name { get; private set; }
+        public string Nationality { get; private set; }
+        public int Height { get; private set; }
+        public int Weight { get; private set; }
+        public bool IsArested { get; private set; }
     }
 }
