@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Internal;
 
 namespace iJunior
 {
@@ -10,33 +9,36 @@ namespace iJunior
     {
         public static void Main(string[] args)
         {
-            List<Criminal> criminals = new List<Criminal>();
             Database database = new Database();
 
-            criminals.Add(new Criminal("John", "Антиправительственное"));
-            criminals.Add(new Criminal("Ken", "Ограбление"));
-            criminals.Add(new Criminal("Sam", "Антиправительственное"));
-            criminals.Add(new Criminal("Max", "Воровство"));
-            criminals.Add(new Criminal("Joel", "Антиправительственное"));
-            criminals.Add(new Criminal("Alex", "Антиправительственное"));
+            database.ShowList(database.Criminals);
 
-            criminals = criminals.Except(database.RunFilter(criminals)).ToList();
-
-            database.ShowList(criminals);
-
+            database.ShowList(database.RunFilter());
+            
             Console.ReadKey();
         }
     }
-
+    
     class Database
     {
-        public List<Criminal> RunFilter(List<Criminal> criminals)
+        private List<Criminal> _criminals;
+
+        public Database()
+        {
+            _criminals = new List<Criminal>();
+
+            Fill();
+        }
+
+        public List<Criminal> Criminals => _criminals.ToList();
+
+        public List<Criminal> RunFilter()
         {
             string typeOfCrime = "Антиправительственное";
 
-            var filteredCriminals = from Criminal criminal in criminals
-                                    where criminal.TypeOfCrime == typeOfCrime
-                                    select criminal;
+            var filteredCriminals = from Criminal criminal in _criminals
+                where criminal.TypeOfCrime == typeOfCrime
+                select criminal;
 
             return filteredCriminals.ToList();
         }
@@ -47,6 +49,18 @@ namespace iJunior
             {
                 Console.WriteLine($"{criminal.Name} - заключен под стражу");
             }
+            
+            Console.WriteLine();
+        }
+
+        private void Fill()
+        {
+            _criminals.Add(new Criminal("John", "Антиправительственное"));
+            _criminals.Add(new Criminal("Ken", "Ограбление"));
+            _criminals.Add(new Criminal("Sam", "Антиправительственное"));
+            _criminals.Add(new Criminal("Max", "Воровство"));
+            _criminals.Add(new Criminal("Joel", "Антиправительственное"));
+            _criminals.Add(new Criminal("Alex", "Антиправительственное"));
         }
     }
 
