@@ -37,7 +37,7 @@ namespace iJunior
             string typeOfCrime = "Антиправительственное";
 
             var filteredCriminals = from Criminal criminal in _criminals
-                where criminal.TypeOfCrime == typeOfCrime
+                where criminal.TypeOfCrime != typeOfCrime
                 select criminal;
 
             return filteredCriminals.ToList();
@@ -66,13 +66,13 @@ namespace iJunior
 
     class Criminal
     {
-        public string Name { get; private set; }
-        public string TypeOfCrime { get; private set; }
-
         public Criminal(string name, string typeOfCrime)
         {
             Name = name;
             TypeOfCrime = typeOfCrime;
         }
+        
+        public string Name { get; private set; }
+        public string TypeOfCrime { get; private set; }
     }
 }
