@@ -22,7 +22,6 @@ namespace iJunior
         private const string CommandFilterByDisease = "3";
         private const string CommandExit = "ex";
 
-        private string _userInput;
         private Database _database;
 
         public Hospital()
@@ -32,6 +31,8 @@ namespace iJunior
 
         public void Work()
         {
+            string userInput;
+
             bool isWorking = true;
 
             do
@@ -45,9 +46,9 @@ namespace iJunior
                     $"\n{CommandFilterByDisease} - фильтрация пациентов по болезни" +
                     $"\n{CommandExit} - выход");
 
-                _userInput = Console.ReadLine();
+                userInput = Console.ReadLine();
 
-                switch (_userInput)
+                switch (userInput)
                 {
                     case CommandFilterByName:
                         _database.SortByName();

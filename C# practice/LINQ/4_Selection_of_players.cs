@@ -9,26 +9,29 @@ namespace iJunior
     {
         public static void Main(string[] args)
         {
-            const string CommandSelectTopByLevel = "1";
-            const string CommandSelectTopByPower = "2";
-            const string CommandExit = "ex";
+            Filter filter = new Filter();
 
+            filter.Work();
+        }
+    }
+
+    class Filter
+    {
+        private const string CommandSelectTopByLevel = "1";
+        private const string CommandSelectTopByPower = "2";
+        private const string CommandExit = "ex";
+
+        private Database _database;
+
+        public Filter()
+        {
+            _database = new Database();
+        }
+
+        public void Work()
+        {
             bool isWorking = true;
             string userInput;
-            List<Player> players = new List<Player>();
-            Database database = new Database();
-
-            players.Add(new Player("Sam", 20, 50));
-            players.Add(new Player("Snake", 15, 43));
-            players.Add(new Player("Velsimir", 7, 20));
-            players.Add(new Player("Covack", 10, 23));
-            players.Add(new Player("Impeller", 14, 28));
-            players.Add(new Player("Furs", 25, 60));
-            players.Add(new Player("Dash", 24, 68));
-            players.Add(new Player("Light", 30, 112));
-            players.Add(new Player("Beshanniy", 13, 43));
-            players.Add(new Player("Yaichiro", 28, 53));
-            players.Add(new Player("Parris", 24, 60));
 
             do
             {
@@ -42,11 +45,11 @@ namespace iJunior
                 switch (userInput)
                 {
                     case CommandSelectTopByLevel:
-                        database.SelectionByLevel(players);
+                        _database.SelectionByLevel();
                         break;
 
                     case CommandSelectTopByPower:
-                        database.SelectionByPower(players);
+                        _database.SelectionByPower();
                         break;
 
                     case CommandExit:
@@ -55,22 +58,32 @@ namespace iJunior
                 }
 
                 Console.ReadKey();
+
             } while (isWorking);
         }
     }
 
     class Database
     {
-        public void SelectionByLevel(List<Player> players)
+        private List<Player> _players;
+
+        public Database()
         {
-            var selectedPlayers = players.OrderBy(player => player.Level).Take(3).ToList();
+            _players = new List<Player>();
+
+            Fill();
+        }
+
+        public void SelectionByLevel()
+        {
+            var selectedPlayers = _players.OrderBy(player => player.Level).Take(3).ToList();
 
             ShowPlayers(selectedPlayers.Take(3).ToList());
         }
 
-        public void SelectionByPower(List<Player> players)
+        public void SelectionByPower()
         {
-            var selectedPlayers = players.OrderBy(player => player.Power).Take(3).ToList();
+            var selectedPlayers = _players.OrderBy(player => player.Power).Take(3).ToList();
 
             ShowPlayers(selectedPlayers.Take(3).ToList());
         }
@@ -82,19 +95,34 @@ namespace iJunior
                 Console.WriteLine($"Имя: {player.Name}\tУровень: {player.Level}\tСила: {player.Power}");
             }
         }
+
+        private void Fill()
+        {
+            _players.Add(new Player("Sam", 20, 50));
+            _players.Add(new Player("Snake", 15, 43));
+            _players.Add(new Player("Velsimir", 7, 20));
+            _players.Add(new Player("Covack", 10, 23));
+            _players.Add(new Player("Impeller", 14, 28));
+            _players.Add(new Player("Furs", 25, 60));
+            _players.Add(new Player("Dash", 24, 68));
+            _players.Add(new Player("Light", 30, 112));
+            _players.Add(new Player("Beshanniy", 13, 43));
+            _players.Add(new Player("Yaichiro", 28, 53));
+            _players.Add(new Player("Parris", 24, 60));
+        }
     }
 
     class Player
     {
-        public string Name { get; private set; }
-        public int Level { get; private set; }
-        public int Power { get; private set; }
-
         public Player(string name, int level, int power)
         {
             Name = name;
             Level = level;
             Power = power;
         }
+
+        public string Name { get; private set; }
+        public int Level { get; private set; }
+        public int Power { get; private set; }
     }
 }
