@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Internal;
 
 namespace iJunior
 {
@@ -10,33 +9,45 @@ namespace iJunior
     {
         public static void Main(string[] args)
         {
-            List<Stew> stews = new List<Stew>();
-            Database database = new Database();
+            Factory factory = new Factory();
 
-            stews.Add(new Stew("Тушенка из Свинины", 1995, 30));
-            stews.Add(new Stew("Тушенка из Говядины", 1996, 12));
-            stews.Add(new Stew("Тушенка из Курицы", 1992, 15));
-            stews.Add(new Stew("Тушенка из Баранины", 1991, 16));
-            stews.Add(new Stew("Тушенка из Оленины", 1999, 20));
-            stews.Add(new Stew("Тушенка из Конины", 1992, 43));
-            stews.Add(new Stew("Тушенка из Индейки", 1990, 14));
-            stews.Add(new Stew("Тушенка из Индейки", 1997, 23));
-            stews.Add(new Stew("Тушенка из Оленины", 1994, 30));
-            stews.Add(new Stew("Тушенка из Баранины", 1996, 15));
-            stews.Add(new Stew("Тушенка из Говядины", 1991, 40));
+            factory.Work();
+        }
+    }
 
-            database.SelectByNotExpiredStew(stews);
+
+    class Factory
+    {
+        Database _database;
+
+        public Factory()
+        {
+            _database = new Database();
+        }
+
+        public void Work()
+        {
+            _database.SelectByNotExpiredStew();
             Console.ReadKey();
         }
     }
 
     class Database
     {
-        public void SelectByNotExpiredStew(List<Stew> stews)
+        private List<Stew> _stews;
+
+        public Database()
+        {
+            _stews = new List<Stew>();
+
+            Fill();
+        }
+
+        public void SelectByNotExpiredStew()
         {
             int currentDate = 2022;
 
-            var selectedStews = from Stew stew in stews
+            var selectedStews = from Stew stew in _stews
                                 where (currentDate - stew.ProductDate) >= stew.ExpirationDate
                                 select stew;
 
@@ -50,19 +61,34 @@ namespace iJunior
                 Console.WriteLine($"Название {stew.Name}\tДата производства: {stew.ProductDate}\tСрок годности: {stew.ExpirationDate}");
             }
         }
+
+        private void Fill()
+        {
+            _stews.Add(new Stew("Тушенка из Свинины", 1995, 30));
+            _stews.Add(new Stew("Тушенка из Говядины", 1996, 12));
+            _stews.Add(new Stew("Тушенка из Курицы", 1992, 15));
+            _stews.Add(new Stew("Тушенка из Баранины", 1991, 16));
+            _stews.Add(new Stew("Тушенка из Оленины", 1999, 20));
+            _stews.Add(new Stew("Тушенка из Конины", 1992, 43));
+            _stews.Add(new Stew("Тушенка из Индейки", 1990, 14));
+            _stews.Add(new Stew("Тушенка из Индейки", 1997, 23));
+            _stews.Add(new Stew("Тушенка из Оленины", 1994, 30));
+            _stews.Add(new Stew("Тушенка из Баранины", 1996, 15));
+            _stews.Add(new Stew("Тушенка из Говядины", 1991, 40));
+        }
     }
 
     class Stew
     {
-        public string Name { get; private set; }
-        public int ProductDate { get; private set; }
-        public int ExpirationDate { get; private set; }
-
         public Stew(string name, int productDate, int expirationDate)
         {
             Name = name;
             ProductDate = productDate;
             ExpirationDate = expirationDate;
         }
+
+        public string Name { get; private set; }
+        public int ProductDate { get; private set; }
+        public int ExpirationDate { get; private set; }
     }
 }

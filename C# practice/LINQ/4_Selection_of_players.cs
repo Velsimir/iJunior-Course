@@ -45,11 +45,11 @@ namespace iJunior
                 switch (userInput)
                 {
                     case CommandSelectTopByLevel:
-                        _database.SelectionByLevel();
+                        _database.SelectByLevel();
                         break;
 
                     case CommandSelectTopByPower:
-                        _database.SelectionByPower();
+                        _database.SelectByPower();
                         break;
 
                     case CommandExit:
@@ -74,18 +74,22 @@ namespace iJunior
             Fill();
         }
 
-        public void SelectionByLevel()
+        public void SelectByLevel()
         {
-            var selectedPlayers = _players.OrderBy(player => player.Level).Take(3).ToList();
+            int topThree = 3;
 
-            ShowPlayers(selectedPlayers.Take(3).ToList());
+            var selectedPlayers = _players.OrderBy(player => player.Level).Take(topThree).ToList();
+
+            ShowPlayers(selectedPlayers.ToList());
         }
 
-        public void SelectionByPower()
+        public void SelectByPower()
         {
-            var selectedPlayers = _players.OrderBy(player => player.Power).Take(3).ToList();
+            int topThree = 3;
 
-            ShowPlayers(selectedPlayers.Take(3).ToList());
+            var selectedPlayers = _players.OrderBy(player => player.Power).Take(topThree).ToList();
+
+            ShowPlayers(selectedPlayers.ToList());
         }
 
         private void ShowPlayers(List<Player> players)
