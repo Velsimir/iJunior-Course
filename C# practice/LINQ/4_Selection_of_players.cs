@@ -20,6 +20,7 @@ namespace iJunior
         private const string CommandSelectTopByLevel = "1";
         private const string CommandSelectTopByPower = "2";
         private const string CommandExit = "ex";
+        private const int TopPlayersCount = 3;
 
         private Database _database;
 
@@ -37,19 +38,20 @@ namespace iJunior
             {
                 Console.Clear();
 
-                Console.WriteLine($"{CommandSelectTopByLevel} - выбрать топ 3 игрока с самым высоким уровнем" +
-                    $"\n{CommandSelectTopByPower} - выбрать топ 3 игрока с самым высоким показателем силы" +
+                Console.WriteLine($"{CommandSelectTopByLevel} - выбрать топ {TopPlayersCount} игрока с самым высоким уровнем" +
+                    $"\n{CommandSelectTopByPower} - выбрать топ {TopPlayersCount} игрока с самым высоким показателем силы" +
                     $"\n{CommandExit} - выход");
+
                 userInput = Console.ReadLine();
 
                 switch (userInput)
                 {
                     case CommandSelectTopByLevel:
-                        _database.SelectByLevel();
+                        _database.SelectByLevel(TopPlayersCount);
                         break;
 
                     case CommandSelectTopByPower:
-                        _database.SelectByPower();
+                        _database.SelectByPower(TopPlayersCount);
                         break;
 
                     case CommandExit:
@@ -74,20 +76,16 @@ namespace iJunior
             Fill();
         }
 
-        public void SelectByLevel()
+        public void SelectByLevel(int index)
         {
-            int topThree = 3;
-
-            var selectedPlayers = _players.OrderBy(player => player.Level).Take(topThree).ToList();
+            var selectedPlayers = _players.OrderBy(player => player.Level).Take(index).ToList();
 
             ShowPlayers(selectedPlayers.ToList());
         }
 
-        public void SelectByPower()
+        public void SelectByPower(int index)
         {
-            int topThree = 3;
-
-            var selectedPlayers = _players.OrderBy(player => player.Power).Take(topThree).ToList();
+            var selectedPlayers = _players.OrderBy(player => player.Power).Take(index).ToList();
 
             ShowPlayers(selectedPlayers.ToList());
         }
