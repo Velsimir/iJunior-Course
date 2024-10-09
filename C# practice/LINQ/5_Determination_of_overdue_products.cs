@@ -5,6 +5,7 @@ using System.Linq;
 
 namespace iJunior
 {
+
     class MainClass
     {
         public static void Main(string[] args)
@@ -45,10 +46,8 @@ namespace iJunior
 
         public void SelectByNotExpiredStew()
         {
-            int currentDate = 2022;
-
             var selectedStews = from Stew stew in _stews
-                                where (currentDate - stew.ProductDate) >= stew.ExpirationDate
+                                where (DateTime.Now.Year - stew.ProductDate) >= stew.ExpirationDate
                                 select stew;
 
             ShowSelectedStew(selectedStews.ToList());
