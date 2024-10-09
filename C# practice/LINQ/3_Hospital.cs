@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Internal;
 
 namespace iJunior
 {
@@ -10,26 +9,30 @@ namespace iJunior
     {
         public static void Main(string[] args)
         {
-            const string CommandFilterByName = "1";
-            const string CommandFilterByAge = "2";
-            const string CommandFilterByDisease = "3";
-            const string CommandExit = "ex";
+            Hospital hospital = new Hospital();
 
-            string userInput;
+            hospital.Work();
+        }
+    }
+
+    class Hospital
+    {
+        private const string CommandFilterByName = "1";
+        private const string CommandFilterByAge = "2";
+        private const string CommandFilterByDisease = "3";
+        private const string CommandExit = "ex";
+
+        private string _userInput;
+        private Database _database;
+
+        public Hospital()
+        {
+            _database = new Database();
+        }
+
+        public void Work()
+        {
             bool isWorking = true;
-            List<Patient> patients = new List<Patient>();
-            Database database = new Database();
-
-            patients.Add(new Patient("Ваня", "Кашель", 32));
-            patients.Add(new Patient("Андрей", "Кашель", 16));
-            patients.Add(new Patient("Ольга", "Насморк", 48));
-            patients.Add(new Patient("Наталья", "Головная боль", 56));
-            patients.Add(new Patient("Семен", "Насморк", 43));
-            patients.Add(new Patient("Дарья", "Кашель", 34));
-            patients.Add(new Patient("Яков", "Мигрень", 23));
-            patients.Add(new Patient("Дмитрий", "Гастрит", 25));
-            patients.Add(new Patient("Татьяна", "Мигрень", 49));
-            patients.Add(new Patient("Артур", "Гастрит", 20));
 
             do
             {
@@ -42,20 +45,20 @@ namespace iJunior
                     $"\n{CommandFilterByDisease} - фильтрация пациентов по болезни" +
                     $"\n{CommandExit} - выход");
 
-                userInput = Console.ReadLine();
+                _userInput = Console.ReadLine();
 
-                switch (userInput)
+                switch (_userInput)
                 {
                     case CommandFilterByName:
-                        database.SortByName(patients);
+                        _database.SortByName();
                         break;
 
                     case CommandFilterByAge:
-                        database.SortByAge(patients);
+                        _database.SortByAge();
                         break;
 
                     case CommandFilterByDisease:
-                        database.SortByDisease(patients);
+                        _database.SortByDisease();
                         break;
 
                     case CommandExit:
@@ -71,32 +74,41 @@ namespace iJunior
 
     class Database
     {
-        public void SortByDisease(List<Patient> peoples)
+        private List<Patient> _patients;
+
+        public Database()
+        {
+            _patients = new List<Patient>();
+
+            Fill();
+        }
+
+        public void SortByDisease()
         {
             string disease;
 
             Console.WriteLine("Введите название болезни:");
             disease = Console.ReadLine();
 
-            var filteredPeoples = from Patient patient in peoples
+            var filteredPeoples = from Patient patient in _patients
                                   where patient.Disease == disease
                                   select patient;
 
             ShowList(filteredPeoples.ToList());
         }
 
-        public void SortByAge(List<Patient> peoples)
+        public void SortByAge()
         {
-            var filteredPeoples = from Patient patient in peoples
+            var filteredPeoples = from Patient patient in _patients
                                   orderby patient.Age
                                   select patient;
 
             ShowList(filteredPeoples.ToList());
         }
 
-        public void SortByName(List<Patient> peoples)
+        public void SortByName()
         {
-            var filteredPeoples = from Patient patient in peoples
+            var filteredPeoples = from Patient patient in _patients
                                   orderby patient.Name
                                   select patient;
 
@@ -110,19 +122,33 @@ namespace iJunior
                 Console.WriteLine($"Имя: {patient.Name}\tВозраст:{patient.Age} \tБолезнь: {patient.Disease}");
             }
         }
+
+        private void Fill()
+        {
+            _patients.Add(new Patient("Ваня", "Кашель", 32));
+            _patients.Add(new Patient("Андрей", "Кашель", 16));
+            _patients.Add(new Patient("Ольга", "Насморк", 48));
+            _patients.Add(new Patient("Наталья", "Головная боль", 56));
+            _patients.Add(new Patient("Семен", "Насморк", 43));
+            _patients.Add(new Patient("Дарья", "Кашель", 34));
+            _patients.Add(new Patient("Яков", "Мигрень", 23));
+            _patients.Add(new Patient("Дмитрий", "Гастрит", 25));
+            _patients.Add(new Patient("Татьяна", "Мигрень", 49));
+            _patients.Add(new Patient("Артур", "Гастрит", 20));
+        }
     }
 
     class Patient
     {
-        public string Name { get; private set; }
-        public string Disease { get; private set; }
-        public int Age { get; private set; }
-
         public Patient(string name, string disease, int age)
         {
             Name = name;
             Disease = disease;
             Age = age;
         }
+
+        public string Name { get; private set; }
+        public string Disease { get; private set; }
+        public int Age { get; private set; }
     }
 }
